@@ -1,0 +1,37 @@
+using System.ComponentModel.DataAnnotations;
+
+namespace Ecommerce.Web.ViewModels;
+
+public class HomeViewModel
+{
+    public List<ProductViewModel> FeaturedProducts { get; init; } = [];
+    public CheckoutViewModel Checkout { get; init; } = new();
+}
+
+public class ProductViewModel
+{
+    public Guid Id { get; init; }
+    public string Name { get; init; } = string.Empty;
+    public string Description { get; init; } = string.Empty;
+    public string HeroImageUrl { get; init; } = string.Empty;
+    public decimal Price { get; init; }
+    public bool IsFeatured { get; init; }
+}
+
+public class CheckoutViewModel
+{
+    [Required]
+    [Display(Name = "Họ và tên")]
+    public string CustomerName { get; set; } = string.Empty;
+
+    [Required, EmailAddress]
+    [Display(Name = "Email")]
+    public string CustomerEmail { get; set; } = string.Empty;
+
+    [Required]
+    public Guid ProductId { get; set; }
+
+    [Range(1, 10)]
+    public int Quantity { get; set; } = 1;
+}
+

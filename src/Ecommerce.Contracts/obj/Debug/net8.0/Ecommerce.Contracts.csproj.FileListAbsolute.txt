@@ -1,0 +1,11 @@
+D:\Binance\Ecommerce\src\Ecommerce.Contracts\bin\Debug\net8.0\Ecommerce.Contracts.deps.json
+D:\Binance\Ecommerce\src\Ecommerce.Contracts\bin\Debug\net8.0\Ecommerce.Contracts.dll
+D:\Binance\Ecommerce\src\Ecommerce.Contracts\bin\Debug\net8.0\Ecommerce.Contracts.pdb
+D:\Binance\Ecommerce\src\Ecommerce.Contracts\obj\Debug\net8.0\Ecommerce.Contracts.GeneratedMSBuildEditorConfig.editorconfig
+D:\Binance\Ecommerce\src\Ecommerce.Contracts\obj\Debug\net8.0\Ecommerce.Contracts.AssemblyInfoInputs.cache
+D:\Binance\Ecommerce\src\Ecommerce.Contracts\obj\Debug\net8.0\Ecommerce.Contracts.AssemblyInfo.cs
+D:\Binance\Ecommerce\src\Ecommerce.Contracts\obj\Debug\net8.0\Ecommerce.Contracts.csproj.CoreCompileInputs.cache
+D:\Binance\Ecommerce\src\Ecommerce.Contracts\obj\Debug\net8.0\Ecommerce.Contracts.dll
+D:\Binance\Ecommerce\src\Ecommerce.Contracts\obj\Debug\net8.0\refint\Ecommerce.Contracts.dll
+D:\Binance\Ecommerce\src\Ecommerce.Contracts\obj\Debug\net8.0\Ecommerce.Contracts.pdb
+D:\Binance\Ecommerce\src\Ecommerce.Contracts\obj\Debug\net8.0\ref\Ecommerce.Contracts.dll

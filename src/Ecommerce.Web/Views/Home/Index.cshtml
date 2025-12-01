@@ -1,0 +1,89 @@
+﻿@model Ecommerce.Web.ViewModels.HomeViewModel
+@{
+    ViewData["Title"] = "Moderno Living";
+    var status = ViewBag.CheckoutStatus as string;
+    var heroProduct = Model.FeaturedProducts.FirstOrDefault();
+}
+
+<section class="hero-panel">
+    <div class="hero-copy">
+        <p class="eyebrow">Tinh thần Moderno</p>
+        <h1>Không gian sống <span>tối giản</span> và cảm hứng.</h1>
+        <p class="lede">
+            Bộ sưu tập curated từ studio Moderno lấy cảm hứng từ template Moderno mà bạn yêu thích.
+            Chúng tôi kết hợp chất liệu tự nhiên, ánh sáng và hình khối kiến trúc đương đại.
+        </p>
+        <div class="hero-cta">
+            <a class="primary" href="#catalog">Khám phá catalog</a>
+            <a class="ghost" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Xem dashboard</a>
+        </div>
+    </div>
+    <div class="hero-media">
+        <div class="media-card">
+            <img src="@heroProduct?.HeroImageUrl" alt="@heroProduct?.Name" />
+            <div class="media-meta">
+                <span>@heroProduct?.Name</span>
+                <strong>@heroProduct?.Price.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))</strong>
+            </div>
+        </div>
+    </div>
+</section>
+
+@if (!string.IsNullOrWhiteSpace(status))
+{
+    <div class="alert @(status == "success" ? "alert-success" : "alert-danger")">
+        @(status == "success" ? "Đơn hàng đã được gửi vào saga MassTransit." : "Vui lòng kiểm tra thông tin và thử lại.")
+    </div>
+}
+
+<section id="catalog" class="catalog-grid">
+    @foreach (var product in Model.FeaturedProducts)
+    {
+        <article class="product-card @(product.IsFeatured ? "featured" : string.Empty)">
+            <img src="@product.HeroImageUrl" alt="@product.Name" loading="lazy" />
+            <div class="card-body">
+                <p class="eyebrow">Sản phẩm</p>
+                <h3>@product.Name</h3>
+                <p>@product.Description</p>
+                <div class="card-footer">
+                    <span>@product.Price.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))</span>
+                    <a class="ghost" href="#checkout" onclick="document.getElementById('Checkout_ProductId').value='@product.Id';">Đặt ngay</a>
+                </div>
+            </div>
+        </article>
+    }
+</section>
+
+<section class="checkout-panel" id="checkout">
+    <div>
+        <p class="eyebrow">Đặt thiết kế riêng</p>
+        <h2>Tạo hóa đơn và kích hoạt Saga thanh toán</h2>
+        <p>Form này sẽ publish message <code>CreateInvoice</code> lên RabbitMQ để khởi chạy chuỗi Saga (invoice → payment → notify).</p>
+    </div>
+    <form asp-controller="Orders" asp-action="Checkout" method="post" class="checkout-form">
+        @Html.AntiForgeryToken()
+        <div class="form-group">
+            <label asp-for="Checkout.CustomerName"></label>
+            <input asp-for="Checkout.CustomerName" />
+            <span asp-validation-for="Checkout.CustomerName"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Checkout.CustomerEmail"></label>
+            <input asp-for="Checkout.CustomerEmail" />
+            <span asp-validation-for="Checkout.CustomerEmail"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Checkout.ProductId">Chọn sản phẩm</label>
+            <select asp-for="Checkout.ProductId" asp-items="@(new SelectList(Model.FeaturedProducts, nameof(ProductViewModel.Id), nameof(ProductViewModel.Name)))"></select>
+        </div>
+        <div class="form-group">
+            <label asp-for="Checkout.Quantity"></label>
+            <input asp-for="Checkout.Quantity" type="number" min="1" max="10" />
+        </div>
+        <button type="submit">Khởi tạo hóa đơn</button>
+    </form>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

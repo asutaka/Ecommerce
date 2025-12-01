@@ -1,0 +1,48 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] - Moderno Commerce</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <header class="moderno-nav">
+        <div class="logo-stack">
+            <span class="logo-dot"></span>
+            <div>
+                <div class="brand-title">Moderno</div>
+                <div class="brand-subtitle">Haus</div>
+            </div>
+        </div>
+        <nav>
+            <a asp-area="" asp-controller="Home" asp-action="Index">Cửa hàng</a>
+            <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Admin</a>
+            <a href="https://tempeedemo.wixstudio.com/moderno" target="_blank" rel="noopener">Inspiration</a>
+        </nav>
+        <div class="nav-cta">
+            <span>Hotline</span>
+            <strong>1800 6886</strong>
+        </div>
+    </header>
+
+    <main class="moderno-shell">
+        @RenderBody()
+    </main>
+
+    <footer class="moderno-footer">
+        <div>
+            <div class="brand-title">Moderno</div>
+            <small>Studio nội thất số · Hà Nội</small>
+        </div>
+        <div>© @DateTime.UtcNow.Year Moderno Commerce</div>
+    </footer>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
