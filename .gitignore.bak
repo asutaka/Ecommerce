@@ -1,0 +1,30 @@
+# ====================
+# Thư mục FileContentIndex - thường dùng để lưu index tìm kiếm full-text
+# ====================
+
+# Bỏ qua toàn bộ thư mục FileContentIndex và mọi thứ bên trong
+FileContentIndex/
+FileContentIndex/*
+FileContentIndex/**/*
+
+# Nếu thư mục có thể nằm ở bất kỳ mức nào trong project (không khuyến khích nhưng an toàn hơn)
+**/FileContentIndex/
+**/FileContentIndex/*
+**/FileContentIndex/**/*
+
+# Một số định dạng file index phổ biến (phòng trường hợp thư mục bị đổi tên)
+*.cfs
+*.fdt
+*.fdx
+*.fnm
+*.frq
+*.nrm
+*.prx
+*.tis
+*.tii
+*.seg
+*.gen
+*.lock
+*.snapshot
+_write.lock
+segments_*

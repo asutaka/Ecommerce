@@ -1,0 +1,106 @@
+@model Ecommerce.Web.Areas.Admin.ViewModels.ProductFormViewModel
+
+@{
+    ViewData["Title"] = "Chỉnh sửa sản phẩm";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3 mb-0">Chỉnh sửa sản phẩm</h1>
+            <a asp-action="Index" class="btn btn-outline-light rounded-pill">
+                <i class="bi bi-arrow-left me-2"></i>Quay lại
+            </a>
+        </div>
+
+        <div class="card bg-transparent border-secondary">
+            <div class="card-body p-4">
+                <form asp-action="Edit" method="post">
+                    <input type="hidden" asp-for="Id" />
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-4"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="Name" class="form-label">Tên sản phẩm</label>
+                        <input asp-for="Name" class="form-control bg-dark text-white border-secondary" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label">Mô tả</label>
+                        <textarea asp-for="Description" class="form-control bg-dark text-white border-secondary" rows="3"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Price" class="form-label">Giá (VNĐ)</label>
+                        <input asp-for="Price" type="number" class="form-control bg-dark text-white border-secondary" />
+                        <span asp-validation-for="Price" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-4 form-check">
+                        <input asp-for="IsFeatured" class="form-check-input" />
+                        <label asp-for="IsFeatured" class="form-check-label">Sản phẩm nổi bật</label>
+                    </div>
+
+                    <h5 class="mb-3 border-bottom border-secondary pb-2">Hình ảnh sản phẩm (Tối đa 5)</h5>
+                    <div class="mb-4">
+                        @for (int i = 0; i < 5; i++)
+                        {
+                            <div class="mb-3">
+                                <div class="input-group mb-1">
+                                    <span class="input-group-text bg-secondary border-secondary text-white">@(i + 1)</span>
+                                    <input asp-for="ImageUrls[i]" class="form-control bg-dark text-white border-secondary img-url-input" data-preview-id="preview-@i" placeholder="Nhập link ảnh..." />
+                                </div>
+                                @if (!string.IsNullOrEmpty(Model.ImageUrls[i]))
+                                {
+                                    <div class="ms-5">
+                                        <img id="preview-@i" src="@Model.ImageUrls[i]" class="rounded" style="height: 60px; object-fit: cover;" onerror="this.style.display='none'" />
+                                    </div>
+                                }
+                            </div>
+                        }
+                        <span asp-validation-for="ImageUrls" class="text-danger"></span>
+                        <div class="form-text text-muted">Nhập URL trực tiếp của ảnh. Ảnh đầu tiên sẽ là ảnh đại diện.</div>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg rounded-pill">Lưu thay đổi</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        // Simple preview script
+        document.querySelectorAll('.img-url-input').forEach(input => {
+            input.addEventListener('change', function() {
+                const previewId = this.dataset.previewId;
+                let img = document.getElementById(previewId);
+                if (!img) {
+                    // Create img if not exists
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'ms-5';
+                    img = document.createElement('img');
+                    img.id = previewId;
+                    img.className = 'rounded';
+                    img.style.height = '60px';
+                    img.style.objectFit = 'cover';
+                    wrapper.appendChild(img);
+                    this.closest('.mb-3').appendChild(wrapper);
+                }
+                
+                if (this.value) {
+                    img.src = this.value;
+                    img.style.display = 'block';
+                    img.onerror = function() { this.style.display = 'none'; };
+                } else {
+                    img.style.display = 'none';
+                }
+            });
+        });
+    </script>
+}

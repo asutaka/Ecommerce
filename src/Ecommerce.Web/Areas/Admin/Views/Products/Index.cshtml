@@ -1,0 +1,114 @@
+@model Ecommerce.Web.Models.PaginatedList<Ecommerce.Infrastructure.Entities.Product>
+
+@{
+    ViewData["Title"] = "Quản lý sản phẩm";
+}
+
+<div class="admin-hero">
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h1 class="display-6 fw-bold">Sản phẩm</h1>
+            <p class="text-muted">Quản lý danh mục sản phẩm của cửa hàng</p>
+        </div>
+        <a asp-action="Create" class="btn btn-primary rounded-pill px-4">
+            <i class="bi bi-plus-lg me-2"></i>Thêm sản phẩm
+        </a>
+    </div>
+
+    <div class="mt-4 mb-3">
+        <form asp-action="Index" method="get" class="d-flex gap-2">
+            <div class="input-group" style="max-width: 400px;">
+                <span class="input-group-text bg-transparent border-secondary text-muted"><i class="bi bi-search"></i></span>
+                <input type="text" name="searchTerm" class="form-control bg-transparent border-secondary text-white" placeholder="Tìm kiếm sản phẩm..." value="@ViewBag.SearchTerm">
+                @if (!string.IsNullOrEmpty(ViewBag.SearchTerm as string))
+                {
+                    <a asp-action="Index" class="btn btn-outline-secondary border-start-0 border-secondary"><i class="bi bi-x-lg"></i></a>
+                }
+            </div>
+            <button type="submit" class="btn btn-outline-light">Tìm kiếm</button>
+        </form>
+    </div>
+</div>
+
+<div class="admin-table card bg-transparent border-secondary">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-dark table-hover mb-0 align-middle">
+                <thead>
+                    <tr>
+                        <th style="width: 100px;">Hình ảnh</th>
+                        <th>Tên sản phẩm</th>
+                        <th>Giá</th>
+                        <th>Trạng thái</th>
+                        <th>Ngày tạo</th>
+                        <th class="text-end">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                <img src="@item.HeroImageUrl" alt="@item.Name" class="rounded" style="width: 60px; height: 60px; object-fit: cover;">
+                            </td>
+                            <td>
+                                <div class="fw-bold">@item.Name</div>
+                                <div class="small text-muted text-truncate" style="max-width: 200px;">@item.Description</div>
+                            </td>
+                            <td>@item.Price.ToString("N0") ₫</td>
+                            <td>
+                                @if (item.IsFeatured)
+                                {
+                                    <span class="badge bg-warning text-dark">Nổi bật</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">Thường</span>
+                                }
+                            </td>
+                            <td>@item.CreatedAt.ToString("dd/MM/yyyy")</td>
+                            <td class="text-end">
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-light me-2">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline" onsubmit="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?');">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    @if (Model.TotalPages > 1)
+    {
+        <div class="card-footer border-top border-secondary bg-transparent">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="text-muted small">
+                    Trang @Model.PageIndex / @Model.TotalPages
+                </div>
+                <div>
+                    @{
+                        var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+                        var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+                    }
+                    <a asp-action="Index"
+                       asp-route-pageNumber="@(Model.PageIndex - 1)"
+                       asp-route-searchTerm="@ViewBag.SearchTerm"
+                       class="btn btn-sm btn-outline-light @prevDisabled">
+                        <i class="bi bi-chevron-left"></i> Trước
+                    </a>
+                    <a asp-action="Index"
+                       asp-route-pageNumber="@(Model.PageIndex + 1)"
+                       asp-route-searchTerm="@ViewBag.SearchTerm"
+                       class="btn btn-sm btn-outline-light @nextDisabled ms-1">
+                        Sau <i class="bi bi-chevron-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
