@@ -9,3 +9,14 @@ D:\Binance\Ecommerce\src\Ecommerce.Contracts\obj\Debug\net8.0\Ecommerce.Contract
 D:\Binance\Ecommerce\src\Ecommerce.Contracts\obj\Debug\net8.0\refint\Ecommerce.Contracts.dll
 D:\Binance\Ecommerce\src\Ecommerce.Contracts\obj\Debug\net8.0\Ecommerce.Contracts.pdb
 D:\Binance\Ecommerce\src\Ecommerce.Contracts\obj\Debug\net8.0\ref\Ecommerce.Contracts.dll
+E:\Data\Ecommerce\src\Ecommerce.Contracts\bin\Debug\net8.0\Ecommerce.Contracts.deps.json
+E:\Data\Ecommerce\src\Ecommerce.Contracts\bin\Debug\net8.0\Ecommerce.Contracts.dll
+E:\Data\Ecommerce\src\Ecommerce.Contracts\bin\Debug\net8.0\Ecommerce.Contracts.pdb
+E:\Data\Ecommerce\src\Ecommerce.Contracts\obj\Debug\net8.0\Ecommerce.Contracts.GeneratedMSBuildEditorConfig.editorconfig
+E:\Data\Ecommerce\src\Ecommerce.Contracts\obj\Debug\net8.0\Ecommerce.Contracts.AssemblyInfoInputs.cache
+E:\Data\Ecommerce\src\Ecommerce.Contracts\obj\Debug\net8.0\Ecommerce.Contracts.AssemblyInfo.cs
+E:\Data\Ecommerce\src\Ecommerce.Contracts\obj\Debug\net8.0\Ecommerce.Contracts.csproj.CoreCompileInputs.cache
+E:\Data\Ecommerce\src\Ecommerce.Contracts\obj\Debug\net8.0\Ecommerce.Contracts.dll
+E:\Data\Ecommerce\src\Ecommerce.Contracts\obj\Debug\net8.0\refint\Ecommerce.Contracts.dll
+E:\Data\Ecommerce\src\Ecommerce.Contracts\obj\Debug\net8.0\Ecommerce.Contracts.pdb
+E:\Data\Ecommerce\src\Ecommerce.Contracts\obj\Debug\net8.0\ref\Ecommerce.Contracts.dll

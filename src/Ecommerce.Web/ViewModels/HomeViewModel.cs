@@ -13,7 +13,8 @@ public class ProductViewModel
     public Guid Id { get; init; }
     public string Name { get; init; } = string.Empty;
     public string Description { get; init; } = string.Empty;
-    public string HeroImageUrl { get; init; } = string.Empty;
+    public List<string> Images { get; init; } = [];
+    public string HeroImageUrl => Images.FirstOrDefault() ?? "https://placehold.co/600x400?text=No+Image";
     public decimal Price { get; init; }
     public bool IsFeatured { get; init; }
 }

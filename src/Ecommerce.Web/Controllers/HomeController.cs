@@ -22,7 +22,7 @@ public class HomeController(
                 Id = x.Id,
                 Name = x.Name,
                 Description = x.Description,
-                HeroImageUrl = x.HeroImageUrl,
+                Images = x.Images,
                 Price = x.Price,
                 IsFeatured = x.IsFeatured
             })

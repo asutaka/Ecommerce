@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Binance\\Ecommerce\\src\\Ecommerce.Contracts\\Ecommerce.Contracts.csproj": {}
+    "E:\\Data\\Ecommerce\\src\\Ecommerce.Contracts\\Ecommerce.Contracts.csproj": {}
   },
   "projects": {
-    "D:\\Binance\\Ecommerce\\src\\Ecommerce.Contracts\\Ecommerce.Contracts.csproj": {
+    "E:\\Data\\Ecommerce\\src\\Ecommerce.Contracts\\Ecommerce.Contracts.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Binance\\Ecommerce\\src\\Ecommerce.Contracts\\Ecommerce.Contracts.csproj",
+        "projectUniqueName": "E:\\Data\\Ecommerce\\src\\Ecommerce.Contracts\\Ecommerce.Contracts.csproj",
         "projectName": "Ecommerce.Contracts",
-        "projectPath": "D:\\Binance\\Ecommerce\\src\\Ecommerce.Contracts\\Ecommerce.Contracts.csproj",
-        "packagesPath": "C:\\Users\\asuta\\.nuget\\packages\\",
-        "outputPath": "D:\\Binance\\Ecommerce\\src\\Ecommerce.Contracts\\obj\\",
+        "projectPath": "E:\\Data\\Ecommerce\\src\\Ecommerce.Contracts\\Ecommerce.Contracts.csproj",
+        "packagesPath": "C:\\Users\\asutaka\\.nuget\\packages\\",
+        "outputPath": "E:\\Data\\Ecommerce\\src\\Ecommerce.Contracts\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\asuta\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\asutaka\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],

@@ -47,7 +47,12 @@
                 <p>@product.Description</p>
                 <div class="card-footer">
                     <span>@product.Price.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))</span>
-                    <a class="ghost" href="#checkout" onclick="document.getElementById('Checkout_ProductId').value='@product.Id';">Đặt ngay</a>
+                    <div class="add-to-cart-group">
+                        <input type="number" id="qty-@product.Id" value="1" min="1" max="10" class="qty-input" />
+                        <button class="btn-add-cart" onclick="addToCart('@product.Id', document.getElementById('qty-@product.Id').value)">
+                            Thêm vào giỏ
+                        </button>
+                    </div>
                 </div>
             </div>
         </article>

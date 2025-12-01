@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/cart.css" asp-append-version="true" />
 </head>
 <body>
     <header class="moderno-nav">
@@ -23,9 +24,12 @@
             <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Admin</a>
             <a href="https://tempeedemo.wixstudio.com/moderno" target="_blank" rel="noopener">Inspiration</a>
         </nav>
-        <div class="nav-cta">
-            <span>Hotline</span>
-            <strong>1800 6886</strong>
+        <div class="nav-actions">
+            @await Html.PartialAsync("_CartPartial")
+            <div class="nav-cta">
+                <span>Hotline</span>
+                <strong>1800 6886</strong>
+            </div>
         </div>
     </header>
 

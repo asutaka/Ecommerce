@@ -4,12 +4,22 @@
 }
 
 <section class="admin-hero">
-    <div>
-        <p class="eyebrow text-muted">Moderno Admin</p>
-        <h1>Bảng điều khiển Saga</h1>
-        <p>Giám sát vòng đời hóa đơn → thanh toán → thông báo.</p>
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <p class="eyebrow text-muted">Moderno Admin</p>
+            <h1>Bảng điều khiển Saga</h1>
+            <p>Giám sát vòng đời hóa đơn → thanh toán → thông báo.</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a asp-controller="Orders" asp-action="Index" class="btn btn-outline-light rounded-pill px-4">
+                <i class="bi bi-receipt me-2"></i>Quản lý đơn hàng
+            </a>
+            <a asp-controller="Products" asp-action="Index" class="btn btn-outline-light rounded-pill px-4">
+                <i class="bi bi-box-seam me-2"></i>Quản lý sản phẩm
+            </a>
+            <a class="ghost" asp-area="" asp-controller="Home" asp-action="Index">← Về Storefront</a>
+        </div>
     </div>
-    <a class="ghost" asp-area="" asp-controller="Home" asp-action="Index">← Về Storefront</a>
 </section>
 
 <section class="admin-stats">
@@ -60,4 +70,3 @@
         </tbody>
     </table>
 </section>
-
