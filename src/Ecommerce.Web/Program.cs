@@ -18,6 +18,23 @@ builder.Services.AddSession(options =>
 // Register cart service
 builder.Services.AddScoped<Ecommerce.Web.Services.ICartService, Ecommerce.Web.Services.CartService>();
 
+// Register admin authentication service
+builder.Services.AddScoped<Ecommerce.Web.Services.IAdminAuthService, Ecommerce.Web.Services.AdminAuthService>();
+
+// Configure cookie authentication
+builder.Services.AddAuthentication(Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Admin/Account/Login";
+        options.LogoutPath = "/Admin/Account/Logout";
+        options.AccessDeniedPath = "/Admin/Account/Login";
+        options.ExpireTimeSpan = TimeSpan.FromHours(12);
+        options.SlidingExpiration = true;
+        options.Cookie.HttpOnly = true;
+        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+        options.Cookie.Name = "Ecommerce.Admin.Auth";
+    });
+
 builder.Services.AddMassTransit(x =>
 {
     x.SetKebabCaseEndpointNameFormatter();
@@ -50,6 +67,13 @@ app.UseRouting();
 
 app.UseSession(); // Enable session for cart
 
+// Configure cookie authentication for Admin area
+app.UseCookiePolicy(new CookiePolicyOptions
+{
+    MinimumSameSitePolicy = SameSiteMode.Strict
+});
+
+app.UseAuthentication(); // Add authentication middleware
 app.UseAuthorization();
 
 app.MapControllerRoute(

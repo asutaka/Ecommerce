@@ -7,6 +7,9 @@ public class OrderListViewModel
 {
     public PaginatedList<Order> Orders { get; set; } = default!;
     public OrderStatus? CurrentStatus { get; set; }
+    public string? Keyword { get; set; }
+    public DateTime? FromDate { get; set; }
+    public DateTime? ToDate { get; set; }
 }
 
 public class OrderDetailsViewModel

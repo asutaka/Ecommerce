@@ -16,6 +16,10 @@ CopilotIndices/**/*
 **/FileContentIndex/*
 **/FileContentIndex/**/*
 
+**/Debug/
+**/Debug/*
+**/Debug/**/*
+
 # Một số định dạng file index phổ biến (phòng trường hợp thư mục bị đổi tên)
 *.cfs
 *.fdt

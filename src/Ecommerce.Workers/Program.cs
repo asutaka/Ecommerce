@@ -33,6 +33,7 @@ builder.Services.AddMassTransit(x =>
     x.AddConsumer<CreateInvoiceConsumer>();
     x.AddConsumer<ProcessPaymentConsumer>();
     x.AddConsumer<SendNotificationConsumer>();
+    x.AddConsumer<CancelOrderConsumer>();
 
     x.UsingRabbitMq((context, cfg) =>
     {

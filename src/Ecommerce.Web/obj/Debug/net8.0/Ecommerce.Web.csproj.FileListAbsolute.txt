@@ -228,3 +228,4 @@ E:\Data\Ecommerce\src\Ecommerce.Web\obj\Debug\net8.0\refint\Ecommerce.Web.dll
 E:\Data\Ecommerce\src\Ecommerce.Web\obj\Debug\net8.0\Ecommerce.Web.pdb
 E:\Data\Ecommerce\src\Ecommerce.Web\obj\Debug\net8.0\Ecommerce.Web.genruntimeconfig.cache
 E:\Data\Ecommerce\src\Ecommerce.Web\obj\Debug\net8.0\ref\Ecommerce.Web.dll
+E:\Data\Ecommerce\src\Ecommerce.Web\obj\Debug\net8.0\Ecommerce.Web.sourcelink.json

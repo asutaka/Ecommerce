@@ -31,6 +31,7 @@ public enum OrderStatus
     Paid = 4,
     Notified = 5,
     Completed = 6,
+    Cancelled = 98,
     Failed = 99
 }
 

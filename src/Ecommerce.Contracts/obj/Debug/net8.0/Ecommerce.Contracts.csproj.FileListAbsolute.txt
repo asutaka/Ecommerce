@@ -20,3 +20,4 @@ E:\Data\Ecommerce\src\Ecommerce.Contracts\obj\Debug\net8.0\Ecommerce.Contracts.d
 E:\Data\Ecommerce\src\Ecommerce.Contracts\obj\Debug\net8.0\refint\Ecommerce.Contracts.dll
 E:\Data\Ecommerce\src\Ecommerce.Contracts\obj\Debug\net8.0\Ecommerce.Contracts.pdb
 E:\Data\Ecommerce\src\Ecommerce.Contracts\obj\Debug\net8.0\ref\Ecommerce.Contracts.dll
+E:\Data\Ecommerce\src\Ecommerce.Contracts\obj\Debug\net8.0\Ecommerce.Contracts.sourcelink.json

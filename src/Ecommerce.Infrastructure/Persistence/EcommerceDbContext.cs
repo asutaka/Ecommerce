@@ -12,6 +12,7 @@ public class EcommerceDbContext(DbContextOptions<EcommerceDbContext> options) : 
     public DbSet<NotificationLog> Notifications => Set<NotificationLog>();
     public DbSet<ShoppingCart> ShoppingCarts => Set<ShoppingCart>();
     public DbSet<CartItem> CartItems => Set<CartItem>();
+    public DbSet<AdminUser> AdminUsers => Set<AdminUser>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -79,7 +80,19 @@ public class EcommerceDbContext(DbContextOptions<EcommerceDbContext> options) : 
             entity.Ignore(x => x.LineTotal);
         });
 
+        modelBuilder.Entity<AdminUser>(entity =>
+        {
+            entity.Property(x => x.Username).HasMaxLength(50).IsRequired();
+            entity.Property(x => x.Email).HasMaxLength(320).IsRequired();
+            entity.Property(x => x.PasswordHash).HasMaxLength(256).IsRequired();
+            entity.Property(x => x.FullName).HasMaxLength(200);
+            
+            entity.HasIndex(x => x.Username).IsUnique();
+            entity.HasIndex(x => x.Email).IsUnique();
+        });
+
         modelBuilder.SeedInitialData();
+        modelBuilder.SeedAdminUser();
     }
 }
 

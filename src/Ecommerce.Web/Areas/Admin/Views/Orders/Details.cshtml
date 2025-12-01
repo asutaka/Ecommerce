@@ -37,9 +37,19 @@
             </div>
             <p class="text-muted mt-1">Ngày đặt: @Model.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm:ss")</p>
         </div>
-        <a asp-action="Index" class="btn btn-outline-light rounded-pill">
-            <i class="bi bi-arrow-left me-2"></i>Quay lại danh sách
-        </a>
+        <div>
+            <a asp-action="Index" class="btn btn-outline-light rounded-pill me-2">
+                <i class="bi bi-arrow-left me-2"></i>Quay lại
+            </a>
+            @if (Model.Status != OrderStatus.Completed && Model.Status != OrderStatus.Cancelled && Model.Status != OrderStatus.Failed)
+            {
+                <form asp-action="Cancel" asp-route-id="@Model.Id" method="post" class="d-inline" onsubmit="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này?');">
+                    <button type="submit" class="btn btn-danger rounded-pill">
+                        <i class="bi bi-x-circle me-2"></i>Hủy đơn hàng
+                    </button>
+                </form>
+            }
+        </div>
     </div>
 
     <div class="row">

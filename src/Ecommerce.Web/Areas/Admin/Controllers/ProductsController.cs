@@ -1,12 +1,14 @@
 using Ecommerce.Infrastructure.Entities;
 using Ecommerce.Infrastructure.Persistence;
 using Ecommerce.Web.Areas.Admin.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Ecommerce.Web.Areas.Admin.Controllers;
 
 [Area("Admin")]
+[Authorize]
 public class ProductsController(EcommerceDbContext dbContext) : Controller
 {
     public async Task<IActionResult> Index(string? searchTerm, int? pageNumber)

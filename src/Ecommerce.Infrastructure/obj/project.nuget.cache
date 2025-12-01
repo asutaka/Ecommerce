@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "k9UfbaPsi3U=",
+  "dgSpecHash": "tHVtluI6FkI=",
   "success": true,
   "projectFilePath": "E:\\Data\\Ecommerce\\src\\Ecommerce.Infrastructure\\Ecommerce.Infrastructure.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\asutaka\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
     "C:\\Users\\asutaka\\.nuget\\packages\\microsoft.aspnetcore.diagnostics.entityframeworkcore\\8.0.8\\microsoft.aspnetcore.diagnostics.entityframeworkcore.8.0.8.nupkg.sha512",
     "C:\\Users\\asutaka\\.nuget\\packages\\microsoft.entityframeworkcore\\8.0.8\\microsoft.entityframeworkcore.8.0.8.nupkg.sha512",
     "C:\\Users\\asutaka\\.nuget\\packages\\microsoft.entityframeworkcore.abstractions\\8.0.8\\microsoft.entityframeworkcore.abstractions.8.0.8.nupkg.sha512",

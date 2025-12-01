@@ -1,11 +1,13 @@
 using Ecommerce.Infrastructure.Persistence;
 using Ecommerce.Web.Areas.Admin.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Ecommerce.Web.Areas.Admin.Controllers;
 
 [Area("Admin")]
+[Authorize]
 public class DashboardController(EcommerceDbContext dbContext) : Controller
 {
     public async Task<IActionResult> Index()
@@ -41,4 +43,3 @@ public class DashboardController(EcommerceDbContext dbContext) : Controller
         return View(viewModel);
     }
 }
-

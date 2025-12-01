@@ -19,3 +19,5 @@ public record PaymentProcessed(Guid OrderId, string Status, DateTime ProcessedAt
 public record SendNotification(Guid OrderId, string CustomerEmail, string Template, string Subject);
 
 public record NotificationSent(Guid OrderId, string Channel, DateTime SentAt);
+
+public record CancelOrder(Guid OrderId, string Reason);

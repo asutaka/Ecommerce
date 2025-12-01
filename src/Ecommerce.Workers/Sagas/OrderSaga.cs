@@ -13,6 +13,7 @@ public class OrderSaga : MassTransitStateMachine<OrderState>
     public Event<InvoiceCreated> InvoiceCreatedEvent { get; private set; } = null!;
     public Event<PaymentProcessed> PaymentProcessedEvent { get; private set; } = null!;
     public Event<NotificationSent> NotificationSentEvent { get; private set; } = null!;
+    public Event<CancelOrder> CancelOrderEvent { get; private set; } = null!;
 
     public OrderSaga()
     {
@@ -22,6 +23,11 @@ public class OrderSaga : MassTransitStateMachine<OrderState>
         {
             cfg.CorrelateById(context => context.Message.OrderId);
             cfg.SelectId(_ => Guid.NewGuid());
+        });
+
+        Event(() => CancelOrderEvent, cfg =>
+        {
+            cfg.CorrelateById(context => context.Message.OrderId);
         });
 
         Event(() => InvoiceCreatedEvent, cfg =>
@@ -75,6 +81,16 @@ public class OrderSaga : MassTransitStateMachine<OrderState>
             When(NotificationSentEvent)
                 .Then(context => context.Saga.NotifiedAt = context.Message.SentAt)
                 .Finalize());
+
+        DuringAny(
+            When(CancelOrderEvent)
+                .Then(context => 
+                {
+                    // Logic to handle cancellation side effects could go here (e.g. refund)
+                    // For now just update status
+                })
+                .Finalize()
+        );
 
         SetCompletedWhenFinalized();
     }

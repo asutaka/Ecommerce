@@ -22,3 +22,4 @@ E:\Data\Ecommerce\src\Ecommerce.Infrastructure\obj\Debug\net8.0\Ecommerce.Infras
 E:\Data\Ecommerce\src\Ecommerce.Infrastructure\obj\Debug\net8.0\refint\Ecommerce.Infrastructure.dll
 E:\Data\Ecommerce\src\Ecommerce.Infrastructure\obj\Debug\net8.0\Ecommerce.Infrastructure.pdb
 E:\Data\Ecommerce\src\Ecommerce.Infrastructure\obj\Debug\net8.0\ref\Ecommerce.Infrastructure.dll
+E:\Data\Ecommerce\src\Ecommerce.Infrastructure\obj\Debug\net8.0\Ecommerce.Infrastructure.sourcelink.json

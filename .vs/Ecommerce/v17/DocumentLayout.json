@@ -1,74 +1,14 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "D:\\Binance\\Ecommerce\\",
+  "WorkspaceRootPath": "E:\\Data\\Ecommerce\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{5177A3D1-F3A1-4C7C-A44B-89EC312F841F}|src\\Ecommerce.Web\\Ecommerce.Web.csproj|d:\\binance\\ecommerce\\src\\ecommerce.web\\appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{5177A3D1-F3A1-4C7C-A44B-89EC312F841F}|src\\Ecommerce.Web\\Ecommerce.Web.csproj|solutionrelative:src\\ecommerce.web\\appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+      "AbsoluteMoniker": "D:0:0:{7B43F1E4-7A6E-4C97-9756-9CFB8979F6D4}|src\\Ecommerce.Workers\\Ecommerce.Workers.csproj|e:\\data\\ecommerce\\src\\ecommerce.workers\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7B43F1E4-7A6E-4C97-9756-9CFB8979F6D4}|src\\Ecommerce.Workers\\Ecommerce.Workers.csproj|solutionrelative:src\\ecommerce.workers\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{2F1C9064-BFA5-48BB-92AC-ADB90D885781}|src\\Ecommerce.Contracts\\Ecommerce.Contracts.csproj|d:\\binance\\ecommerce\\src\\ecommerce.contracts\\class1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2F1C9064-BFA5-48BB-92AC-ADB90D885781}|src\\Ecommerce.Contracts\\Ecommerce.Contracts.csproj|solutionrelative:src\\ecommerce.contracts\\class1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{4367A901-A4C6-4D1A-ADC7-A7ECA6C552F5}|src\\Ecommerce.Infrastructure\\Ecommerce.Infrastructure.csproj|d:\\binance\\ecommerce\\src\\ecommerce.infrastructure\\persistence\\modelbuilderextensions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4367A901-A4C6-4D1A-ADC7-A7ECA6C552F5}|src\\Ecommerce.Infrastructure\\Ecommerce.Infrastructure.csproj|solutionrelative:src\\ecommerce.infrastructure\\persistence\\modelbuilderextensions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{4367A901-A4C6-4D1A-ADC7-A7ECA6C552F5}|src\\Ecommerce.Infrastructure\\Ecommerce.Infrastructure.csproj|d:\\binance\\ecommerce\\src\\ecommerce.infrastructure\\persistence\\ecommercedbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4367A901-A4C6-4D1A-ADC7-A7ECA6C552F5}|src\\Ecommerce.Infrastructure\\Ecommerce.Infrastructure.csproj|solutionrelative:src\\ecommerce.infrastructure\\persistence\\ecommercedbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{4367A901-A4C6-4D1A-ADC7-A7ECA6C552F5}|src\\Ecommerce.Infrastructure\\Ecommerce.Infrastructure.csproj|d:\\binance\\ecommerce\\src\\ecommerce.infrastructure\\extensions\\servicecollectionextensions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4367A901-A4C6-4D1A-ADC7-A7ECA6C552F5}|src\\Ecommerce.Infrastructure\\Ecommerce.Infrastructure.csproj|solutionrelative:src\\ecommerce.infrastructure\\extensions\\servicecollectionextensions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{4367A901-A4C6-4D1A-ADC7-A7ECA6C552F5}|src\\Ecommerce.Infrastructure\\Ecommerce.Infrastructure.csproj|d:\\binance\\ecommerce\\src\\ecommerce.infrastructure\\entities\\product.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4367A901-A4C6-4D1A-ADC7-A7ECA6C552F5}|src\\Ecommerce.Infrastructure\\Ecommerce.Infrastructure.csproj|solutionrelative:src\\ecommerce.infrastructure\\entities\\product.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{4367A901-A4C6-4D1A-ADC7-A7ECA6C552F5}|src\\Ecommerce.Infrastructure\\Ecommerce.Infrastructure.csproj|d:\\binance\\ecommerce\\src\\ecommerce.infrastructure\\entities\\payment.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4367A901-A4C6-4D1A-ADC7-A7ECA6C552F5}|src\\Ecommerce.Infrastructure\\Ecommerce.Infrastructure.csproj|solutionrelative:src\\ecommerce.infrastructure\\entities\\payment.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{4367A901-A4C6-4D1A-ADC7-A7ECA6C552F5}|src\\Ecommerce.Infrastructure\\Ecommerce.Infrastructure.csproj|d:\\binance\\ecommerce\\src\\ecommerce.infrastructure\\entities\\order.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4367A901-A4C6-4D1A-ADC7-A7ECA6C552F5}|src\\Ecommerce.Infrastructure\\Ecommerce.Infrastructure.csproj|solutionrelative:src\\ecommerce.infrastructure\\entities\\order.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{4367A901-A4C6-4D1A-ADC7-A7ECA6C552F5}|src\\Ecommerce.Infrastructure\\Ecommerce.Infrastructure.csproj|d:\\binance\\ecommerce\\src\\ecommerce.infrastructure\\entities\\notificationlog.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4367A901-A4C6-4D1A-ADC7-A7ECA6C552F5}|src\\Ecommerce.Infrastructure\\Ecommerce.Infrastructure.csproj|solutionrelative:src\\ecommerce.infrastructure\\entities\\notificationlog.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5177A3D1-F3A1-4C7C-A44B-89EC312F841F}|src\\Ecommerce.Web\\Ecommerce.Web.csproj|d:\\binance\\ecommerce\\src\\ecommerce.web\\controllers\\orderscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5177A3D1-F3A1-4C7C-A44B-89EC312F841F}|src\\Ecommerce.Web\\Ecommerce.Web.csproj|solutionrelative:src\\ecommerce.web\\controllers\\orderscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5177A3D1-F3A1-4C7C-A44B-89EC312F841F}|src\\Ecommerce.Web\\Ecommerce.Web.csproj|d:\\binance\\ecommerce\\src\\ecommerce.web\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5177A3D1-F3A1-4C7C-A44B-89EC312F841F}|src\\Ecommerce.Web\\Ecommerce.Web.csproj|solutionrelative:src\\ecommerce.web\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{7B43F1E4-7A6E-4C97-9756-9CFB8979F6D4}|src\\Ecommerce.Workers\\Ecommerce.Workers.csproj|d:\\binance\\ecommerce\\src\\ecommerce.workers\\consumers\\processpaymentconsumer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7B43F1E4-7A6E-4C97-9756-9CFB8979F6D4}|src\\Ecommerce.Workers\\Ecommerce.Workers.csproj|solutionrelative:src\\ecommerce.workers\\consumers\\processpaymentconsumer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{7B43F1E4-7A6E-4C97-9756-9CFB8979F6D4}|src\\Ecommerce.Workers\\Ecommerce.Workers.csproj|d:\\binance\\ecommerce\\src\\ecommerce.workers\\consumers\\createinvoiceconsumer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7B43F1E4-7A6E-4C97-9756-9CFB8979F6D4}|src\\Ecommerce.Workers\\Ecommerce.Workers.csproj|solutionrelative:src\\ecommerce.workers\\consumers\\createinvoiceconsumer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{7B43F1E4-7A6E-4C97-9756-9CFB8979F6D4}|src\\Ecommerce.Workers\\Ecommerce.Workers.csproj|d:\\binance\\ecommerce\\src\\ecommerce.workers\\sagas\\ordersaga.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7B43F1E4-7A6E-4C97-9756-9CFB8979F6D4}|src\\Ecommerce.Workers\\Ecommerce.Workers.csproj|solutionrelative:src\\ecommerce.workers\\sagas\\ordersaga.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{7B43F1E4-7A6E-4C97-9756-9CFB8979F6D4}|src\\Ecommerce.Workers\\Ecommerce.Workers.csproj|d:\\binance\\ecommerce\\src\\ecommerce.workers\\sagas\\orderstate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7B43F1E4-7A6E-4C97-9756-9CFB8979F6D4}|src\\Ecommerce.Workers\\Ecommerce.Workers.csproj|solutionrelative:src\\ecommerce.workers\\sagas\\orderstate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{7B43F1E4-7A6E-4C97-9756-9CFB8979F6D4}|src\\Ecommerce.Workers\\Ecommerce.Workers.csproj|d:\\binance\\ecommerce\\src\\ecommerce.workers\\worker.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{7B43F1E4-7A6E-4C97-9756-9CFB8979F6D4}|src\\Ecommerce.Workers\\Ecommerce.Workers.csproj|e:\\data\\ecommerce\\src\\ecommerce.workers\\worker.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{7B43F1E4-7A6E-4C97-9756-9CFB8979F6D4}|src\\Ecommerce.Workers\\Ecommerce.Workers.csproj|solutionrelative:src\\ecommerce.workers\\worker.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5177A3D1-F3A1-4C7C-A44B-89EC312F841F}|src\\Ecommerce.Web\\Ecommerce.Web.csproj|d:\\binance\\ecommerce\\src\\ecommerce.web\\viewmodels\\homeviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5177A3D1-F3A1-4C7C-A44B-89EC312F841F}|src\\Ecommerce.Web\\Ecommerce.Web.csproj|solutionrelative:src\\ecommerce.web\\viewmodels\\homeviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -78,19 +18,11 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 30,
+          "SelectedChildIndex": 4,
           "Children": [
             {
               "$type": "Bookmark",
-              "Name": "ST:128:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
-            },
-            {
-              "$type": "Bookmark",
               "Name": "ST:129:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:130:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
             },
             {
               "$type": "Bookmark",
@@ -98,327 +30,36 @@
             },
             {
               "$type": "Bookmark",
-              "Name": "ST:132:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
-            },
-            {
-              "$type": "Bookmark",
               "Name": "ST:131:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
             },
             {
               "$type": "Bookmark",
-              "Name": "ST:133:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:133:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:132:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:135:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:134:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:136:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:137:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:139:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:140:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:138:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:142:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:143:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:144:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:141:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:146:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:145:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:147:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:148:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:149:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:150:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:151:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:152:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:153:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+              "Name": "ST:129:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "appsettings.Development.json",
-              "DocumentMoniker": "D:\\Binance\\Ecommerce\\src\\Ecommerce.Web\\appsettings.Development.json",
-              "RelativeDocumentMoniker": "src\\Ecommerce.Web\\appsettings.Development.json",
-              "ToolTip": "D:\\Binance\\Ecommerce\\src\\Ecommerce.Web\\appsettings.Development.json",
-              "RelativeToolTip": "src\\Ecommerce.Web\\appsettings.Development.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-12-01T07:05:59.492Z",
+              "Title": "Program.cs",
+              "DocumentMoniker": "E:\\Data\\Ecommerce\\src\\Ecommerce.Workers\\Program.cs",
+              "RelativeDocumentMoniker": "src\\Ecommerce.Workers\\Program.cs",
+              "ToolTip": "E:\\Data\\Ecommerce\\src\\Ecommerce.Workers\\Program.cs",
+              "RelativeToolTip": "src\\Ecommerce.Workers\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAkAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-01T14:56:46.337Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "Class1.cs",
-              "DocumentMoniker": "D:\\Binance\\Ecommerce\\src\\Ecommerce.Contracts\\Class1.cs",
-              "RelativeDocumentMoniker": "src\\Ecommerce.Contracts\\Class1.cs",
-              "ToolTip": "D:\\Binance\\Ecommerce\\src\\Ecommerce.Contracts\\Class1.cs",
-              "RelativeToolTip": "src\\Ecommerce.Contracts\\Class1.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAqAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-01T07:05:15.177Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "ModelBuilderExtensions.cs",
-              "DocumentMoniker": "D:\\Binance\\Ecommerce\\src\\Ecommerce.Infrastructure\\Persistence\\ModelBuilderExtensions.cs",
-              "RelativeDocumentMoniker": "src\\Ecommerce.Infrastructure\\Persistence\\ModelBuilderExtensions.cs",
-              "ToolTip": "D:\\Binance\\Ecommerce\\src\\Ecommerce.Infrastructure\\Persistence\\ModelBuilderExtensions.cs",
-              "RelativeToolTip": "src\\Ecommerce.Infrastructure\\Persistence\\ModelBuilderExtensions.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-01T07:05:05.084Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "EcommerceDbContext.cs",
-              "DocumentMoniker": "D:\\Binance\\Ecommerce\\src\\Ecommerce.Infrastructure\\Persistence\\EcommerceDbContext.cs",
-              "RelativeDocumentMoniker": "src\\Ecommerce.Infrastructure\\Persistence\\EcommerceDbContext.cs",
-              "ToolTip": "D:\\Binance\\Ecommerce\\src\\Ecommerce.Infrastructure\\Persistence\\EcommerceDbContext.cs",
-              "RelativeToolTip": "src\\Ecommerce.Infrastructure\\Persistence\\EcommerceDbContext.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-01T07:05:03.193Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "ServiceCollectionExtensions.cs",
-              "DocumentMoniker": "D:\\Binance\\Ecommerce\\src\\Ecommerce.Infrastructure\\Extensions\\ServiceCollectionExtensions.cs",
-              "RelativeDocumentMoniker": "src\\Ecommerce.Infrastructure\\Extensions\\ServiceCollectionExtensions.cs",
-              "ToolTip": "D:\\Binance\\Ecommerce\\src\\Ecommerce.Infrastructure\\Extensions\\ServiceCollectionExtensions.cs",
-              "RelativeToolTip": "src\\Ecommerce.Infrastructure\\Extensions\\ServiceCollectionExtensions.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-01T07:04:54.764Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "Product.cs",
-              "DocumentMoniker": "D:\\Binance\\Ecommerce\\src\\Ecommerce.Infrastructure\\Entities\\Product.cs",
-              "RelativeDocumentMoniker": "src\\Ecommerce.Infrastructure\\Entities\\Product.cs",
-              "ToolTip": "D:\\Binance\\Ecommerce\\src\\Ecommerce.Infrastructure\\Entities\\Product.cs",
-              "RelativeToolTip": "src\\Ecommerce.Infrastructure\\Entities\\Product.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-01T07:04:52.814Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "Payment.cs",
-              "DocumentMoniker": "D:\\Binance\\Ecommerce\\src\\Ecommerce.Infrastructure\\Entities\\Payment.cs",
-              "RelativeDocumentMoniker": "src\\Ecommerce.Infrastructure\\Entities\\Payment.cs",
-              "ToolTip": "D:\\Binance\\Ecommerce\\src\\Ecommerce.Infrastructure\\Entities\\Payment.cs",
-              "RelativeToolTip": "src\\Ecommerce.Infrastructure\\Entities\\Payment.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-01T07:04:51.972Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "Order.cs",
-              "DocumentMoniker": "D:\\Binance\\Ecommerce\\src\\Ecommerce.Infrastructure\\Entities\\Order.cs",
-              "RelativeDocumentMoniker": "src\\Ecommerce.Infrastructure\\Entities\\Order.cs",
-              "ToolTip": "D:\\Binance\\Ecommerce\\src\\Ecommerce.Infrastructure\\Entities\\Order.cs",
-              "RelativeToolTip": "src\\Ecommerce.Infrastructure\\Entities\\Order.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-01T07:04:50.672Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "NotificationLog.cs",
-              "DocumentMoniker": "D:\\Binance\\Ecommerce\\src\\Ecommerce.Infrastructure\\Entities\\NotificationLog.cs",
-              "RelativeDocumentMoniker": "src\\Ecommerce.Infrastructure\\Entities\\NotificationLog.cs",
-              "ToolTip": "D:\\Binance\\Ecommerce\\src\\Ecommerce.Infrastructure\\Entities\\NotificationLog.cs",
-              "RelativeToolTip": "src\\Ecommerce.Infrastructure\\Entities\\NotificationLog.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-01T07:04:49.668Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "OrdersController.cs",
-              "DocumentMoniker": "D:\\Binance\\Ecommerce\\src\\Ecommerce.Web\\Controllers\\OrdersController.cs",
-              "RelativeDocumentMoniker": "src\\Ecommerce.Web\\Controllers\\OrdersController.cs",
-              "ToolTip": "D:\\Binance\\Ecommerce\\src\\Ecommerce.Web\\Controllers\\OrdersController.cs",
-              "RelativeToolTip": "src\\Ecommerce.Web\\Controllers\\OrdersController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAeAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-01T07:04:31.088Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "HomeController.cs",
-              "DocumentMoniker": "D:\\Binance\\Ecommerce\\src\\Ecommerce.Web\\Controllers\\HomeController.cs",
-              "RelativeDocumentMoniker": "src\\Ecommerce.Web\\Controllers\\HomeController.cs",
-              "ToolTip": "D:\\Binance\\Ecommerce\\src\\Ecommerce.Web\\Controllers\\HomeController.cs",
-              "RelativeToolTip": "src\\Ecommerce.Web\\Controllers\\HomeController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-01T07:04:30.34Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "ProcessPaymentConsumer.cs",
-              "DocumentMoniker": "D:\\Binance\\Ecommerce\\src\\Ecommerce.Workers\\Consumers\\ProcessPaymentConsumer.cs",
-              "RelativeDocumentMoniker": "src\\Ecommerce.Workers\\Consumers\\ProcessPaymentConsumer.cs",
-              "ToolTip": "D:\\Binance\\Ecommerce\\src\\Ecommerce.Workers\\Consumers\\ProcessPaymentConsumer.cs",
-              "RelativeToolTip": "src\\Ecommerce.Workers\\Consumers\\ProcessPaymentConsumer.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-01T07:04:24.011Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 12,
-              "Title": "CreateInvoiceConsumer.cs",
-              "DocumentMoniker": "D:\\Binance\\Ecommerce\\src\\Ecommerce.Workers\\Consumers\\CreateInvoiceConsumer.cs",
-              "RelativeDocumentMoniker": "src\\Ecommerce.Workers\\Consumers\\CreateInvoiceConsumer.cs",
-              "ToolTip": "D:\\Binance\\Ecommerce\\src\\Ecommerce.Workers\\Consumers\\CreateInvoiceConsumer.cs",
-              "RelativeToolTip": "src\\Ecommerce.Workers\\Consumers\\CreateInvoiceConsumer.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-01T07:04:23.23Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 14,
-              "Title": "OrderState.cs",
-              "DocumentMoniker": "D:\\Binance\\Ecommerce\\src\\Ecommerce.Workers\\Sagas\\OrderState.cs",
-              "RelativeDocumentMoniker": "src\\Ecommerce.Workers\\Sagas\\OrderState.cs",
-              "ToolTip": "D:\\Binance\\Ecommerce\\src\\Ecommerce.Workers\\Sagas\\OrderState.cs",
-              "RelativeToolTip": "src\\Ecommerce.Workers\\Sagas\\OrderState.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-01T07:04:20.307Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 13,
-              "Title": "OrderSaga.cs",
-              "DocumentMoniker": "D:\\Binance\\Ecommerce\\src\\Ecommerce.Workers\\Sagas\\OrderSaga.cs",
-              "RelativeDocumentMoniker": "src\\Ecommerce.Workers\\Sagas\\OrderSaga.cs",
-              "ToolTip": "D:\\Binance\\Ecommerce\\src\\Ecommerce.Workers\\Sagas\\OrderSaga.cs",
-              "RelativeToolTip": "src\\Ecommerce.Workers\\Sagas\\OrderSaga.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-01T07:04:19.311Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 15,
               "Title": "Worker.cs",
-              "DocumentMoniker": "D:\\Binance\\Ecommerce\\src\\Ecommerce.Workers\\Worker.cs",
+              "DocumentMoniker": "E:\\Data\\Ecommerce\\src\\Ecommerce.Workers\\Worker.cs",
               "RelativeDocumentMoniker": "src\\Ecommerce.Workers\\Worker.cs",
-              "ToolTip": "D:\\Binance\\Ecommerce\\src\\Ecommerce.Workers\\Worker.cs",
+              "ToolTip": "E:\\Data\\Ecommerce\\src\\Ecommerce.Workers\\Worker.cs",
               "RelativeToolTip": "src\\Ecommerce.Workers\\Worker.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-01T07:04:16.216Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 16,
-              "Title": "HomeViewModel.cs",
-              "DocumentMoniker": "D:\\Binance\\Ecommerce\\src\\Ecommerce.Web\\ViewModels\\HomeViewModel.cs",
-              "RelativeDocumentMoniker": "src\\Ecommerce.Web\\ViewModels\\HomeViewModel.cs",
-              "ToolTip": "D:\\Binance\\Ecommerce\\src\\Ecommerce.Web\\ViewModels\\HomeViewModel.cs",
-              "RelativeToolTip": "src\\Ecommerce.Web\\ViewModels\\HomeViewModel.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAhAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-01T07:03:52.86Z",
+              "WhenOpened": "2025-12-01T14:56:41.016Z",
               "EditorCaption": ""
             }
           ]

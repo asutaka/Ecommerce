@@ -7,6 +7,10 @@ FileContentIndex/
 FileContentIndex/*
 FileContentIndex/**/*
 
+CopilotIndices/
+CopilotIndices/*
+CopilotIndices/**/*
+
 # Nếu thư mục có thể nằm ở bất kỳ mức nào trong project (không khuyến khích nhưng an toàn hơn)
 **/FileContentIndex/
 **/FileContentIndex/*

@@ -1,32 +1,48 @@
 @using Ecommerce.Infrastructure.Entities
 @model Ecommerce.Web.Areas.Admin.ViewModels.OrderListViewModel
-
 @{
     ViewData["Title"] = "Quản lý đơn hàng";
 }
 
-<div class="admin-hero">
-    <div class="d-flex justify-content-between align-items-center">
+<div class="container-fluid px-0">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0">Quản lý đơn hàng</h1>
         <div>
-            <h1 class="display-6 fw-bold">Đơn hàng</h1>
-            <p class="text-muted">Theo dõi và quản lý đơn hàng</p>
+            <a asp-action="Export" asp-route-status="@Model.CurrentStatus" asp-route-keyword="@Model.Keyword" asp-route-fromDate="@Model.FromDate" asp-route-toDate="@Model.ToDate" class="btn btn-outline-info rounded-pill me-2">
+                <i class="bi bi-download me-2"></i>Export Excel
+            </a>
+            <a asp-action="Import" class="btn btn-outline-success rounded-pill">
+                <i class="bi bi-file-earmark-spreadsheet me-2"></i>Import Excel
+            </a>
         </div>
     </div>
 
-    <div class="mt-4 mb-3">
-        <form asp-action="Index" method="get" class="d-flex gap-2 align-items-center">
-            <label class="text-white me-2">Trạng thái:</label>
-            <select name="status" asp-items="Html.GetEnumSelectList<OrderStatus>()" class="form-select bg-dark text-white border-secondary" style="width: 200px;" onchange="this.form.submit()">
-                <option value="">Tất cả</option>
-            </select>
-            @if (Model.CurrentStatus.HasValue)
-            {
-                <script>
-                    document.querySelector('select[name="status"]').value = "@((int)Model.CurrentStatus.Value)";
-                </script>
-                <a asp-action="Index" class="btn btn-outline-secondary border-secondary"><i class="bi bi-x-lg"></i> Xóa lọc</a>
-            }
-        </form>
+    <div class="card bg-transparent border-secondary mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label text-muted small">Từ khóa</label>
+                    <input type="text" name="keyword" class="form-control bg-dark text-light border-secondary" placeholder="Tên, Email..." value="@Model.Keyword">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label text-muted small">Trạng thái</label>
+                    <select name="status" class="form-select bg-dark text-light border-secondary" asp-items="Html.GetEnumSelectList<Ecommerce.Infrastructure.Entities.OrderStatus>()">
+                        <option value="">Tất cả</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label text-muted small">Từ ngày</label>
+                    <input type="date" name="fromDate" class="form-control bg-dark text-light border-secondary" value="@(Model.FromDate?.ToString("yyyy-MM-dd"))">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label text-muted small">Đến ngày</label>
+                    <input type="date" name="toDate" class="form-control bg-dark text-light border-secondary" value="@(Model.ToDate?.ToString("yyyy-MM-dd"))">
+                </div>
+                <div class="col-md-3 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100"><i class="bi bi-search me-2"></i>Tìm kiếm</button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
