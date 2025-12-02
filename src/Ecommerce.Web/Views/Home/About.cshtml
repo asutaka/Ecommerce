@@ -1,0 +1,116 @@
+@model Ecommerce.Web.ViewModels.AboutViewModel
+
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<section class="about-hero py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <p class="eyebrow text-primary">Câu chuyện của chúng tôi</p>
+                <h1 class="display-4 fw-bold mb-4">@Model.Title</h1>
+                <p class="lead">@Model.Description</p>
+            </div>
+            <div class="col-lg-6">
+                <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&h=600&fit=crop" 
+                     alt="About Moderno" 
+                     class="img-fluid rounded shadow" />
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Statistics Section -->
+<section class="statistics-section py-5 bg-dark bg-opacity-10">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-4 mb-4 mb-md-0">
+                <h2 class="display-3 fw-bold text-primary">@Model.Statistics.YearsInOperation+</h2>
+                <p class="text-muted fs-5">Năm hoạt động</p>
+            </div>
+            <div class="col-md-4 mb-4 mb-md-0">
+                <h2 class="display-3 fw-bold text-primary">@Model.Statistics.CustomerRating</h2>
+                <p class="text-muted fs-5">Đánh giá khách hàng</p>
+            </div>
+            <div class="col-md-4">
+                <h2 class="display-3 fw-bold text-primary">@Model.Statistics.CustomerSatisfaction%</h2>
+                <p class="text-muted fs-5">Hài lòng khách hàng</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Why Choose Us Section -->
+<section class="features-section py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">Tại sao chọn sản phẩm của chúng tôi?</h2>
+        <p class="text-center text-muted mb-5">Chất lượng bạn có thể cảm nhận, phong cách bạn sẽ yêu thích và giá cả hợp lý</p>
+        
+        <div class="row g-4">
+            @foreach (var feature in Model.Features)
+            {
+                <div class="col-md-6 col-lg-3">
+                    <div class="feature-card text-center h-100 p-4">
+                        <div class="feature-icon mb-3">
+                            <i class="@feature.Icon fs-1 text-primary"></i>
+                        </div>
+                        <h4 class="mb-3">@feature.Title</h4>
+                        <p class="text-muted">@feature.Description</p>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- Mission Section -->
+<section class="mission-section py-5 bg-light">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <h2 class="mb-4">Sứ mệnh của chúng tôi</h2>
+                <p class="lead">
+                    Tại Moderno, chúng tôi cam kết mang đến những sản phẩm chất lượng cao với giá cả phải chăng. 
+                    Chúng tôi tin rằng phong cách không nên là xa xỉ - nó nên dễ tiếp cận với tất cả mọi người.
+                </p>
+                <p class="text-muted mt-3">
+                    Từ việc tìm nguồn nguyên liệu tốt nhất đến việc làm việc với các nhà thiết kế tài năng, 
+                    mỗi bước trong quy trình của chúng tôi được thực hiện với sự quan tâm và chú ý đến từng chi tiết.
+                </p>
+                <div class="mt-4">
+                    <a asp-controller="Home" asp-action="Index" class="btn btn-primary btn-lg me-2">
+                        Khám phá sản phẩm
+                    </a>
+                    <a asp-controller="Category" asp-action="Index" asp-route-id="@Guid.Empty" class="btn btn-outline-secondary btn-lg">
+                        Xem danh mục
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .about-hero {
+        min-height: 400px;
+    }
+    
+    .feature-card {
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+    
+    .feature-icon {
+        height: 80px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+</style>

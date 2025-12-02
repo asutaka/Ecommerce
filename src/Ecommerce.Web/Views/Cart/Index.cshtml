@@ -1,0 +1,83 @@
+@model CartViewModel
+@{
+    ViewData["Title"] = "Giỏ hàng";
+}
+
+<section class="cart-hero">
+    <div>
+        <h1>Giỏ hàng của bạn</h1>
+        <p>Xem lại các sản phẩm trước khi thanh toán</p>
+    </div>
+    <a class="ghost" asp-controller="Home" asp-action="Index">← Tiếp tục mua sắm</a>
+</section>
+
+@if (Model.Items.Any())
+{
+    <section class="cart-content">
+        <div class="cart-items">
+            @foreach (var item in Model.Items)
+            {
+                <article class="cart-item" data-item-id="@item.Id">
+                    <img src="@item.ProductImageUrl" alt="@item.ProductName" />
+                    <div class="item-details">
+                        <h3>@item.ProductName</h3>
+                        <p class="item-price">@item.UnitPrice.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))</p>
+                    </div>
+                    <div class="item-quantity">
+                        <button class="qty-btn" onclick="updateQuantity('@item.Id', @(item.Quantity - 1))">−</button>
+                        <span class="quantity">@item.Quantity</span>
+                        <button class="qty-btn" onclick="updateQuantity('@item.Id', @(item.Quantity + 1))">+</button>
+                    </div>
+                    <div class="item-total">
+                        <strong>@item.LineTotal.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))</strong>
+                    </div>
+                    <button class="remove-btn" onclick="removeItem('@item.Id')">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <path d="M15 5L5 15M5 5L15 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </button>
+                </article>
+            }
+        </div>
+
+        <aside class="cart-summary">
+            <h2>Tóm tắt đơn hàng</h2>
+            <div class="summary-row">
+                <span>Tạm tính</span>
+                <strong id="subtotal">@Model.Subtotal.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))</strong>
+            </div>
+            @if (Model.Tax > 0)
+            {
+                <div class="summary-row">
+                    <span>Thuế</span>
+                    <strong id="tax">@Model.Tax.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))</strong>
+                </div>
+            }
+            <hr />
+            <div class="summary-row total">
+                <span>Tổng cộng</span>
+                <strong id="total">@Model.Total.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))</strong>
+            </div>
+            <a class="btn-primary" asp-controller="Orders" asp-action="Checkout">Thanh toán</a>
+            <form asp-action="Clear" method="post" onsubmit="return confirm('Bạn có chắc muốn xóa toàn bộ giỏ hàng?')">
+                <button type="submit" class="btn-ghost">Xóa giỏ hàng</button>
+            </form>
+        </aside>
+    </section>
+}
+else
+{
+    <section class="cart-empty">
+        <svg width="120" height="120" viewBox="0 0 120 120" fill="none">
+            <circle cx="60" cy="60" r="50" stroke="#E5E7EB" stroke-width="4"/>
+            <path d="M40 50L50 60L70 40" stroke="#E5E7EB" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <h2>Giỏ hàng trống</h2>
+        <p>Bạn chưa thêm sản phẩm nào vào giỏ hàng</p>
+        <a class="btn-primary" asp-controller="Home" asp-action="Index">Khám phá sản phẩm</a>
+    </section>
+}
+
+@section Scripts {
+    <script src="~/js/cart.js"></script>
+}

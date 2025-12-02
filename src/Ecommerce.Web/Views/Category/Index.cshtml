@@ -1,0 +1,80 @@
+@model Ecommerce.Web.ViewModels.CategoryViewModel
+
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<section class="category-hero">
+    <div class="container-fluid px-0">
+        <div class="category-header">
+            <nav aria-label="breadcrumb" class="mb-3">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Trang chủ</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">@Model.Name</li>
+                </ol>
+            </nav>
+            <h1 class="display-5 fw-bold mb-2">@Model.Name</h1>
+            @if (!string.IsNullOrWhiteSpace(Model.Description))
+            {
+                <p class="lead text-muted">@Model.Description</p>
+            }
+            <p class="text-muted"><strong>@Model.ProductCount</strong> sản phẩm</p>
+        </div>
+    </div>
+</section>
+
+<section class="catalog-grid mt-5">
+    @if (Model.Products.Any())
+    {
+        @foreach (var product in Model.Products)
+        {
+            <article class="product-card @(product.IsFeatured ? "featured" : string.Empty)">
+                <a asp-controller="Product" asp-action="Details" asp-route-id="@product.Id" class="product-link">
+                    <img src="@product.HeroImageUrl" alt="@product.Name" loading="lazy" />
+                    <div class="card-body">
+                        <p class="eyebrow">Sản phẩm</p>
+                        <h3>@product.Name</h3>
+                        <p>@product.Description</p>
+                        <div class="card-footer">
+                            <span>@product.Price.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))</span>
+                            <div class="add-to-cart-group">
+                                <input type="number" id="qty-@product.Id" value="1" min="1" max="10" class="qty-input" onclick="event.stopPropagation();" />
+                                <button class="btn-add-cart" onclick="event.preventDefault(); event.stopPropagation(); addToCart('@product.Id', document.getElementById('qty-@product.Id').value)">
+                                    Thêm vào giỏ
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </article>
+        }
+    }
+    else
+    {
+        <div class="col-12 text-center py-5">
+            <p class="text-muted">Chưa có sản phẩm nào trong danh mục này.</p>
+            <a asp-controller="Home" asp-action="Index" class="btn btn-primary mt-3">Về trang chủ</a>
+        </div>
+    }
+</section>
+
+@if (Model.TotalPages > 1)
+{
+    <nav aria-label="Category pagination" class="mt-5">
+        <ul class="pagination justify-content-center">
+            <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
+                <a class="page-link" asp-action="Index" asp-route-id="@Model.Id" asp-route-pageNumber="@(Model.PageIndex - 1)">
+                    <i class="bi bi-chevron-left"></i> Trước
+                </a>
+            </li>
+            <li class="page-item disabled">
+                <span class="page-link">Trang @Model.PageIndex / @Model.TotalPages</span>
+            </li>
+            <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
+                <a class="page-link" asp-action="Index" asp-route-id="@Model.Id" asp-route-pageNumber="@(Model.PageIndex + 1)">
+                    Sau <i class="bi bi-chevron-right"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+}

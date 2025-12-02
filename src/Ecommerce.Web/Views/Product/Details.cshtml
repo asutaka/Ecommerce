@@ -1,0 +1,121 @@
+@model Ecommerce.Web.ViewModels.ProductDetailViewModel
+
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<section class="product-detail-container">
+    <div class="container-fluid px-0">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Trang chủ</a></li>
+                <li class="breadcrumb-item"><a asp-controller="Category" asp-action="Index" asp-route-id="@Model.CategoryId">@Model.CategoryName</a></li>
+                <li class="breadcrumb-item active" aria-current="page">@Model.Name</li>
+            </ol>
+        </nav>
+
+        <div class="row">
+            <!-- Product Images -->
+            <div class="col-md-6 mb-4">
+                <div class="product-gallery">
+                    @if (Model.Images.Any())
+                    {
+                        <div class="main-image mb-3">
+                            <img src="@Model.Images.First()" alt="@Model.Name" class="img-fluid rounded" id="mainImage" />
+                        </div>
+                        @if (Model.Images.Count > 1)
+                        {
+                            <div class="thumbnail-gallery d-flex gap-2">
+                                @foreach (var image in Model.Images)
+                                {
+                                    <img src="@image" alt="@Model.Name" class="img-thumbnail thumbnail-img" 
+                                         onclick="document.getElementById('mainImage').src='@image'" 
+                                         style="width: 80px; height: 80px; object-fit: cover; cursor: pointer;" />
+                                }
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <img src="https://placehold.co/600x400?text=No+Image" alt="@Model.Name" class="img-fluid rounded" />
+                    }
+                </div>
+            </div>
+
+            <!-- Product Info -->
+            <div class="col-md-6">
+                <div class="product-info">
+                    @if (Model.IsFeatured)
+                    {
+                        <span class="badge bg-warning text-dark mb-2">Nổi bật</span>
+                    }
+                    <h1 class="display-5 fw-bold mb-3">@Model.Name</h1>
+                    <p class="text-muted mb-2">
+                        Danh mục: <a asp-controller="Category" asp-action="Index" asp-route-id="@Model.CategoryId">@Model.CategoryName</a>
+                    </p>
+                    <h2 class="text-primary mb-4">@Model.Price.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))</h2>
+                    
+                    <div class="product-description mb-4">
+                        <h5>Mô tả sản phẩm</h5>
+                        <p>@Model.Description</p>
+                    </div>
+
+                    <div class="add-to-cart-section">
+                        <div class="d-flex align-items-center gap-3 mb-3">
+                            <label for="quantity" class="form-label mb-0">Số lượng:</label>
+                            <input type="number" id="quantity" value="1" min="1" max="10" class="form-control" style="width: 100px;" />
+                        </div>
+                        <button class="btn btn-primary btn-lg w-100" onclick="addToCart('@Model.Id', document.getElementById('quantity').value)">
+                            <i class="bi bi-cart-plus me-2"></i>Thêm vào giỏ hàng
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Related Products -->
+        @if (Model.RelatedProducts.Any())
+        {
+            <section class="related-products mt-5">
+                <h3 class="mb-4">Sản phẩm liên quan</h3>
+                <div class="catalog-grid">
+                    @foreach (var product in Model.RelatedProducts)
+                    {
+                        <article class="product-card">
+                            <a asp-controller="Product" asp-action="Details" asp-route-id="@product.Id" class="product-link">
+                                <img src="@product.HeroImageUrl" alt="@product.Name" loading="lazy" />
+                                <div class="card-body">
+                                    <p class="eyebrow">Sản phẩm</p>
+                                    <h3>@product.Name</h3>
+                                    <p>@product.Description</p>
+                                    <div class="card-footer">
+                                        <span>@product.Price.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))</span>
+                                    </div>
+                                </div>
+                            </a>
+                        </article>
+                    }
+                </div>
+            </section>
+        }
+    </div>
+</section>
+
+<style>
+    .product-gallery .main-image img {
+        max-height: 500px;
+        object-fit: cover;
+        width: 100%;
+    }
+    
+    .thumbnail-img:hover {
+        opacity: 0.7;
+        border-color: var(--primary-color, #007bff) !important;
+    }
+    
+    .product-info {
+        position: sticky;
+        top: 20px;
+    }
+</style>
