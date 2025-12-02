@@ -73,10 +73,9 @@ public class EcommerceDbContext(DbContextOptions<EcommerceDbContext> options) : 
         modelBuilder.Entity<ShoppingCart>(entity =>
         {
             entity.Property(x => x.SessionId).HasMaxLength(128).IsRequired();
-            entity.Property(x => x.UserId).IsRequired(false);
             
             entity.HasIndex(x => x.SessionId);
-            entity.HasIndex(x => x.UserId);
+            entity.HasIndex(x => x.CustomerId);
             
             entity.HasMany(x => x.Items)
                 .WithOne(x => x.Cart)

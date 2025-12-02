@@ -69,8 +69,8 @@
                         <div>@(Model.LastUpdated?.ToLocalTime().ToString("dd/MM/yyyy HH:mm:ss") ?? "N/A")</div>
                     </div>
                     <div class="mb-3">
-                        <label class="text-muted small">User ID</label>
-                        <div>@(Model.UserId.HasValue ? Model.UserId.ToString() : "Khách vãng lai")</div>
+                        <label class="text-muted small">Customer ID</label>
+                        <div>@(Model.CustomerId.HasValue ? Model.CustomerId.ToString() : "Khách vãng lai")</div>
                     </div>
                 </div>
             </div>

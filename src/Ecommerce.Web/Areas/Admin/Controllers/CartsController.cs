@@ -48,7 +48,7 @@ public class CartsController(EcommerceDbContext dbContext) : Controller
         {
             Id = cart.Id,
             SessionId = cart.SessionId,
-            UserId = cart.UserId,
+            CustomerId = cart.CustomerId,
             LastUpdated = cart.UpdatedAt,
             Items = cart.Items.Select(x => new CartItemViewModel
             {

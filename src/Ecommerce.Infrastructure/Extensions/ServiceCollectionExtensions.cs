@@ -9,9 +9,10 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        var connectionString = configuration.GetConnectionString("Postgres")
-                               ?? configuration["Database:ConnectionString"]
-                               ?? "Host=localhost;Database=ecommerce;Username=postgres;Password=postgres";
+        // Lấy connection string chỉ từ cấu hình
+        var connectionString = configuration.GetConnectionString("Postgres");
+        if (string.IsNullOrWhiteSpace(connectionString))
+            throw new InvalidOperationException("Postgres connection string is not configured. Please add it to appsettings.json under 'ConnectionStrings:Postgres'.");
 
         services.AddDbContext<EcommerceDbContext>(options =>
         {

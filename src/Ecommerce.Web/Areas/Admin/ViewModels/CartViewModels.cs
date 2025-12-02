@@ -12,7 +12,7 @@ public class CartDetailsViewModel
 {
     public Guid Id { get; set; }
     public string SessionId { get; set; } = string.Empty;
-    public Guid? UserId { get; set; }
+    public Guid? CustomerId { get; set; }
     public DateTime? LastUpdated { get; set; }
     public List<CartItemViewModel> Items { get; set; } = new();
     public decimal TotalValue => Items.Sum(x => x.LineTotal);

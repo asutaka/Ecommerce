@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "kz3eR0ANfsc=",
+  "dgSpecHash": "HLx+CgQ6a8g=",
   "success": true,
   "projectFilePath": "D:\\Binance\\Ecommerce\\src\\Ecommerce.Web\\Ecommerce.Web.csproj",
   "expectedPackageFiles": [
@@ -11,6 +11,8 @@
     "C:\\Users\\asuta\\.nuget\\packages\\masstransit\\8.3.0\\masstransit.8.3.0.nupkg.sha512",
     "C:\\Users\\asuta\\.nuget\\packages\\masstransit.abstractions\\8.3.0\\masstransit.abstractions.8.3.0.nupkg.sha512",
     "C:\\Users\\asuta\\.nuget\\packages\\masstransit.rabbitmq\\8.3.0\\masstransit.rabbitmq.8.3.0.nupkg.sha512",
+    "C:\\Users\\asuta\\.nuget\\packages\\microsoft.aspnetcore.authentication.facebook\\8.0.8\\microsoft.aspnetcore.authentication.facebook.8.0.8.nupkg.sha512",
+    "C:\\Users\\asuta\\.nuget\\packages\\microsoft.aspnetcore.authentication.twitter\\8.0.8\\microsoft.aspnetcore.authentication.twitter.8.0.8.nupkg.sha512",
     "C:\\Users\\asuta\\.nuget\\packages\\microsoft.aspnetcore.diagnostics.entityframeworkcore\\8.0.8\\microsoft.aspnetcore.diagnostics.entityframeworkcore.8.0.8.nupkg.sha512",
     "C:\\Users\\asuta\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\6.0.0\\microsoft.bcl.asyncinterfaces.6.0.0.nupkg.sha512",
     "C:\\Users\\asuta\\.nuget\\packages\\microsoft.codeanalysis.analyzers\\3.3.3\\microsoft.codeanalysis.analyzers.3.3.3.nupkg.sha512",
