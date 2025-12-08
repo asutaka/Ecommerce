@@ -14,6 +14,7 @@ CopilotIndices/**/*
 debug/
 build/
 dist/
+obj/
 
 # Nếu thư mục có thể nằm ở bất kỳ mức nào trong project (không khuyến khích nhưng an toàn hơn)
 **/FileContentIndex/
@@ -39,6 +40,7 @@ dist/
 *.lock
 *.log
 *.tmp
+*.vs
 *.snapshot
 _write.lock
 segments_*
