@@ -3,12 +3,37 @@
     ViewData["Title"] = "Giỏ hàng";
 }
 
-<section class="cart-hero">
+<section class="cart-hero-card">
     <div>
+        <p class="pill">Giỏ hàng</p>
         <h1>Giỏ hàng của bạn</h1>
-        <p>Xem lại các sản phẩm trước khi thanh toán</p>
+        <p class="muted">Xem lại sản phẩm và tiến hành thanh toán.</p>
     </div>
-    <a class="ghost" asp-controller="Home" asp-action="Index">← Tiếp tục mua sắm</a>
+    <a class="btn btn-ghost" asp-controller="Home" asp-action="Index">← Tiếp tục mua sắm</a>
+</section>
+
+<section class="benefits-bar">
+    <div class="benefit">
+        <i class="bi bi-truck"></i>
+        <div>
+            <strong>Miễn phí giao hàng</strong>
+            <p>Đơn từ 1.000.000đ trên toàn quốc.</p>
+        </div>
+    </div>
+    <div class="benefit">
+        <i class="bi bi-arrow-counterclockwise"></i>
+        <div>
+            <strong>Đổi trả 30 ngày</strong>
+            <p>Đổi size/màu dễ dàng, hỗ trợ nhanh.</p>
+        </div>
+    </div>
+    <div class="benefit">
+        <i class="bi bi-shield-check"></i>
+        <div>
+            <strong>Thanh toán an toàn</strong>
+            <p>Mã hóa và xác thực nhiều lớp.</p>
+        </div>
+    </div>
 </section>
 
 @if (Model.Items.Any())
@@ -31,10 +56,8 @@
                     <div class="item-total">
                         <strong>@item.LineTotal.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))</strong>
                     </div>
-                    <button class="remove-btn" onclick="removeItem('@item.Id')">
-                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                            <path d="M15 5L5 15M5 5L15 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                        </svg>
+                    <button class="remove-btn" onclick="removeItem('@item.Id')" aria-label="Xóa sản phẩm">
+                        <i class="bi bi-x-lg"></i>
                     </button>
                 </article>
             }
@@ -42,6 +65,10 @@
 
         <aside class="cart-summary">
             <h2>Tóm tắt đơn hàng</h2>
+            <div class="summary-row">
+                <span>Ưu đãi</span>
+                <span class="pill small-pill">Miễn phí ship &gt; 1.000.000đ</span>
+            </div>
             <div class="summary-row">
                 <span>Tạm tính</span>
                 <strong id="subtotal">@Model.Subtotal.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))</strong>
@@ -58,9 +85,9 @@
                 <span>Tổng cộng</span>
                 <strong id="total">@Model.Total.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))</strong>
             </div>
-            <a class="btn-primary" asp-controller="Orders" asp-action="Checkout">Thanh toán</a>
+            <a class="btn btn-primary w-100" href="@Url.Action("Index","Home")#checkout">Thanh toán</a>
             <form asp-action="Clear" method="post" onsubmit="return confirm('Bạn có chắc muốn xóa toàn bộ giỏ hàng?')">
-                <button type="submit" class="btn-ghost">Xóa giỏ hàng</button>
+                <button type="submit" class="btn btn-ghost w-100 mt-2">Xóa giỏ hàng</button>
             </form>
         </aside>
     </section>
@@ -74,7 +101,7 @@ else
         </svg>
         <h2>Giỏ hàng trống</h2>
         <p>Bạn chưa thêm sản phẩm nào vào giỏ hàng</p>
-        <a class="btn-primary" asp-controller="Home" asp-action="Index">Khám phá sản phẩm</a>
+        <a class="btn btn-primary" asp-controller="Home" asp-action="Index">Khám phá sản phẩm</a>
     </section>
 }
 

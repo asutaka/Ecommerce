@@ -11,25 +11,31 @@
     <link rel="stylesheet" href="~/css/cart.css" asp-append-version="true" />
 </head>
 <body>
+    <div class="announcement-bar">
+        <span>Giao hàng miễn phí cho đơn từ 1.000.000đ · 30 ngày đổi trả · Hotline 1800 6886</span>
+    </div>
+
     <header class="moderno-nav">
         <div class="logo-stack">
             <span class="logo-dot"></span>
             <div>
                 <div class="brand-title">Moderno</div>
-                <div class="brand-subtitle">Haus</div>
+                <div class="brand-subtitle">Boutique</div>
             </div>
         </div>
         <nav>
-            <a asp-area="" asp-controller="Home" asp-action="Index">Cửa hàng</a>
-            <a asp-area="" asp-controller="Home" asp-action="About">Về chúng tôi</a>
+            <a href="/#new-in">Hàng mới về</a>
+            <a href="/#categories">Danh mục</a>
+            <a href="/#collections">Bộ sưu tập</a>
+            <a href="/#catalog">Sản phẩm</a>
+            <a asp-area="" asp-controller="Home" asp-action="About">Về Moderno</a>
             <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Admin</a>
-            <a href="https://tempeedemo.wixstudio.com/moderno" target="_blank" rel="noopener">Inspiration</a>
         </nav>
         <div class="nav-actions">
             @if (User.Identity?.IsAuthenticated == true && User.IsInRole("Customer"))
             {
                 <div class="dropdown">
-                    <button class="btn btn-link text-white dropdown-toggle text-decoration-none" type="button" data-bs-toggle="dropdown">
+                    <button class="btn btn-link dropdown-toggle text-decoration-none" type="button" data-bs-toggle="dropdown">
                         <i class="bi bi-person-circle me-1"></i>
                         @(User.Identity.Name ?? User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value ?? "Tài khoản")
                     </button>
@@ -46,15 +52,11 @@
             }
             else
             {
-                <a asp-controller="Account" asp-action="Login" class="btn btn-link text-white text-decoration-none">
+                <a asp-controller="Account" asp-action="Login" class="btn btn-link text-decoration-none">
                     <i class="bi bi-person-circle me-1"></i>Đăng nhập
                 </a>
             }
             @await Html.PartialAsync("_CartPartial")
-            <div class="nav-cta">
-                <span>Hotline</span>
-                <strong>1800 6886</strong>
-            </div>
         </div>
     </header>
 
@@ -72,6 +74,7 @@
 
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/cart.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
