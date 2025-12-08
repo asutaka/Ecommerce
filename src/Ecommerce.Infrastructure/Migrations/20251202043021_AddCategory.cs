@@ -95,13 +95,13 @@ namespace Ecommerce.Infrastructure.Migrations
                 column: "Username",
                 unique: true);
 
-            migrationBuilder.AddForeignKey(
-                name: "FK_Products_Categories_CategoryId",
-                table: "Products",
-                column: "CategoryId",
-                principalTable: "Categories",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+            //migrationBuilder.AddForeignKey(
+            //    name: "FK_Products_Categories_CategoryId",
+            //    table: "Products",
+            //    column: "CategoryId",
+            //    principalTable: "Categories",
+            //    principalColumn: "Id",
+            //    onDelete: ReferentialAction.Cascade);
         }
 
         /// <inheritdoc />

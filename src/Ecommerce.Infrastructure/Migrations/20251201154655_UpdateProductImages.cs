@@ -16,10 +16,13 @@ namespace Ecommerce.Infrastructure.Migrations
                 name: "HeroImageUrl",
                 table: "Products");
 
+            migrationBuilder.DropColumn(
+               name: "Images",
+               table: "Products");
             migrationBuilder.AddColumn<List<string>>(
                 name: "Images",
                 table: "Products",
-                type: "text[]",
+                type: "text[] NOT NULL DEFAULT '{}'",
                 nullable: false);
 
             migrationBuilder.UpdateData(
