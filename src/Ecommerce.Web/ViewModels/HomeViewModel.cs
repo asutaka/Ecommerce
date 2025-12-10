@@ -8,6 +8,7 @@ public class HomeViewModel
     public CheckoutViewModel Checkout { get; init; } = new();
     public List<CategorySummaryViewModel> FeaturedCategories { get; init; } = [];
     public List<ProductViewModel> NewArrivals { get; init; } = [];
+    public Dictionary<string, List<ProductViewModel>> NewArrivalsByCategory { get; set; } = new();
     public HomeStatistics Statistics { get; init; } = new();
 }
 

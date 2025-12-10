@@ -119,73 +119,133 @@
 }
 
 <section id="collections" class="collection-grid">
-    <div class="collection-card women">
+    @{
+        // Helper to find category ID by name (case-insensitive)
+        Guid? GetCatId(string name) => Model.FeaturedCategories
+            .FirstOrDefault(c => c.Name.Contains(name, StringComparison.OrdinalIgnoreCase))?.Id;
+
+        var womenId = GetCatId("Women") ?? GetCatId("Nữ") ?? Guid.Empty;
+        var menId = GetCatId("Men") ?? GetCatId("Nam") ?? Guid.Empty;
+        var kidsId = GetCatId("Kids") ?? GetCatId("Trẻ em") ?? Guid.Empty;
+        var accId = GetCatId("Accessories") ?? GetCatId("Phụ kiện") ?? Guid.Empty;
+    }
+
+    <a href="@(womenId != Guid.Empty ? Url.Action("Index", "Category", new { id = womenId }) : "#")" class="collection-card women">
         <div>
             <p class="eyebrow">Moderno</p>
             <h4>Shop Women</h4>
             <span class="link-arrow">Khám phá</span>
         </div>
-    </div>
-    <div class="collection-card men">
+    </a>
+    <a href="@(menId != Guid.Empty ? Url.Action("Index", "Category", new { id = menId }) : "#")" class="collection-card men">
         <div>
             <p class="eyebrow">Moderno</p>
             <h4>Shop Men</h4>
             <span class="link-arrow">Khám phá</span>
         </div>
-    </div>
-    <div class="collection-card kids">
+    </a>
+    <a href="@(kidsId != Guid.Empty ? Url.Action("Index", "Category", new { id = kidsId }) : "#")" class="collection-card kids">
         <div>
             <p class="eyebrow">Moderno</p>
             <h4>Shop Kids</h4>
             <span class="link-arrow">Khám phá</span>
         </div>
-    </div>
-    <div class="collection-card accessories">
+    </a>
+    <a href="@(accId != Guid.Empty ? Url.Action("Index", "Category", new { id = accId }) : "#")" class="collection-card accessories">
         <div>
             <p class="eyebrow">Moderno</p>
             <h4>Accessories</h4>
             <span class="link-arrow">Khám phá</span>
         </div>
-    </div>
+    </a>
 </section>
 
-@if (newArrivals.Any())
+@if (Model.NewArrivalsByCategory.Any())
 {
     <section id="new-in" class="section">
-        <div class="section-header">
-            <div>
-                <p class="pill">New Arrivals</p>
-                <h3>Fresh styles just landed</h3>
-                <p class="muted">Be the first to sở hữu các thiết kế mới nhất.</p>
-            </div>
-            <a class="link-arrow" href="#catalog">Xem thêm <i class="bi bi-arrow-right"></i></a>
+        <div class="new-arrivals-header">
+            <h3>New Arrivals You'll Love</h3>
+            <p class="muted">Fresh Styles Just Landed. Be The First To Wear The Latest Trends.</p>
         </div>
-        <div class="catalog-grid">
-            @foreach (var product in newArrivals)
+
+        <div class="tab-navigation">
+            @foreach (var category in Model.NewArrivalsByCategory.Keys)
             {
-                <article class="product-card @(product.IsFeatured ? "featured" : string.Empty)">
-                    <a asp-controller="Product" asp-action="Details" asp-route-id="@product.Id" class="product-link">
-                        <div class="badge-pill">New</div>
-                        <img src="@product.HeroImageUrl" alt="@product.Name" loading="lazy" />
-                        <div class="card-body">
-                            <p class="eyebrow">Hàng mới về</p>
-                            <h3>@product.Name</h3>
-                            <p>@product.Description</p>
-                            <div class="card-footer">
-                                <span>@product.Price.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))</span>
-                                <div class="add-to-cart-group">
-                                    <input type="number" id="qty-new-@product.Id" value="1" min="1" max="10" class="qty-input" onclick="event.stopPropagation();" />
-                                    <button class="btn-add-cart" onclick="event.preventDefault(); event.stopPropagation(); addToCart('@product.Id', document.getElementById('qty-new-@product.Id').value)">
-                                        Thêm vào giỏ
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-                </article>
+                <button class="tab-btn" onclick="openTab(event, 'tab-@category')">@category</button>
+            }
+        </div>
+
+        <div class="product-slider-wrapper">
+             <button class="slider-arrow prev" onclick="scrollSlider(-1)"><i class="bi bi-chevron-left"></i></button>
+             <button class="slider-arrow next" onclick="scrollSlider(1)"><i class="bi bi-chevron-right"></i></button>
+
+            @foreach (var category in Model.NewArrivalsByCategory)
+            {
+                <div id="tab-@category.Key" class="tab-content">
+                    <div class="product-slider">
+                        @foreach (var product in category.Value)
+                        {
+                             <article class="product-card @(product.IsFeatured ? "featured" : string.Empty)">
+                                <a asp-controller="Product" asp-action="Details" asp-route-id="@product.Id" class="product-link">
+                                    <div class="badge-pill">New</div>
+                                    <img src="@product.HeroImageUrl" alt="@product.Name" loading="lazy" />
+                                    <div class="card-body">
+                                        <div class="card-meta">
+                                            <p class="eyebrow">@category.Key</p>
+                                            <h3>@product.Name</h3>
+                                            <div class="price">@product.Price.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))</div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </article>
+                        }
+                    </div>
+                </div>
             }
         </div>
     </section>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Activate first tab by default
+            const firstTabBtn = document.querySelector('.tab-btn');
+            if(firstTabBtn) {
+                firstTabBtn.click();
+            }
+        });
+
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            
+            // Hide all tab content
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+                tabcontent[i].classList.remove("active");
+            }
+
+            // Remove active class from all buttons
+            tablinks = document.getElementsByClassName("tab-btn");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+
+            // Show current tab and activate button
+            document.getElementById(tabName).style.display = "block";
+            setTimeout(() => document.getElementById(tabName).classList.add("active"), 10);
+            evt.currentTarget.className += " active";
+        }
+
+        function scrollSlider(direction) {
+            // Find visible slider
+            const activeTab = document.querySelector('.tab-content.active');
+            if(activeTab) {
+                const slider = activeTab.querySelector('.product-slider');
+                const scrollAmount = 300;
+                slider.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
+            }
+        }
+    </script>
 }
 
 <section class="statistics-section">

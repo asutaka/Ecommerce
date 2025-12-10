@@ -22,6 +22,28 @@
             <span class="category-chip">@Model.ProductCount sản phẩm</span>
         </div>
     </div>
+    </div>
+</section>
+
+<section class="section">
+    <form method="get" class="filter-bar">
+        <input type="hidden" name="id" value="@Model.Id" />
+        <div class="filter-group">
+            <label class="small fw-bold">Tìm kiếm</label>
+            <input name="search" value="@Model.SearchTerm" placeholder="Tìm theo tên..." />
+        </div>
+        <div class="filter-group">
+            <label class="small fw-bold">Giá từ</label>
+            <input name="minPrice" type="number" value="@Model.MinPrice" placeholder="0" />
+        </div>
+        <div class="filter-group">
+            <label class="small fw-bold">Giá đến</label>
+            <input name="maxPrice" type="number" value="@Model.MaxPrice" placeholder="Max" />
+        </div>
+        <div class="filter-group" style="align-self: flex-end;">
+            <button type="submit" class="btn btn-primary">Lọc sản phẩm</button>
+        </div>
+    </form>
 </section>
 
 <section class="catalog-grid">

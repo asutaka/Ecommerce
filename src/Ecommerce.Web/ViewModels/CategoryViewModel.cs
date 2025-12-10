@@ -7,6 +7,12 @@ public class CategoryViewModel
     public string? Description { get; set; }
     public int ProductCount { get; set; }
     public List<ProductViewModel> Products { get; set; } = new();
+    
+    // Filtering
+    public string? SearchTerm { get; set; }
+    public decimal? MinPrice { get; set; }
+    public decimal? MaxPrice { get; set; }
+
     public int PageIndex { get; set; }
     public int TotalPages { get; set; }
     public bool HasPreviousPage => PageIndex > 1;

@@ -9,7 +9,7 @@ namespace Ecommerce.Web.Controllers;
 public class CategoryController(EcommerceDbContext dbContext) : Controller
 {
     [HttpGet]
-    public async Task<IActionResult> Index(Guid id, int? pageNumber)
+    public async Task<IActionResult> Index(Guid id, int? pageNumber, string? search, decimal? minPrice, decimal? maxPrice)
     {
         var category = await dbContext.Categories.FindAsync(id);
         if (category == null)
@@ -18,8 +18,24 @@ public class CategoryController(EcommerceDbContext dbContext) : Controller
         }
 
         var query = dbContext.Products
-            .Where(x => x.CategoryId == id)
-            .OrderByDescending(x => x.IsFeatured)
+            .Where(x => x.CategoryId == id);
+
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            query = query.Where(x => x.Name.Contains(search));
+        }
+
+        if (minPrice.HasValue)
+        {
+            query = query.Where(x => x.Price >= minPrice.Value);
+        }
+
+        if (maxPrice.HasValue)
+        {
+            query = query.Where(x => x.Price <= maxPrice.Value);
+        }
+
+        query = query.OrderByDescending(x => x.IsFeatured)
             .ThenByDescending(x => x.CreatedAt);
 
         int pageSize = 12;
@@ -44,7 +60,10 @@ public class CategoryController(EcommerceDbContext dbContext) : Controller
                 IsFeatured = p.IsFeatured
             }).ToList(),
             PageIndex = products.PageIndex,
-            TotalPages = products.TotalPages
+            TotalPages = products.TotalPages,
+            SearchTerm = search,
+            MinPrice = minPrice,
+            MaxPrice = maxPrice
         };
 
         return View(model);
