@@ -263,7 +263,23 @@ img {
 }
 
 .hero-carousel-wrapper {
+  width: 100vw;
+  max-width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  margin-top: -35px;
+  /* padding-left: 20px;
+  padding-right: 20px; */
+  box-sizing: border-box;
   margin-bottom: 32px;
+}
+
+/* đảm bảo các phần carousel không thêm khoảng trống */
+.hero-carousel-wrapper .carousel,
+.hero-carousel-wrapper .carousel-inner,
+.hero-carousel-wrapper .carousel-item {
+  margin-top: 0;
+  padding-top: 0;
 }
 
 .hero-carousel .carousel-indicators [data-bs-target] {
@@ -277,15 +293,15 @@ img {
   background: #f1726a;
 }
 
+.hero-carousel-wrapper .carousel-indicators {
+  display: none !important;
+}
+
 .hero-slide {
-  position: relative;
-  min-height: 520px;
-  border-radius: 24px;
-  overflow: hidden;
-  background-size: cover;
-  background-position: center;
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow);
+  border-radius: 0;
+  box-shadow: none;
+  overflow: visible;
+  min-height: 520px; /* giữ chiều cao */
 }
 
 .hero-slide::after {
@@ -293,6 +309,39 @@ img {
   position: absolute;
   inset: 0;
   background: linear-gradient(120deg, rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.35));
+  z-index: 0;
+  pointer-events: none;
+}
+
+.hero-slide-inner {
+  width: 100%;
+  margin: 0;
+  min-height: 900px; /* hoặc giá trị bạn đã đặt */
+  background-size: cover;
+  background-position: center;
+  border-radius: 0;
+  overflow: visible;
+  box-shadow: none;
+  border: none;
+  position: relative;
+}
+.hero-slide-inner::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.35));
+  z-index: 0;
+  pointer-events: none;
+}
+.hero-slide-inner .hero-overlay {
+  inset: 0;
+  position: absolute;
+}
+
+.hero-slide .hero-overlay,
+.hero-slide-inner .hero-overlay {
+  position: absolute;
+  z-index: 1;
 }
 
 .hero-overlay {
@@ -981,6 +1030,10 @@ img {
 }
 
 @media (max-width: 960px) {
+.hero-carousel-wrapper {
+    margin-top: -35px;
+  }
+
   .moderno-nav {
     grid-template-columns: 1fr;
     justify-items: center;
@@ -993,5 +1046,19 @@ img {
   .hero-split,
   .hero-banner {
     padding: 32px;
+  }
+
+  .hero-slide,
+  .hero-slide-inner {
+    min-height: 52vh; /* dùng viewport height trên mobile/tablet để tránh quá cao */
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-slide,
+  .hero-slide-inner {
+    min-height: 48vh;
+    padding-left: 12px;
+    padding-right: 12px;
   }
 }
