@@ -1,0 +1,338 @@
+﻿@model Ecommerce.Web.ViewModels.HomeViewModel
+@{
+    ViewData["Title"] = "Moderno Boutique";
+    var status = ViewBag.CheckoutStatus as string;
+    var heroProduct = Model.FeaturedProducts.FirstOrDefault();
+    var newArrivals = Model.NewArrivals?.Any() == true ? Model.NewArrivals : Model.FeaturedProducts.Take(4).ToList();
+    var bestSellers = Model.FeaturedProducts.Where(p => p.IsFeatured).Take(4).ToList();
+    var slides = new[]
+    {
+        new {
+            Title = "Perfect Match, Trendy Collection",
+            Subtitle = "Autumn-Winter 2025",
+            Copy = "Thoughtfully designed sets & separates cho tủ đồ hiện đại.",
+            CtaPrimary = "#new-in",
+            CtaSecondary = "#catalog",
+            Badge = "New Season",
+            Image = heroProduct?.HeroImageUrl ?? "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=1400&q=80"
+        },
+        new {
+            Title = "Own Your Style",
+            Subtitle = "Bold looks for fearless women",
+            Copy = "Những thiết kế nổi bật, tôn dáng và hiện đại – đúng tinh thần Moderno Fashion.",
+            CtaPrimary = "#catalog",
+            CtaSecondary = "#collections",
+            Badge = "Statement Looks",
+            Image = "https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=1400&q=80"
+        },
+        new {
+            Title = "Weekly Fresh Drops",
+            Subtitle = "Him · Her · Kids · Accessories",
+            Copy = "Hàng mới mỗi tuần, đủ size XS-4XL, giá trực tiếp từ nhà máy.",
+            CtaPrimary = "#categories",
+            CtaSecondary = "#catalog",
+            Badge = "New In Weekly",
+            Image = "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1400&q=80"
+        }
+    };
+}
+
+<section class="hero-carousel-wrapper">
+    <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="6000">
+        <div class="carousel-indicators">
+            @for (var i = 0; i < slides.Length; i++)
+            {
+                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="@i" class="@(i == 0 ? "active" : "")" aria-label="Slide @(i + 1)"></button>
+            }
+        </div>
+        <div class="carousel-inner">
+            @for (var i = 0; i < slides.Length; i++)
+            {
+                var slide = slides[i];
+                <div class="carousel-item @(i == 0 ? "active" : "")">
+                    <div class="hero-slide">
+                        <div class="hero-slide-inner" style="background-image:url('@slide.Image');">
+                            <div class="hero-overlay">
+                                <div class="pill pill-dark">@slide.Badge</div>
+                                <p class="pill subtle-pill">@slide.Subtitle</p>
+                                <h1>@slide.Title</h1>
+                                <p class="lede">@slide.Copy</p>
+                                <div class="hero-cta">
+                                    <a class="btn btn-primary" href="@slide.CtaPrimary">Shop Now</a>
+                                    <a class="btn btn-ghost" href="@slide.CtaSecondary">Xem tất cả</a>
+                                </div>
+                                <div class="hero-perks">
+                                    <span>Miễn phí giao hàng &gt; 1.000.000đ</span>
+                                    <span>Đổi trả 30 ngày</span>
+                                    <span>Hàng mới mỗi tuần</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+</section>
+
+@if (!string.IsNullOrWhiteSpace(status))
+{
+    <div class="alert @(status == "success" ? "alert-success" : "alert-danger")">
+        @(status == "success" ? "Đơn hàng đã được gửi vào saga MassTransit." : "Vui lòng kiểm tra thông tin và thử lại.")
+    </div>
+}
+
+@if (Model.FeaturedCategories.Any())
+{
+    <section id="categories" class="section">
+        <div class="section-header">
+            <div>
+                <p class="pill">Product Categories</p>
+                <h3>Khám phá danh mục Moderno</h3>
+                <p class="muted">Tees, shirts, dresses, jeans và toàn bộ essentials bạn cần.</p>
+            </div>
+            <a class="link-arrow" href="#catalog">Xem tất cả sản phẩm <i class="bi bi-arrow-right"></i></a>
+        </div>
+        <div class="category-grid">
+            @foreach (var category in Model.FeaturedCategories)
+            {
+                <a asp-controller="Category" asp-action="Index" asp-route-id="@category.Id" class="category-card">
+                    <div class="category-chip">@category.ProductCount sản phẩm</div>
+                    <h5>@category.Name</h5>
+                    @if (!string.IsNullOrWhiteSpace(category.Description))
+                    {
+                        <p class="muted small">@category.Description</p>
+                    }
+                    <span class="link-arrow small">Shop now</span>
+                </a>
+            }
+        </div>
+    </section>
+}
+
+<section id="collections" class="collection-grid">
+    @{
+        // Helper to find category ID by name (case-insensitive)
+        Guid? GetCatId(string name) => Model.FeaturedCategories
+            .FirstOrDefault(c => c.Name.Contains(name, StringComparison.OrdinalIgnoreCase))?.Id;
+
+        var womenId = GetCatId("Women") ?? GetCatId("Nữ") ?? Guid.Empty;
+        var menId = GetCatId("Men") ?? GetCatId("Nam") ?? Guid.Empty;
+        var kidsId = GetCatId("Kids") ?? GetCatId("Trẻ em") ?? Guid.Empty;
+        var accId = GetCatId("Accessories") ?? GetCatId("Phụ kiện") ?? Guid.Empty;
+    }
+
+    <a href="@(womenId != Guid.Empty ? Url.Action("Index", "Category", new { id = womenId }) : "#")" class="collection-card women">
+        <div>
+            <p class="eyebrow">Moderno</p>
+            <h4>Shop Women</h4>
+            <span class="link-arrow">Khám phá</span>
+        </div>
+    </a>
+    <a href="@(menId != Guid.Empty ? Url.Action("Index", "Category", new { id = menId }) : "#")" class="collection-card men">
+        <div>
+            <p class="eyebrow">Moderno</p>
+            <h4>Shop Men</h4>
+            <span class="link-arrow">Khám phá</span>
+        </div>
+    </a>
+    <a href="@(kidsId != Guid.Empty ? Url.Action("Index", "Category", new { id = kidsId }) : "#")" class="collection-card kids">
+        <div>
+            <p class="eyebrow">Moderno</p>
+            <h4>Shop Kids</h4>
+            <span class="link-arrow">Khám phá</span>
+        </div>
+    </a>
+    <a href="@(accId != Guid.Empty ? Url.Action("Index", "Category", new { id = accId }) : "#")" class="collection-card accessories">
+        <div>
+            <p class="eyebrow">Moderno</p>
+            <h4>Accessories</h4>
+            <span class="link-arrow">Khám phá</span>
+        </div>
+    </a>
+</section>
+
+@if (Model.NewArrivalsByCategory.Any())
+{
+    <section id="new-in" class="section">
+        <div class="new-arrivals-header">
+            <h3>New Arrivals You'll Love</h3>
+            <p class="muted">Fresh Styles Just Landed. Be The First To Wear The Latest Trends.</p>
+        </div>
+
+        <div class="tab-navigation">
+            @foreach (var category in Model.NewArrivalsByCategory.Keys)
+            {
+                <button class="tab-btn" onclick="openTab(event, 'tab-@category')">@category</button>
+            }
+        </div>
+
+        <div class="product-slider-wrapper">
+             <button class="slider-arrow prev" onclick="scrollSlider(-1)"><i class="bi bi-chevron-left"></i></button>
+             <button class="slider-arrow next" onclick="scrollSlider(1)"><i class="bi bi-chevron-right"></i></button>
+
+            @foreach (var category in Model.NewArrivalsByCategory)
+            {
+                <div id="tab-@category.Key" class="tab-content">
+                    <div class="product-slider">
+                        @foreach (var product in category.Value)
+                        {
+                             <article class="product-card @(product.IsFeatured ? "featured" : string.Empty)">
+                                <a asp-controller="Product" asp-action="Details" asp-route-id="@product.Id" class="product-link">
+                                    <div class="badge-pill">New</div>
+                                    <img src="@product.HeroImageUrl" alt="@product.Name" loading="lazy" />
+                                    <div class="card-body">
+                                        <div class="card-meta">
+                                            <p class="eyebrow">@category.Key</p>
+                                            <h3>@product.Name</h3>
+                                            <div class="price">@product.Price.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))</div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </article>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </section>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Activate first tab by default
+            const firstTabBtn = document.querySelector('.tab-btn');
+            if(firstTabBtn) {
+                firstTabBtn.click();
+            }
+        });
+
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            
+            // Hide all tab content
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+                tabcontent[i].classList.remove("active");
+            }
+
+            // Remove active class from all buttons
+            tablinks = document.getElementsByClassName("tab-btn");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+
+            // Show current tab and activate button
+            document.getElementById(tabName).style.display = "block";
+            setTimeout(() => document.getElementById(tabName).classList.add("active"), 10);
+            evt.currentTarget.className += " active";
+        }
+
+        function scrollSlider(direction) {
+            // Find visible slider
+            const activeTab = document.querySelector('.tab-content.active');
+            if(activeTab) {
+                const slider = activeTab.querySelector('.product-slider');
+                const scrollAmount = 300;
+                slider.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
+            }
+        }
+    </script>
+}
+
+<section class="statistics-section">
+    <div class="stat-card">
+        <h3>@Model.Statistics.TotalProducts</h3>
+        <p class="muted">Sản phẩm</p>
+    </div>
+    <div class="stat-card">
+        <h3>@Model.Statistics.TotalCategories</h3>
+        <p class="muted">Danh mục</p>
+    </div>
+    <div class="stat-card">
+        <h3>@Model.Statistics.TotalOrders</h3>
+        <p class="muted">Đơn hàng</p>
+    </div>
+</section>
+
+<section id="catalog" class="section">
+    <div class="section-header">
+        <div>
+            <p class="pill">Shop the Collection</p>
+            <h3>New drops mỗi tuần</h3>
+            <p class="muted">Him, Her, Kids và toàn bộ accessories bạn cần.</p>
+        </div>
+        <a class="link-arrow" href="#checkout">Tạo đơn nhanh <i class="bi bi-arrow-right"></i></a>
+    </div>
+    <div class="catalog-grid">
+        @foreach (var product in Model.FeaturedProducts)
+        {
+            <article class="product-card @(product.IsFeatured ? "featured" : string.Empty)">
+                <a asp-controller="Product" asp-action="Details" asp-route-id="@product.Id" class="product-link">
+                    @if (product.IsFeatured)
+                    {
+                        <div class="badge-pill accent">Best Seller</div>
+                    }
+                    <img src="@product.HeroImageUrl" alt="@product.Name" loading="lazy" />
+                    <div class="card-body">
+                        <p class="eyebrow">Sản phẩm</p>
+                        <h3>@product.Name</h3>
+                        <p>@product.Description</p>
+                        <div class="card-footer">
+                            <span>@product.Price.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))</span>
+                            <div class="add-to-cart-group">
+                                <input type="number" id="qty-@product.Id" value="1" min="1" max="10" class="qty-input" onclick="event.stopPropagation();" />
+                                <button class="btn-add-cart" onclick="event.preventDefault(); event.stopPropagation(); addToCart('@product.Id', document.getElementById('qty-@product.Id').value)">
+                                    Thêm vào giỏ
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </article>
+        }
+    </div>
+</section>
+
+<section class="checkout-panel" id="checkout">
+    <div class="checkout-copy">
+        <p class="pill">Đặt hàng nhanh</p>
+        <h2>Tạo hóa đơn & kích hoạt Saga thanh toán</h2>
+        <p>Form này publish message <code>CreateInvoice</code> lên RabbitMQ để khởi chạy chuỗi Saga (invoice → payment → notify).</p>
+        <div class="pill pill-dark">MassTransit · RabbitMQ demo</div>
+    </div>
+    <form asp-controller="Orders" asp-action="Checkout" method="post" class="checkout-form">
+        @Html.AntiForgeryToken()
+        <div class="form-group">
+            <label asp-for="Checkout.CustomerName"></label>
+            <input asp-for="Checkout.CustomerName" placeholder="Họ và tên" />
+            <span asp-validation-for="Checkout.CustomerName"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Checkout.CustomerEmail"></label>
+            <input asp-for="Checkout.CustomerEmail" placeholder="you@example.com" />
+            <span asp-validation-for="Checkout.CustomerEmail"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Checkout.ProductId">Chọn sản phẩm</label>
+            <select asp-for="Checkout.ProductId" asp-items="@(new SelectList(Model.FeaturedProducts, nameof(ProductViewModel.Id), nameof(ProductViewModel.Name)))"></select>
+        </div>
+        <div class="form-group">
+            <label asp-for="Checkout.Quantity"></label>
+            <input asp-for="Checkout.Quantity" type="number" min="1" max="10" />
+        </div>
+        <button type="submit">Khởi tạo hóa đơn</button>
+    </form>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

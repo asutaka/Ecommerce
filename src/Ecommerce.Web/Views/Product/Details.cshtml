@@ -1,0 +1,153 @@
+@model Ecommerce.Web.ViewModels.ProductDetailViewModel
+
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+    <div class="product-detail-wrapper">
+        <!-- Left: Gallery (Thumbnails Left + Main Right) -->
+        <div class="gallery-container">
+            <div class="gallery-thumbnails">
+                @if (Model.Images.Any())
+                {
+                    int index = 0;
+                    foreach (var img in Model.Images)
+                    {
+                         <img src="@img" alt="Thumbnail" class="thumb-img @(index == 0 ? "active" : "")" onclick="changeImage(this, '@img')" />
+                         index++;
+                    }
+                }
+                else
+                {
+                     <img src="https://placehold.co/600x800?text=No+Image" class="thumb-img active" onclick="changeImage(this, 'https://placehold.co/600x800?text=No+Image')" />
+                     <img src="https://placehold.co/600x800?text=Detail+1" class="thumb-img" onclick="changeImage(this, 'https://placehold.co/600x800?text=Detail+1')" />
+                     <img src="https://placehold.co/600x800?text=Detail+2" class="thumb-img" onclick="changeImage(this, 'https://placehold.co/600x800?text=Detail+2')" />
+                }
+            </div>
+            <div class="gallery-main">
+                 <img src="@(Model.Images.FirstOrDefault() ?? "https://placehold.co/600x800?text=No+Image")" id="mainProductImage" alt="@Model.Name" />
+            </div>
+        </div>
+
+        <script>
+            function changeImage(element, src) {
+                // Update Main Image
+                document.getElementById('mainProductImage').src = src;
+                
+                // Update Active Styling
+                var thumbs = document.querySelectorAll('.thumb-img');
+                thumbs.forEach(t => t.classList.remove('active'));
+                element.classList.add('active');
+            }
+
+            function updateQuantity(change) {
+                var qtyInput = document.getElementById('quantity');
+                var currentQty = parseInt(qtyInput.value);
+                var newQty = currentQty + change;
+                if (newQty < 1) newQty = 1;
+                qtyInput.value = newQty;
+            }
+        </script>
+
+        <!-- Right: Sticky Product Info -->
+        <div class="product-info-sticky">
+            <div class="product-breadcrumbs">
+                <a asp-controller="Home" asp-action="Index">Home</a> / 
+                <a asp-controller="Category" asp-action="Index" asp-route-id="@Model.CategoryId">@Model.CategoryName</a> / 
+                <span>@Model.Name</span>
+            </div>
+
+            <div>
+                <h1 class="product-title">@Model.Name</h1>
+                <p class="product-sku">SKU: @Model.SKU</p>
+                <div class="product-price">@Model.Price.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))</div>
+            </div>
+
+            <!-- Fake Selectors for UI -->
+            <div class="selector-group">
+                <label>Size</label>
+                <div class="selector-options">
+                    <div class="option-box">S</div>
+                    <div class="option-box selected">M</div>
+                    <div class="option-box">L</div>
+                </div>
+            </div>
+
+            <div class="selector-group">
+                <label>Color</label>
+                <div class="selector-options">
+                    <div class="option-box" style="background:#000;"></div>
+                    <div class="option-box" style="background:#f00;"></div>
+                    <div class="option-box" style="background:#e5e7eb;"></div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="product-actions">
+                <div class="quantity-selector-group" style="margin-bottom: 20px;">
+                    <label style="margin-bottom: 8px; display: block; font-weight: 600;">Quantity</label>
+                    <div class="quantity-selector">
+                        <button class="qty-btn minus" type="button" onclick="updateQuantity(-1)">-</button>
+                        <input type="number" id="quantity" value="1" min="1" class="qty-input" readonly />
+                        <button class="qty-btn plus" type="button" onclick="updateQuantity(1)">+</button>
+                    </div>
+                </div>
+                <!-- <input type="hidden" id="quantity" value="1" /> Default qty 1 -->
+                <button class="btn btn-block btn-black" onclick="addToCart('@Model.Id', document.getElementById('quantity').value)">Add to Cart</button>
+                <button class="btn btn-block btn-outline">Buy Now</button>
+            </div>
+
+            <!-- Accordions -->
+            <div class="product-details-accordion">
+                <details open>
+                    <summary>Mô tả chi tiết</summary>
+                    <div class="accordion-content">
+                        @Model.Description
+                        <br/><br/>
+                        Một sản phẩm chất lượng cao từ Moderno. Thiết kế tinh tế, chất liệu bền đẹp phù hợp với xu hướng thời trang hiện đại.
+                    </div>
+                </details>
+                <details>
+                    <summary>Chính sách đổi trả</summary>
+                    <div class="accordion-content">
+                        Chúng tôi chấp nhận đổi trả trong vòng 30 ngày nếu sản phẩm còn nguyên tem mác và chưa qua sử dụng. Vui lòng liên hệ CSKH để được hỗ trợ.
+                    </div>
+                </details>
+                <details>
+                    <summary>Vận chuyển</summary>
+                    <div class="accordion-content">
+                        Miễn phí vận chuyển cho đơn hàng trên 1.000.000đ. Thời gian giao hàng dự kiến từ 2-4 ngày làm việc.
+                    </div>
+                </details>
+            </div>
+        </div>
+    </div>
+
+    <!-- Related Products -->
+    @if (Model.RelatedProducts.Any())
+    {
+        <section class="section related-products" style="margin-top: 80px;">
+            <div class="section-header">
+                <h3>Có thể bạn cũng thích</h3>
+            </div>
+            <div class="product-slider-wrapper" style="padding:0; margin-left:0; width:100%; max-width:100%;">
+                 <div class="product-slider" style="padding-left:0;">
+                    @foreach (var product in Model.RelatedProducts)
+                    {
+                        <article class="product-card" style="min-width: 250px; flex: 0 0 250px;">
+                            <a asp-controller="Product" asp-action="Details" asp-route-id="@product.Id" class="product-link">
+                                <img src="@product.HeroImageUrl" alt="@product.Name" loading="lazy" style="height: 320px;" />
+                                <div class="card-body">
+                                    <div class="card-meta">
+                                        <p class="eyebrow">Gợi ý</p>
+                                        <h3>@product.Name</h3>
+                                        <div class="price">@product.Price.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))</div>
+                                    </div>
+                                </div>
+                            </a>
+                        </article>
+                    }
+                </div>
+            </div>
+        </section>
+    }

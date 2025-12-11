@@ -1,0 +1,79 @@
+@model Ecommerce.Web.Areas.Admin.ViewModels.CartDetailsViewModel
+
+@{
+    ViewData["Title"] = "Chi tiết giỏ hàng";
+}
+
+<div class="container-fluid px-0">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 mb-0">Chi tiết giỏ hàng</h1>
+            <div class="text-muted mt-1">Session: <code class="text-info">@Model.SessionId</code></div>
+        </div>
+        <a asp-action="Index" class="btn btn-outline-light rounded-pill">
+            <i class="bi bi-arrow-left me-2"></i>Quay lại danh sách
+        </a>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card bg-transparent border-secondary mb-4">
+                <div class="card-header border-secondary bg-transparent">
+                    <h5 class="mb-0"><i class="bi bi-cart3 me-2"></i>Sản phẩm trong giỏ</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-dark table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th style="width: 80px;">Ảnh</th>
+                                    <th>Sản phẩm</th>
+                                    <th class="text-end">Đơn giá</th>
+                                    <th class="text-center">SL</th>
+                                    <th class="text-end">Thành tiền</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.Items)
+                                {
+                                    <tr>
+                                        <td>
+                                            <img src="@item.ProductImageUrl" alt="@item.ProductName" class="rounded" style="width: 50px; height: 50px; object-fit: cover;">
+                                        </td>
+                                        <td>@item.ProductName</td>
+                                        <td class="text-end">@item.UnitPrice.ToString("N0") ₫</td>
+                                        <td class="text-center">@item.Quantity</td>
+                                        <td class="text-end">@item.LineTotal.ToString("N0") ₫</td>
+                                    </tr>
+                                }
+                            </tbody>
+                            <tfoot>
+                                <tr class="fw-bold">
+                                    <td colspan="4" class="text-end">Tổng cộng:</td>
+                                    <td class="text-end text-success fs-5">@Model.TotalValue.ToString("N0") ₫</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-transparent border-secondary">
+                <div class="card-header border-secondary bg-transparent">
+                    <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>Thông tin</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="text-muted small">Cập nhật lần cuối</label>
+                        <div>@(Model.LastUpdated?.ToLocalTime().ToString("dd/MM/yyyy HH:mm:ss") ?? "N/A")</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="text-muted small">Customer ID</label>
+                        <div>@(Model.CustomerId.HasValue ? Model.CustomerId.ToString() : "Khách vãng lai")</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
