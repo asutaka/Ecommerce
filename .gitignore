@@ -16,6 +16,9 @@ build/
 dist/
 obj/
 
+appsettings.json
+appsettings.*.json
+
 # Nếu thư mục có thể nằm ở bất kỳ mức nào trong project (không khuyến khích nhưng an toàn hơn)
 **/FileContentIndex/
 **/FileContentIndex/*
