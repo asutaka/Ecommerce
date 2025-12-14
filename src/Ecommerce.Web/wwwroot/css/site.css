@@ -1336,6 +1336,7 @@ img {
   width: 80px;
   min-width: 80px;
   overflow-y: auto;
+  max-height: 585px;
 }
 
 .gallery-thumbnails::-webkit-scrollbar {

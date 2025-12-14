@@ -10,18 +10,9 @@
             <div class="gallery-thumbnails">
                 @if (Model.Images.Any())
                 {
-                    int index = 0;
-                    foreach (var img in Model.Images)
-                    {
-                         <img src="@img" alt="Thumbnail" class="thumb-img @(index == 0 ? "active" : "")" onclick="changeImage(this, '@img')" />
-                         index++;
-                    }
-                }
-                else
-                {
-                     <img src="https://placehold.co/600x800?text=No+Image" class="thumb-img active" onclick="changeImage(this, 'https://placehold.co/600x800?text=No+Image')" />
+                     <img src="https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=800&q=80" class="thumb-img active" onclick="changeImage(this, 'https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=800&q=80')" />
                      <img src="https://placehold.co/600x800?text=Detail+1" class="thumb-img" onclick="changeImage(this, 'https://placehold.co/600x800?text=Detail+1')" />
-                     <img src="https://placehold.co/600x800?text=Detail+2" class="thumb-img" onclick="changeImage(this, 'https://placehold.co/600x800?text=Detail+2')" />
+                     <img src="https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=800&q=80" class="thumb-img" onclick="changeImage(this, 'https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=800&q=80')" />
                 }
             </div>
             <div class="gallery-main">
