@@ -169,8 +169,8 @@ img {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  font-weight: 600;
-  border-radius: 999px;
+  font-weight: 500;
+  /* border-radius: 999px; */
   padding: 12px 20px;
   text-decoration: none;
   border: 1px solid transparent;
@@ -1467,15 +1467,19 @@ img {
 /* Actions */
 .product-actions {
   display: grid;
-  gap: 12px;
+  grid-template-columns: 0.8fr 1fr;
+  /* Nút trái hẹp hơn nút phải */
+  gap: 8px;
   margin-top: 16px;
 }
 
 .btn-block {
   width: 100%;
-  padding: 16px;
+  padding: 5px;
+  padding-top: 12px;
+  padding-bottom: 12px;
   font-size: 1rem;
-  text-transform: uppercase;
+  /* text-transform: uppercase; */
   letter-spacing: 1px;
 }
 
@@ -1491,13 +1495,17 @@ img {
 }
 
 .btn-outline {
-  background: transparent;
-  border: 1px solid var(--text);
-  color: var(--text);
+  background: #FFF5F1;
+  border: 1px solid #f97316;
+  color: #f97316;
 }
 
 .btn-outline:hover {
-  background: #f9fafb;
+  background: #FFF5F1;
+  border: 1px solid #f97316;
+  color: #f97316;
+  filter: brightness(0.96);
+  box-shadow: 0 10px 30px rgba(241, 114, 106, 0.35);
 }
 
 /* Accordions */
@@ -1693,4 +1701,175 @@ img {
   align-items: center;
   gap: 12px;
   margin-left: 16px;
+}
+
+/* Image Lightbox Modal */
+.lightbox-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.95);
+  z-index: 9999;
+  padding: 40px;
+}
+
+.lightbox-modal.active {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lightbox-content {
+  display: grid;
+  grid-template-columns: 1fr 120px;
+  gap: 20px;
+  max-width: 1200px;
+  max-height: 90vh;
+  width: 100%;
+}
+
+.lightbox-main {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lightbox-main img {
+  max-width: 100%;
+  max-height: 80vh;
+  object-fit: contain;
+}
+
+.lightbox-thumbnails {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+  max-height: 80vh;
+  padding-right: 8px;
+}
+
+.lightbox-thumb {
+  width: 100%;
+  aspect-ratio: 3/4;
+  object-fit: cover;
+  cursor: pointer;
+  opacity: 0.5;
+  border: 2px solid transparent;
+  transition: all 0.2s;
+}
+
+.lightbox-thumb:hover,
+.lightbox-thumb.active {
+  opacity: 1;
+  border-color: #fff;
+}
+
+.lightbox-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 50px;
+  height: 50px;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 24px;
+  cursor: pointer;
+  transition: all 0.2s;
+  z-index: 10;
+}
+
+.lightbox-nav:hover {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.lightbox-nav.prev {
+  left: 20px;
+}
+
+.lightbox-nav.next {
+  right: 20px;
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 24px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.lightbox-close:hover {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+@media (max-width: 768px) {
+  .lightbox-content {
+    grid-template-columns: 1fr;
+  }
+
+  .lightbox-thumbnails {
+    flex-direction: row;
+    max-height: 100px;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  .lightbox-thumb {
+    min-width: 80px;
+    width: 80px;
+  }
+}
+
+/* Product Price Section */
+.product-price-section {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.product-price-original {
+  font-size: 1.1rem;
+  color: var(--muted);
+  text-decoration: line-through;
+}
+
+.product-price {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #dc2626;
+}
+
+.product-savings {
+  font-size: 0.95rem;
+  color: #16a34a;
+  font-weight: 600;
+  background: #f0fdf4;
+  padding: 6px 12px;
+  border-radius: 6px;
+  display: inline-block;
+  width: fit-content;
+}
+
+/* Ensure btn-block takes full width */
+.btn.btn-block {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }

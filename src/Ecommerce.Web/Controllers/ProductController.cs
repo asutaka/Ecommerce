@@ -26,6 +26,7 @@ public class ProductController(EcommerceDbContext dbContext) : Controller
                 Description = "Đây là dữ liệu giả lập để kiểm tra giao diện chi tiết sản phẩm. Sản phẩm này chưa có trong cơ sở dữ liệu thực tế.",
                 SKU = "MOD-DEMO-" + rnd.Next(1000, 9999),
                 Price = rnd.Next(50, 500) * 10000,
+                OriginalPrice = rnd.Next(600, 800) * 10000, // Fake original price
                 IsFeatured = true,
                 CategoryId = Guid.Empty,
                 CategoryName = "Danh mục Demo",

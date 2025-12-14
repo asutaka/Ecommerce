@@ -24,13 +24,15 @@
 <body>
     <div class="page-wrapper">
         <header class="moderno-nav">
-            <div class="logo-stack">
-                <span class="logo-dot"></span>
-                <div>
-                    <div class="brand-title">Moderno</div>
-                    <div class="brand-subtitle">Boutique</div>
+            <a asp-controller="Home" asp-action="Index" style="text-decoration: none; color: inherit;">
+                <div class="logo-stack">
+                    <span class="logo-dot"></span>
+                    <div>
+                        <div class="brand-title">Moderno</div>
+                        <div class="brand-subtitle">Boutique</div>
+                    </div>
                 </div>
-            </div>
+            </a>
             <div class="search-bar-container">
                 <form asp-controller="Product" asp-action="Search" method="get" class="search-form">
                     <input type="text" name="query" class="search-input" placeholder="Tìm sản phẩm, thương hiệu, và tên shop" />
