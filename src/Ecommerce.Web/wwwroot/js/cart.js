@@ -5,12 +5,16 @@ const cartBadge = document.getElementById('cart-badge-count');
 function updateCartBadge(count) {
     if (cartBadge) {
         cartBadge.textContent = count;
-        cartBadge.style.display = count > 0 ? 'flex' : 'none';
+        cartBadge.style.display = 'flex';
     }
 }
 
 // Add to cart (called from product pages)
 async function addToCart(productId, quantity = 1) {
+    if (!window.isAuthenticated) {
+        window.location.href = `/Account/Login?returnUrl=${encodeURIComponent(window.location.pathname + window.location.search)}`;
+        return;
+    }
     try {
         const response = await fetch('/Cart/AddToCart', {
             method: 'POST',
@@ -30,6 +34,35 @@ async function addToCart(productId, quantity = 1) {
         }
     } catch (error) {
         console.error('Error adding to cart:', error);
+        showNotification('Có lỗi xảy ra', 'error');
+    }
+}
+
+// Buy Now function
+async function buyNow(productId, quantity = 1) {
+    if (!window.isAuthenticated) {
+        window.location.href = `/Account/Login?returnUrl=${encodeURIComponent(window.location.pathname + window.location.search)}`;
+        return;
+    }
+
+    try {
+        const response = await fetch('/Cart/AddToCart', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `productId=${productId}&quantity=${quantity}`
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            window.location.href = '/Cart';
+        } else {
+            showNotification(result.message, 'error');
+        }
+    } catch (error) {
+        console.error('Error buying now:', error);
         showNotification('Có lỗi xảy ra', 'error');
     }
 }

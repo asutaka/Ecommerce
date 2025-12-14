@@ -37,7 +37,7 @@
     };
 }
 
-<section class="hero-carousel-wrapper">
+<section class="hero-carousel-wrapper" style="margin-bottom: 0 !important; max-width: 1200px; margin-left: auto; margin-right: auto; padding: 0 20px;">
     <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="6000">
         <div class="carousel-indicators">
             @for (var i = 0; i < slides.Length; i++)
@@ -50,8 +50,8 @@
             {
                 var slide = slides[i];
                 <div class="carousel-item @(i == 0 ? "active" : "")">
-                    <div class="hero-slide">
-                        <div class="hero-slide-inner" style="background-image:url('@slide.Image');">
+                    <div class="hero-slide" style="min-height: 320px !important;">
+                        <div class="hero-slide-inner" style="background-image:url('@slide.Image'); min-height: 320px !important;">
                             <div class="hero-overlay">
                                 <div class="pill pill-dark">@slide.Badge</div>
                                 <p class="pill subtle-pill">@slide.Subtitle</p>
@@ -92,103 +92,85 @@
 
 @if (Model.FeaturedCategories.Any())
 {
-    <section id="categories" class="section">
+    <section id="categories" class="section" style="max-width: none; width: 100%; margin-top: 16px; margin-bottom: 16px;">
         <div class="section-header">
             <div>
                 <p class="pill">Product Categories</p>
                 <h3>Khám phá danh mục Moderno</h3>
                 <p class="muted">Tees, shirts, dresses, jeans và toàn bộ essentials bạn cần.</p>
             </div>
-            <a class="link-arrow" href="#catalog">Xem tất cả sản phẩm <i class="bi bi-arrow-right"></i></a>
         </div>
         <div class="category-grid">
             @foreach (var category in Model.FeaturedCategories)
             {
-                <a asp-controller="Category" asp-action="Index" asp-route-id="@category.Id" class="category-card">
-                    <div class="category-chip">@category.ProductCount sản phẩm</div>
-                    <h5>@category.Name</h5>
-                    @if (!string.IsNullOrWhiteSpace(category.Description))
-                    {
-                        <p class="muted small">@category.Description</p>
-                    }
-                    <span class="link-arrow small">Shop now</span>
-                </a>
+                <div class="category-card-wrapper">
+                    <a asp-controller="Category" asp-action="Index" asp-route-id="@category.Id" class="category-card">
+                        <div class="category-icon">
+                            <i class="bi bi-basket2-fill"></i>
+                        </div>
+                        <div class="category-name">@category.Name</div>
+                    </a>
+                    <a asp-controller="Category" asp-action="Index" asp-route-id="@category.Id" class="view-all-btn" style="display: flex; align-items: center; justify-content: center; gap: 4px; padding: 6px 12px; background: transparent; border: 1px solid #e5e7eb; border-radius: 4px; color: inherit; text-decoration: none; font-size: 0.75rem; font-weight: 500; transition: all 0.2s ease;">
+                        Xem tất cả <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
             }
         </div>
     </section>
 }
 
-<section id="collections" class="collection-grid">
-    @{
-        // Helper to find category ID by name (case-insensitive)
-        Guid? GetCatId(string name) => Model.FeaturedCategories
-            .FirstOrDefault(c => c.Name.Contains(name, StringComparison.OrdinalIgnoreCase))?.Id;
-
-        var womenId = GetCatId("Women") ?? GetCatId("Nữ") ?? Guid.Empty;
-        var menId = GetCatId("Men") ?? GetCatId("Nam") ?? Guid.Empty;
-        var kidsId = GetCatId("Kids") ?? GetCatId("Trẻ em") ?? Guid.Empty;
-        var accId = GetCatId("Accessories") ?? GetCatId("Phụ kiện") ?? Guid.Empty;
-    }
-
-    <a href="@(womenId != Guid.Empty ? Url.Action("Index", "Category", new { id = womenId }) : "#")" class="collection-card women">
-        <div>
-            <p class="eyebrow">Moderno</p>
-            <h4>Shop Women</h4>
-            <span class="link-arrow">Khám phá</span>
-        </div>
-    </a>
-    <a href="@(menId != Guid.Empty ? Url.Action("Index", "Category", new { id = menId }) : "#")" class="collection-card men">
-        <div>
-            <p class="eyebrow">Moderno</p>
-            <h4>Shop Men</h4>
-            <span class="link-arrow">Khám phá</span>
-        </div>
-    </a>
-    <a href="@(kidsId != Guid.Empty ? Url.Action("Index", "Category", new { id = kidsId }) : "#")" class="collection-card kids">
-        <div>
-            <p class="eyebrow">Moderno</p>
-            <h4>Shop Kids</h4>
-            <span class="link-arrow">Khám phá</span>
-        </div>
-    </a>
-    <a href="@(accId != Guid.Empty ? Url.Action("Index", "Category", new { id = accId }) : "#")" class="collection-card accessories">
-        <div>
-            <p class="eyebrow">Moderno</p>
-            <h4>Accessories</h4>
-            <span class="link-arrow">Khám phá</span>
-        </div>
-    </a>
-</section>
-
 @if (Model.NewArrivalsByCategory.Any())
 {
-    <section id="new-in" class="section">
-        <div class="new-arrivals-header">
-            <h3>New Arrivals You'll Love</h3>
-            <p class="muted">Fresh Styles Just Landed. Be The First To Wear The Latest Trends.</p>
-        </div>
+    <section id="new-in" class="section" style="margin-top: 16px; max-width: 1200px; margin-left: auto; margin-right: auto; padding: 0 20px;">
+        @foreach (var category in Model.NewArrivalsByCategory)
+        {
+            <div class="category-section mb-5">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <a asp-controller="Category" asp-action="Index" asp-route-search="@category.Key" style="text-decoration: none; color: inherit;">
+                        <h4 class="mb-0" style="cursor: pointer; transition: color 0.2s ease;" onmouseover="this.style.color='#f59e0b'" onmouseout="this.style.color='inherit'">@category.Key</h4>
+                    </a>
+                    <a asp-controller="Category" asp-action="Index" asp-route-search="@category.Key" class="btn btn-sm" style="color: #2563eb; border: 1px solid #2563eb; padding: 4px 12px; border-radius: 4px; text-decoration: none; font-size: 0.85rem; transition: all 0.2s ease;" onmouseover="this.style.background='#2563eb'; this.style.color='#fff';" onmouseout="this.style.background='transparent'; this.style.color='#2563eb';">
+                        Xem tất cả <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
 
-        <div class="tab-navigation">
-            @foreach (var category in Model.NewArrivalsByCategory.Keys)
-            {
-                <button class="tab-btn" onclick="openTab(event, 'tab-@category')">@category</button>
-            }
-        </div>
+                <div class="product-slider-wrapper position-relative" style="width: 100%; margin: 0; padding: 0;">
+                     <button class="slider-arrow prev" onclick="scrollSlider(this, -1)"><i class="bi bi-chevron-left"></i></button>
+                     <button class="slider-arrow next" onclick="scrollSlider(this, 1)"><i class="bi bi-chevron-right"></i></button>
 
-        <div class="product-slider-wrapper">
-             <button class="slider-arrow prev" onclick="scrollSlider(-1)"><i class="bi bi-chevron-left"></i></button>
-             <button class="slider-arrow next" onclick="scrollSlider(1)"><i class="bi bi-chevron-right"></i></button>
-
-            @foreach (var category in Model.NewArrivalsByCategory)
-            {
-                <div id="tab-@category.Key" class="tab-content">
                     <div class="product-slider">
                         @foreach (var product in category.Value)
                         {
+                            var productImages = product.Images.Take(3).ToList();
+                            var imageCount = productImages.Count;
                              <article class="product-card @(product.IsFeatured ? "featured" : string.Empty)">
                                 <a asp-controller="Product" asp-action="Details" asp-route-id="@product.Id" class="product-link">
                                     <div class="badge-pill">New</div>
-                                    <img src="@product.HeroImageUrl" alt="@product.Name" loading="lazy" />
+                                    
+                                    @* Image Carousel *@
+                                    <div class="product-image-carousel" data-product-id="@product.Id">
+                                        @for (int i = 0; i < imageCount; i++)
+                                        {
+                                            <img src="@productImages[i]" 
+                                                 alt="@product.Name" 
+                                                 loading="lazy" 
+                                                 class="carousel-image @(i == 0 ? "active" : "")" 
+                                                 data-index="@i" />
+                                        }
+                                        
+                                        @* Dots Navigation *@
+                                        @if (imageCount > 1)
+                                        {
+                                            <div class="carousel-dots" onclick="event.preventDefault(); event.stopPropagation();">
+                                                @for (int i = 0; i < imageCount; i++)
+                                                {
+                                                    <span class="dot @(i == 0 ? "active" : "")" 
+                                                          onclick="changeProductImage('@product.Id', @i)"></span>
+                                                }
+                                            </div>
+                                        }
+                                    </div>
+                                    
                                     <div class="card-body">
                                         <div class="card-meta">
                                             <p class="eyebrow">@category.Key</p>
@@ -199,79 +181,45 @@
                                 </a>
                             </article>
                         }
+
                     </div>
                 </div>
-            }
-        </div>
+            </div>
+        }
     </section>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            // Activate first tab by default
-            const firstTabBtn = document.querySelector('.tab-btn');
-            if(firstTabBtn) {
-                firstTabBtn.click();
-            }
-        });
-
-        function openTab(evt, tabName) {
-            var i, tabcontent, tablinks;
-            
-            // Hide all tab content
-            tabcontent = document.getElementsByClassName("tab-content");
-            for (i = 0; i < tabcontent.length; i++) {
-                tabcontent[i].style.display = "none";
-                tabcontent[i].classList.remove("active");
-            }
-
-            // Remove active class from all buttons
-            tablinks = document.getElementsByClassName("tab-btn");
-            for (i = 0; i < tablinks.length; i++) {
-                tablinks[i].className = tablinks[i].className.replace(" active", "");
-            }
-
-            // Show current tab and activate button
-            document.getElementById(tabName).style.display = "block";
-            setTimeout(() => document.getElementById(tabName).classList.add("active"), 10);
-            evt.currentTarget.className += " active";
-        }
-
-        function scrollSlider(direction) {
-            // Find visible slider
-            const activeTab = document.querySelector('.tab-content.active');
-            if(activeTab) {
-                const slider = activeTab.querySelector('.product-slider');
+        function scrollSlider(btn, direction) {
+            // Find the slider within the same wrapper as the button
+            const wrapper = btn.closest('.product-slider-wrapper');
+            if(wrapper) {
+                const slider = wrapper.querySelector('.product-slider');
                 const scrollAmount = 300;
                 slider.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
             }
         }
+        
+        // Change product image in carousel
+        function changeProductImage(productId, imageIndex) {
+            const carousel = document.querySelector(`[data-product-id="${productId}"]`);
+            if (!carousel) return;
+            
+            // Update images
+            const images = carousel.querySelectorAll('.carousel-image');
+            images.forEach((img, index) => {
+                img.classList.toggle('active', index === imageIndex);
+            });
+            
+            // Update dots
+            const dots = carousel.querySelectorAll('.dot');
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === imageIndex);
+            });
+        }
     </script>
 }
 
-<section class="statistics-section">
-    <div class="stat-card">
-        <h3>@Model.Statistics.TotalProducts</h3>
-        <p class="muted">Sản phẩm</p>
-    </div>
-    <div class="stat-card">
-        <h3>@Model.Statistics.TotalCategories</h3>
-        <p class="muted">Danh mục</p>
-    </div>
-    <div class="stat-card">
-        <h3>@Model.Statistics.TotalOrders</h3>
-        <p class="muted">Đơn hàng</p>
-    </div>
-</section>
-
 <section id="catalog" class="section">
-    <div class="section-header">
-        <div>
-            <p class="pill">Shop the Collection</p>
-            <h3>New drops mỗi tuần</h3>
-            <p class="muted">Him, Her, Kids và toàn bộ accessories bạn cần.</p>
-        </div>
-        <a class="link-arrow" href="#checkout">Tạo đơn nhanh <i class="bi bi-arrow-right"></i></a>
-    </div>
     <div class="catalog-grid">
         @foreach (var product in Model.FeaturedProducts)
         {

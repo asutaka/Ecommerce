@@ -94,7 +94,7 @@
                 </div>
                 <!-- <input type="hidden" id="quantity" value="1" /> Default qty 1 -->
                 <button class="btn btn-block btn-black" onclick="addToCart('@Model.Id', document.getElementById('quantity').value)">Add to Cart</button>
-                <button class="btn btn-block btn-outline">Buy Now</button>
+                <button class="btn btn-block btn-outline" onclick="buyNow('@Model.Id', document.getElementById('quantity').value)">Buy Now</button>
             </div>
 
             <!-- Accordions -->

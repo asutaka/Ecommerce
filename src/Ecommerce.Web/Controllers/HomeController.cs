@@ -127,13 +127,24 @@ public class HomeController(
 
                 for (int i = 1; i <= 12; i++)
                 {
+                    // Generate 1-3 random images per product
+                    var imageCount = rnd.Next(1, 4); // 1, 2, or 3 images
+                    var productImages = new List<string>();
+                    
+                    for (int j = 0; j < imageCount; j++)
+                    {
+                        // Add slight variation to image URL to get different images
+                        var variation = rnd.Next(1, 100);
+                        productImages.Add($"{imgUrl}&sig={variation + j}");
+                    }
+                    
                     fakeProducts.Add(new ProductViewModel
                     {
                         Id = Guid.NewGuid(),
                         Name = $"{catName} Item {i} (Fake)",
                         Description = "This is a generated product for testing UI layout.",
                         Price = rnd.Next(20, 200) * 10000,
-                        Images = new List<string> { imgUrl },
+                        Images = productImages,
                         IsFeatured = i % 2 == 0
                     });
                 }

@@ -84,4 +84,41 @@ public class ProductController(EcommerceDbContext dbContext) : Controller
 
         return View(model);
     }
+
+    [HttpGet]
+    public async Task<IActionResult> Search(string query)
+    {
+        var model = new SearchResultViewModel
+        {
+            Query = query ?? string.Empty
+        };
+
+        if (!string.IsNullOrWhiteSpace(query))
+        {
+            var searchTerm = query.Trim().ToLower();
+            
+            var products = await dbContext.Products
+                .Include(x => x.Category)
+                .Where(x => 
+                    x.Name.ToLower().Contains(searchTerm) || 
+                    x.Description.ToLower().Contains(searchTerm) ||
+                    (x.Category != null && x.Category.Name.ToLower().Contains(searchTerm)))
+                .OrderByDescending(x => x.IsFeatured)
+                .ThenBy(x => x.Name)
+                .Select(p => new ProductViewModel
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    Description = p.Description,
+                    Images = p.Images,
+                    Price = p.Price,
+                    IsFeatured = p.IsFeatured
+                })
+                .ToListAsync();
+
+            model.Results = products;
+        }
+
+        return View(model);
+    }
 }
