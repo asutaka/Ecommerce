@@ -16,6 +16,7 @@ public class EcommerceDbContext(DbContextOptions<EcommerceDbContext> options) : 
     public DbSet<AdminUser> AdminUsers => Set<AdminUser>();
     public DbSet<Customer> Customers => Set<Customer>();
     public DbSet<ExternalLogin> ExternalLogins => Set<ExternalLogin>();
+    public DbSet<Coupon> Coupons => Set<Coupon>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -146,7 +147,20 @@ public class EcommerceDbContext(DbContextOptions<EcommerceDbContext> options) : 
                 .OnDelete(DeleteBehavior.SetNull);
         });
 
+        modelBuilder.Entity<Coupon>(entity =>
+        {
+            entity.Property(x => x.Code).HasMaxLength(50).IsRequired();
+            entity.Property(x => x.Description).HasMaxLength(500).IsRequired();
+            entity.Property(x => x.DiscountAmount).HasPrecision(18, 2);
+            entity.Property(x => x.DiscountPercentage).HasPrecision(5, 2);
+            entity.Property(x => x.MinimumOrderAmount).HasPrecision(18, 2);
+            
+            entity.HasIndex(x => x.Code).IsUnique();
+            entity.HasIndex(x => x.IsActive);
+        });
+
         modelBuilder.SeedInitialData();
+        modelBuilder.SeedCouponData();
         modelBuilder.SeedAdminUser();
     }
 }

@@ -44,5 +44,75 @@ public static class ModelBuilderExtensions
 
         modelBuilder.Entity<Product>().HasData(heroProducts);
     }
+
+    public static void SeedCouponData(this ModelBuilder modelBuilder)
+    {
+        var now = DateTime.UtcNow;
+        var coupons = new[]
+        {
+            new Coupon
+            {
+                Id = Guid.NewGuid(),
+                Code = "GIAM40K",
+                Description = "Giảm 40.000đ cho đơn hàng từ 500.000đ",
+                DiscountAmount = 40000m,
+                MinimumOrderAmount = 500000m,
+                StartDate = now.AddDays(-7),
+                EndDate = now.AddDays(30),
+                IsActive = true,
+                UsageLimit = 100,
+                UsedCount = 0,
+                CreatedAt = now,
+                UpdatedAt = now
+            },
+            new Coupon
+            {
+                Id = Guid.NewGuid(),
+                Code = "GIAM50K",
+                Description = "Giảm 50.000đ cho đơn hàng từ 800.000đ",
+                DiscountAmount = 50000m,
+                MinimumOrderAmount = 800000m,
+                StartDate = now.AddDays(-5),
+                EndDate = now.AddDays(45),
+                IsActive = true,
+                UsageLimit = 50,
+                UsedCount = 0,
+                CreatedAt = now,
+                UpdatedAt = now
+            },
+            new Coupon
+            {
+                Id = Guid.NewGuid(),
+                Code = "GIAM100K",
+                Description = "Giảm 100.000đ cho đơn hàng từ 1.500.000đ",
+                DiscountAmount = 100000m,
+                MinimumOrderAmount = 1500000m,
+                StartDate = now.AddDays(-3),
+                EndDate = now.AddDays(60),
+                IsActive = true,
+                UsageLimit = 30,
+                UsedCount = 0,
+                CreatedAt = now,
+                UpdatedAt = now
+            },
+            new Coupon
+            {
+                Id = Guid.NewGuid(),
+                Code = "FREESHIP",
+                Description = "Miễn phí vận chuyển cho đơn hàng từ 300.000đ",
+                DiscountAmount = 30000m,
+                MinimumOrderAmount = 300000m,
+                StartDate = now.AddDays(-10),
+                EndDate = now.AddDays(90),
+                IsActive = true,
+                UsageLimit = 200,
+                UsedCount = 0,
+                CreatedAt = now,
+                UpdatedAt = now
+            }
+        };
+
+        modelBuilder.Entity<Coupon>().HasData(coupons);
+    }
 }
 

@@ -38,6 +38,15 @@
                 if (newQty < 1) newQty = 1;
                 qtyInput.value = newQty;
             }
+
+            function applyCoupon(code) {
+                // TODO: Implement coupon logic
+                alert('Đã áp dụng mã giảm giá: ' + code);
+                // You can add logic here to:
+                // - Validate coupon code
+                // - Apply discount to price
+                // - Update UI to show applied coupon
+            }
         </script>
 
         <!-- Right: Sticky Product Info -->
@@ -62,6 +71,31 @@
                 </div>
                 @if (Model.OriginalPrice.HasValue && Model.OriginalPrice > Model.Price){
                     <div class="product-savings">Miễn phí vận chuyển</div>
+                }
+
+                <!-- Discount Coupons -->
+                @if (Model.AvailableCoupons.Any())
+                {
+                    <div class="coupon-section">
+                        <div class="coupon-label">Mã giảm giá</div>
+                        <div class="coupon-list">
+                            @foreach (var coupon in Model.AvailableCoupons)
+                            {
+                                <button class="coupon-tag" 
+                                        onclick="applyCoupon('@coupon.Code')"
+                                        title="@coupon.Description">
+                                    @if (coupon.DiscountAmount > 0)
+                                    {
+                                        <text>Giảm @((coupon.DiscountAmount / 1000).ToString("0"))K</text>
+                                    }
+                                    else if (coupon.DiscountPercentage.HasValue)
+                                    {
+                                        <text>Giảm @coupon.DiscountPercentage%</text>
+                                    }
+                                </button>
+                            }
+                        </div>
+                    </div>
                 }
             </div>
 

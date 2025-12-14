@@ -49,6 +49,43 @@ public class ProductController(EcommerceDbContext dbContext) : Controller
                 });
             }
 
+            // Add fake coupons
+            fakeModel.AvailableCoupons = new List<CouponViewModel>
+            {
+                new CouponViewModel
+                {
+                    Code = "GIAM40K",
+                    Description = "Giảm 40.000đ cho đơn hàng từ 500.000đ",
+                    DiscountAmount = 40000m,
+                    MinimumOrderAmount = 500000m,
+                    EndDate = DateTime.UtcNow.AddDays(30)
+                },
+                new CouponViewModel
+                {
+                    Code = "GIAM50K",
+                    Description = "Giảm 50.000đ cho đơn hàng từ 800.000đ",
+                    DiscountAmount = 50000m,
+                    MinimumOrderAmount = 800000m,
+                    EndDate = DateTime.UtcNow.AddDays(45)
+                },
+                new CouponViewModel
+                {
+                    Code = "GIAM100K",
+                    Description = "Giảm 100.000đ cho đơn hàng từ 1.500.000đ",
+                    DiscountAmount = 100000m,
+                    MinimumOrderAmount = 1500000m,
+                    EndDate = DateTime.UtcNow.AddDays(60)
+                },
+                new CouponViewModel
+                {
+                    Code = "FREESHIP",
+                    Description = "Miễn phí vận chuyển cho đơn hàng từ 300.000đ",
+                    DiscountAmount = 30000m,
+                    MinimumOrderAmount = 300000m,
+                    EndDate = DateTime.UtcNow.AddDays(90)
+                }
+            };
+
             return View(fakeModel);
         }
 
@@ -69,6 +106,62 @@ public class ProductController(EcommerceDbContext dbContext) : Controller
             })
             .ToListAsync();
 
+        // Get active coupons
+        var now = DateTime.UtcNow;
+        var coupons = await dbContext.Coupons
+            .Where(x => x.IsActive && x.StartDate <= now && x.EndDate >= now && x.UsedCount < x.UsageLimit)
+            .OrderBy(x => x.MinimumOrderAmount)
+            .Select(c => new CouponViewModel
+            {
+                Code = c.Code,
+                Description = c.Description,
+                DiscountAmount = c.DiscountAmount,
+                DiscountPercentage = c.DiscountPercentage,
+                MinimumOrderAmount = c.MinimumOrderAmount,
+                EndDate = c.EndDate
+            })
+            .ToListAsync();
+
+        // If no coupons in database, use fake data
+        if (!coupons.Any())
+        {
+            coupons = new List<CouponViewModel>
+            {
+                new CouponViewModel
+                {
+                    Code = "GIAM40K",
+                    Description = "Giảm 40.000đ cho đơn hàng từ 500.000đ",
+                    DiscountAmount = 40000m,
+                    MinimumOrderAmount = 500000m,
+                    EndDate = DateTime.UtcNow.AddDays(30)
+                },
+                new CouponViewModel
+                {
+                    Code = "GIAM50K",
+                    Description = "Giảm 50.000đ cho đơn hàng từ 800.000đ",
+                    DiscountAmount = 50000m,
+                    MinimumOrderAmount = 800000m,
+                    EndDate = DateTime.UtcNow.AddDays(45)
+                },
+                new CouponViewModel
+                {
+                    Code = "GIAM100K",
+                    Description = "Giảm 100.000đ cho đơn hàng từ 1.500.000đ",
+                    DiscountAmount = 100000m,
+                    MinimumOrderAmount = 1500000m,
+                    EndDate = DateTime.UtcNow.AddDays(60)
+                },
+                new CouponViewModel
+                {
+                    Code = "FREESHIP",
+                    Description = "Miễn phí vận chuyển cho đơn hàng từ 300.000đ",
+                    DiscountAmount = 30000m,
+                    MinimumOrderAmount = 300000m,
+                    EndDate = DateTime.UtcNow.AddDays(90)
+                }
+            };
+        }
+
         var model = new ProductDetailViewModel
         {
             Id = product.Id,
@@ -80,7 +173,8 @@ public class ProductController(EcommerceDbContext dbContext) : Controller
             IsFeatured = product.IsFeatured,
             CategoryId = product.CategoryId,
             CategoryName = product.Category?.Name ?? "N/A",
-            RelatedProducts = relatedProducts
+            RelatedProducts = relatedProducts,
+            AvailableCoupons = coupons
         };
 
         return View(model);

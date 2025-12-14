@@ -17,4 +17,7 @@ public class ProductDetailViewModel
     
     // Related products
     public List<ProductViewModel> RelatedProducts { get; set; } = new();
+    
+    // Available coupons
+    public List<CouponViewModel> AvailableCoupons { get; set; } = new();
 }
