@@ -1,0 +1,161 @@
+/* Navigation Styles */
+.moderno-nav {
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+    align-items: center;
+    gap: 24px;
+    padding: 18px 24px;
+    background: var(--card, #ffffff);
+    border-bottom: 1px solid var(--border, #e5e7eb);
+    position: sticky;
+    top: 0;
+    z-index: 20;
+}
+
+/* Logo Stack */
+.logo-stack {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo-dot {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #fef08a, #f97316);
+}
+
+.brand-title {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 1.25rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.brand-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 4px;
+    color: var(--muted, #6b7280);
+}
+
+/* Search Bar */
+.search-bar-container {
+    flex: 1;
+    max-width: 600px;
+}
+
+.search-form {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    background: #fff;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.search-input {
+    flex: 1;
+    padding: 10px 16px;
+    border: none;
+    outline: none;
+    font-size: 0.95rem;
+    color: var(--text, #1f2937);
+    background: transparent;
+}
+
+.search-input::placeholder {
+    color: #999;
+}
+
+.search-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 24px;
+    background: #2563eb;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 1.1rem;
+}
+
+.search-button:hover {
+    background: #1d4ed8;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4);
+}
+
+.search-button i {
+    font-size: 1.1rem;
+}
+
+/* Social Icons */
+.social-icons {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.social-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #f3f4f6;
+    color: #2563eb;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    font-size: 1.1rem;
+}
+
+.social-icon:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.social-icon i {
+    font-size: 1.1rem;
+}
+
+/* Nav Actions */
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .moderno-nav {
+        grid-template-columns: auto 1fr auto;
+        gap: 16px;
+    }
+
+    .social-icons {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .moderno-nav {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .logo-stack {
+        justify-content: center;
+    }
+
+    .search-bar-container {
+        max-width: 100%;
+    }
+
+    .nav-actions {
+        justify-content: center;
+    }
+}

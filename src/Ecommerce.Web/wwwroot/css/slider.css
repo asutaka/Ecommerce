@@ -1,0 +1,118 @@
+/* Page Wrapper - Centered Layout */
+.page-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: #fff;
+    min-height: 100vh;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+    position: relative;
+}
+
+.moderno-shell {
+    padding: 32px 0 80px;
+    width: 100%;
+}
+
+img {
+    max-width: 100%;
+    display: block;
+}
+
+/* Product Slider */
+.product-slider-wrapper {
+    position: relative;
+    margin-bottom: 20px;
+    width: 100%;
+    overflow: hidden;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.product-slider {
+    display: flex;
+    gap: 16px;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+    padding: 4px 4px 20px 4px;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.product-slider::-webkit-scrollbar {
+    display: none;
+}
+
+.product-slider .product-card {
+    min-width: 260px;
+    max-width: 260px;
+    flex: 0 0 auto;
+}
+
+.product-slider .product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: none;
+}
+
+.product-slider .product-card img {
+    border-radius: 0;
+    height: 380px;
+    margin-bottom: 12px;
+}
+
+.product-slider .card-body {
+    padding: 0;
+    text-align: left;
+}
+
+.product-slider h3 {
+    font-size: 1rem;
+    font-weight: 400;
+    margin: 4px 0;
+    color: var(--text);
+}
+
+.product-slider .price {
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--text);
+}
+
+.product-slider .eyebrow {
+    margin-bottom: 2px;
+}
+
+.slider-arrow {
+    position: absolute;
+    top: 40%;
+    transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid var(--border);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.2s ease;
+    color: var(--text);
+    opacity: 0.9;
+}
+
+.slider-arrow:hover {
+    background: var(--accent-2);
+    color: #fff;
+    border-color: var(--accent-2);
+    opacity: 1;
+    transform: translateY(-50%) scale(1.05);
+}
+
+.slider-arrow.prev {
+    left: 12px;
+}
+
+.slider-arrow.next {
+    right: 12px;
+}

@@ -1,0 +1,120 @@
+@model Ecommerce.Web.ViewModels.SearchResultViewModel
+@{
+    ViewData["Title"] = string.IsNullOrWhiteSpace(Model.Query) ? "Tìm kiếm" : $"Kết quả tìm kiếm: {Model.Query}";
+}
+
+<div class="moderno-shell">
+    <section class="section">
+        <div class="section-header">
+            <div>
+                @if (!string.IsNullOrWhiteSpace(Model.Query))
+                {
+                    <p class="pill">Kết quả tìm kiếm</p>
+                    <h3>Tìm kiếm: "@Model.Query"</h3>
+                    <p class="muted">Tìm thấy @Model.TotalResults sản phẩm</p>
+                }
+                else
+                {
+                    <p class="pill">Tìm kiếm</p>
+                    <h3>Nhập từ khóa để tìm kiếm</h3>
+                    <p class="muted">Sử dụng thanh tìm kiếm ở trên để tìm sản phẩm</p>
+                }
+            </div>
+        </div>
+
+        @if (Model.HasResults)
+        {
+            <div class="catalog-grid">
+                @foreach (var product in Model.Results)
+                {
+                    <article class="product-card @(product.IsFeatured ? "featured" : string.Empty)">
+                        <a asp-controller="Product" asp-action="Details" asp-route-id="@product.Id" class="product-link">
+                            @if (product.IsFeatured)
+                            {
+                                <div class="badge-pill accent">Best Seller</div>
+                            }
+                            <img src="@product.HeroImageUrl" alt="@product.Name" loading="lazy" />
+                            <div class="card-body">
+                                <p class="eyebrow">Sản phẩm</p>
+                                <h3>@product.Name</h3>
+                                <p>@product.Description</p>
+                                <div class="card-footer">
+                                    <span>@product.Price.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))</span>
+                                    <div class="add-to-cart-group">
+                                        <input type="number" id="qty-@product.Id" value="1" min="1" max="10" class="qty-input" onclick="event.stopPropagation();" />
+                                        <button class="btn-add-cart" onclick="event.preventDefault(); event.stopPropagation(); addToCart('@product.Id', document.getElementById('qty-@product.Id').value)">
+                                            Thêm vào giỏ
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </article>
+                }
+            </div>
+        }
+        else if (!string.IsNullOrWhiteSpace(Model.Query))
+        {
+            <div class="empty-state">
+                <div class="empty-state-icon">
+                    <i class="bi bi-search" style="font-size: 4rem; color: var(--muted);"></i>
+                </div>
+                <h4>Không tìm thấy sản phẩm</h4>
+                <p class="muted">Không có sản phẩm nào phù hợp với từ khóa "<strong>@Model.Query</strong>"</p>
+                <p class="muted">Vui lòng thử lại với từ khóa khác hoặc <a asp-controller="Home" asp-action="Index">quay về trang chủ</a></p>
+            </div>
+        }
+    </section>
+</div>
+
+<style>
+    .empty-state {
+        text-align: center;
+        padding: 80px 20px;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        margin: 40px auto;
+        max-width: 600px;
+    }
+
+    .empty-state-icon {
+        margin-bottom: 24px;
+    }
+
+    .empty-state h4 {
+        margin: 12px 0;
+        font-size: 1.5rem;
+    }
+
+    .empty-state p {
+        margin: 8px 0;
+    }
+
+    .empty-state a {
+        color: var(--accent-2);
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .empty-state a:hover {
+        text-decoration: underline;
+    }
+
+    .product-link {
+        text-decoration: none;
+        color: inherit;
+        display: block;
+    }
+
+    .card-meta h3 {
+        margin: 4px 0;
+        font-size: 1.1rem;
+    }
+
+    .price {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--accent-2);
+    }
+</style>

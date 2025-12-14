@@ -1,0 +1,115 @@
+/* Section Centering */
+
+#categories {
+    background: #fff;
+    padding: 12px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    margin-bottom: 32px;
+}
+
+/* New Arrivals Header */
+.new-arrivals-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.new-arrivals-header h3 {
+    font-size: 2rem;
+    margin-bottom: 8px;
+}
+
+/* Category Grid */
+.category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 8px;
+}
+
+/* Category Card Wrapper */
+.category-card-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.category-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    padding: 8px 4px;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.2s ease;
+    height: 100%;
+}
+
+.category-card:hover {
+    border-color: var(--border);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transform: translateY(-2px);
+}
+
+.category-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: #f3f4f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 6px;
+    color: var(--accent-2);
+    font-size: 1.2rem;
+    transition: all 0.2s ease;
+}
+
+.category-card:hover .category-icon {
+    background: #fff;
+    color: var(--accent);
+}
+
+.category-name {
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-align: center;
+    line-height: 1.2;
+    color: var(--text);
+}
+
+/* View All Button */
+.view-all-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 6px 12px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text);
+    text-decoration: none;
+    font-size: 0.75rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.view-all-btn:hover {
+    background: var(--accent-2);
+    color: #fff;
+    border-color: var(--accent-2);
+    transform: translateX(2px);
+}
+
+.view-all-btn i {
+    font-size: 0.7rem;
+    transition: transform 0.2s ease;
+}
+
+.view-all-btn:hover i {
+    transform: translateX(2px);
+}
