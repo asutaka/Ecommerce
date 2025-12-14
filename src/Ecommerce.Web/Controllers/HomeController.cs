@@ -14,10 +14,15 @@ public class HomeController(
     [HttpGet]
     public async Task<IActionResult> Index()
     {
+        // 1. Featured Products - Optimized
+        // - Added AsNoTracking() for read-only performance
+        // - Removed Include(Category) as it's not used in projection
+        // - Added Take(12) to prevent loading entire database
         var products = await dbContext.Products
-            .Include(x => x.Category)
+            .AsNoTracking()
             .OrderByDescending(x => x.IsFeatured)
             .ThenBy(x => x.Name)
+            .Take(12) 
             .Select(x => new ProductViewModel
             {
                 Id = x.Id,
@@ -29,8 +34,9 @@ public class HomeController(
             })
             .ToListAsync();
 
-        // Get featured categories (top 6 by product count)
+        // 2. Featured Categories - Optimized
         var categories = await dbContext.Categories
+            .AsNoTracking()
             .Select(c => new CategorySummaryViewModel
             {
                 Id = c.Id,
@@ -42,8 +48,9 @@ public class HomeController(
             .Take(6)
             .ToListAsync();
 
-        // Get new arrivals (latest 4 products)
+        // 3. New Arrivals - Optimized
         var newArrivals = await dbContext.Products
+            .AsNoTracking()
             .OrderByDescending(x => x.CreatedAt)
             .Take(4)
             .Select(x => new ProductViewModel

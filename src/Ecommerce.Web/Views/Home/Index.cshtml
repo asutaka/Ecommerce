@@ -1,4 +1,5 @@
 ﻿@model Ecommerce.Web.ViewModels.HomeViewModel
+@using Ecommerce.Web.Helpers
 @{
     ViewData["Title"] = "Moderno Boutique";
     var status = ViewBag.CheckoutStatus as string;
@@ -49,25 +50,51 @@
             @for (var i = 0; i < slides.Length; i++)
             {
                 var slide = slides[i];
-                <div class="carousel-item @(i == 0 ? "active" : "")">
+                var isActive = i == 0;
+                <div class="carousel-item @(isActive ? "active" : "")">
                     <div class="hero-slide" style="min-height: 320px !important;">
-                        <div class="hero-slide-inner" style="background-image:url('@slide.Image'); min-height: 320px !important;">
-                            <div class="hero-overlay">
-                                <div class="pill pill-dark">@slide.Badge</div>
-                                <p class="pill subtle-pill">@slide.Subtitle</p>
-                                <h1>@slide.Title</h1>
-                                <p class="lede">@slide.Copy</p>
-                                <div class="hero-cta">
-                                    <a class="btn btn-primary" href="@slide.CtaPrimary">Shop Now</a>
-                                    <a class="btn btn-ghost" href="@slide.CtaSecondary">Xem tất cả</a>
-                                </div>
-                                <div class="hero-perks">
-                                    <span>Miễn phí giao hàng &gt; 1.000.000đ</span>
-                                    <span>Đổi trả 30 ngày</span>
-                                    <span>Hàng mới mỗi tuần</span>
+                        @if (isActive)
+                        {
+                            @* First slide - load immediately *@
+                            <div class="hero-slide-inner" style="background-image:url('@ImageHelper.OptimizeImageUrl(slide.Image, 1200)'); min-height: 320px !important;">
+                                <div class="hero-overlay">
+                                    <div class="pill pill-dark">@slide.Badge</div>
+                                    <p class="pill subtle-pill">@slide.Subtitle</p>
+                                    <h1>@slide.Title</h1>
+                                    <p class="lede">@slide.Copy</p>
+                                    <div class="hero-cta">
+                                        <a class="btn btn-primary" href="@slide.CtaPrimary">Shop Now</a>
+                                        <a class="btn btn-ghost" href="@slide.CtaSecondary">Xem tất cả</a>
+                                    </div>
+                                    <div class="hero-perks">
+                                        <span>Miễn phí giao hàng &gt; 1.000.000đ</span>
+                                        <span>Đổi trả 30 ngày</span>
+                                        <span>Hàng mới mỗi tuần</span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        }
+                        else
+                        {
+                            @* Other slides - lazy load with data-bg *@
+                            <div class="hero-slide-inner" data-bg="@ImageHelper.OptimizeImageUrl(slide.Image, 1200)" style="min-height: 320px !important;">
+                                <div class="hero-overlay">
+                                    <div class="pill pill-dark">@slide.Badge</div>
+                                    <p class="pill subtle-pill">@slide.Subtitle</p>
+                                    <h1>@slide.Title</h1>
+                                    <p class="lede">@slide.Copy</p>
+                                    <div class="hero-cta">
+                                        <a class="btn btn-primary" href="@slide.CtaPrimary">Shop Now</a>
+                                        <a class="btn btn-ghost" href="@slide.CtaSecondary">Xem tất cả</a>
+                                    </div>
+                                    <div class="hero-perks">
+                                        <span>Miễn phí giao hàng &gt; 1.000.000đ</span>
+                                        <span>Đổi trả 30 ngày</span>
+                                        <span>Hàng mới mỗi tuần</span>
+                                    </div>
+                                </div>
+                            </div>
+                        }
                     </div>
                 </div>
             }
@@ -151,7 +178,9 @@
                                     <div class="product-image-carousel" data-product-id="@product.Id">
                                         @for (int i = 0; i < imageCount; i++)
                                         {
-                                            <img src="@productImages[i]" 
+                                            <img src="@ImageHelper.OptimizeImageUrl(productImages[i], 800)" 
+                                                 srcset="@ImageHelper.GenerateSrcSet(productImages[i])"
+                                                 sizes="@ImageHelper.GetDefaultSizes()"
                                                  alt="@product.Name" 
                                                  loading="lazy" 
                                                  class="carousel-image @(i == 0 ? "active" : "")" 
@@ -216,39 +245,35 @@
                 dot.classList.toggle('active', index === imageIndex);
             });
         }
+        
+        // Lazy load carousel background images
+        document.addEventListener('DOMContentLoaded', function() {
+            const heroCarousel = document.getElementById('heroCarousel');
+            if (!heroCarousel) return;
+            
+            // Function to load background image
+            function loadSlideBackground(slide) {
+                const slideInner = slide.querySelector('.hero-slide-inner[data-bg]');
+                if (slideInner && slideInner.dataset.bg) {
+                    const bgUrl = slideInner.dataset.bg;
+                    slideInner.style.backgroundImage = `url('${bgUrl}')`;
+                    delete slideInner.dataset.bg; // Remove data-bg after loading
+                }
+            }
+            
+            // Load next slide when carousel slides
+            heroCarousel.addEventListener('slide.bs.carousel', function(e) {
+                loadSlideBackground(e.relatedTarget);
+            });
+            
+            // Preload next slide on page load for smoother transition
+            const nextSlide = heroCarousel.querySelector('.carousel-item:not(.active)');
+            if (nextSlide) {
+                setTimeout(() => loadSlideBackground(nextSlide), 1000);
+            }
+        });
     </script>
 }
-
-<section id="catalog" class="section">
-    <div class="catalog-grid">
-        @foreach (var product in Model.FeaturedProducts)
-        {
-            <article class="product-card @(product.IsFeatured ? "featured" : string.Empty)">
-                <a asp-controller="Product" asp-action="Details" asp-route-id="@product.Id" class="product-link">
-                    @if (product.IsFeatured)
-                    {
-                        <div class="badge-pill accent">Best Seller</div>
-                    }
-                    <img src="@product.HeroImageUrl" alt="@product.Name" loading="lazy" />
-                    <div class="card-body">
-                        <p class="eyebrow">Sản phẩm</p>
-                        <h3>@product.Name</h3>
-                        <p>@product.Description</p>
-                        <div class="card-footer">
-                            <span>@product.Price.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))</span>
-                            <div class="add-to-cart-group">
-                                <input type="number" id="qty-@product.Id" value="1" min="1" max="10" class="qty-input" onclick="event.stopPropagation();" />
-                                <button class="btn-add-cart" onclick="event.preventDefault(); event.stopPropagation(); addToCart('@product.Id', document.getElementById('qty-@product.Id').value)">
-                                    Thêm vào giỏ
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </a>
-            </article>
-        }
-    </div>
-</section>
 
 <section class="checkout-panel" id="checkout">
     <div class="checkout-copy">
