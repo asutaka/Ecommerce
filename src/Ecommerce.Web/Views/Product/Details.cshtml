@@ -47,30 +47,38 @@
                 <br>
                 <p class="product-sku">Mã sp: @Model.SKU</p>
                 <div class="product-price-section">
-                    <div class="product-price">@Model.Price.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))</div>
                     @if (Model.OriginalPrice.HasValue && Model.OriginalPrice > Model.Price)
                     {
                         <div class="product-price-original">@Model.OriginalPrice.Value.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))</div>
                     }
+                    <div class="product-price-details">
+                        <p class="product-price">@Model.Price.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))</p>
+                        @if (Model.OriginalPrice.HasValue && Model.OriginalPrice > Model.Price)
+                        {
+                            var savings = Math.Round(100 * (-1 + Model.Price / Model.OriginalPrice.Value));
+                            <span class="product-price-discount"> @savings%</span>
+                        }
+                    </div>
                 </div>
                 @if (Model.OriginalPrice.HasValue && Model.OriginalPrice > Model.Price){
-                    var savings = Model.OriginalPrice.Value - Model.Price;
-                    <div class="product-savings">Tiết kiệm: @savings.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))</div>
+                    <div class="product-savings">Miễn phí vận chuyển</div>
                 }
             </div>
 
             <!-- Fake Selectors for UI -->
             <div class="selector-group">
-                <label>Size</label>
+                <label>Kích Cỡ</label>
                 <div class="selector-options">
                     <div class="option-box">S</div>
                     <div class="option-box selected">M</div>
                     <div class="option-box">L</div>
+                    <div class="option-box">XL</div>
+                    <div class="option-box">XXL</div>
                 </div>
             </div>
 
             <div class="selector-group">
-                <label>Chọn Màu</label>
+                <label>Màu Sắc</label>
                 <div class="selector-options">
                     <div class="option-box" style="background:#000;"></div>
                     <div class="option-box" style="background:#f00;"></div>

@@ -46,23 +46,25 @@
 }
 
 .search-form {
-    display: flex;
-    align-items: center;
+    position: relative;
     width: 100%;
-    background: #fff;
-    border-radius: 4px;
-    overflow: hidden;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
 }
 
 .search-input {
-    flex: 1;
-    padding: 10px 16px;
-    border: none;
-    outline: none;
+    width: 100%;
+    padding: 12px 50px 12px 20px;
+    border: 1px solid #e5e7eb;
+    border-radius: 50px;
+    /* Bo tròn hoàn toàn */
     font-size: 0.95rem;
-    color: var(--text, #1f2937);
-    background: transparent;
+    outline: none;
+    transition: all 0.2s;
+}
+
+.search-input:focus {
+    border-color: #9ca3af;
+    box-shadow: 0 0 0 3px rgba(156, 163, 175, 0.1);
 }
 
 .search-input::placeholder {
@@ -70,21 +72,22 @@
 }
 
 .search-button {
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    color: #6b7280;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 10px 24px;
-    background: #2563eb;
-    border: none;
-    color: #fff;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    font-size: 1.1rem;
 }
 
 .search-button:hover {
-    background: #1d4ed8;
-    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4);
+    color: #111827;
 }
 
 .search-button i {

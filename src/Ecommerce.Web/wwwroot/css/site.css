@@ -1837,10 +1837,15 @@ img {
 /* Product Price Section */
 .product-price-section {
   display: flex;
+  flex-direction: column;
+  align-items: baseline;
+}
+
+.product-price-details {
+  display: flex;
   flex-direction: row;
   align-items: baseline;
   gap: 12px;
-  margin-top: 12px;
 }
 
 .product-price-original {
@@ -1852,7 +1857,15 @@ img {
 .product-price {
   font-size: 1.8rem;
   font-weight: 700;
-  color: #dc2626;
+  color: #000;
+}
+
+.product-price-discount {
+  border-radius: 50px;
+  background-color: #273BCE;
+  padding: 3px 7px;
+  color: #fff;
+  font-weight: 600;
 }
 
 .product-savings {

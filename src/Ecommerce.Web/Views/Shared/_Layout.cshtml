@@ -35,9 +35,12 @@
             </a>
             <div class="search-bar-container">
                 <form asp-controller="Product" asp-action="Search" method="get" class="search-form">
-                    <input type="text" name="query" class="search-input" placeholder="Tìm sản phẩm, thương hiệu, và tên shop" />
+                    <input type="text" name="query" class="search-input" placeholder="Tìm kiếm..." />
                     <button type="submit" class="search-button">
-                        <i class="bi bi-search"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.35-4.35"></path>
+                        </svg>
                     </button>
                 </form>
             </div>
