@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Ecommerce.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -211,6 +212,10 @@ public class EcommerceDbContext(DbContextOptions<EcommerceDbContext> options) : 
             entity.Property(x => x.Description).HasMaxLength(500);
             entity.Property(x => x.Permissions)
                   .HasColumnType("jsonb")
+                  .HasConversion(
+                      v => JsonSerializer.Serialize(v, (JsonSerializerOptions?)null),
+                      v => JsonSerializer.Deserialize<Dictionary<string, int>>(v, (JsonSerializerOptions?)null) ?? new Dictionary<string, int>()
+                  )
                   .HasDefaultValueSql("'{}'::jsonb");  // Default to empty JSON object
 
             entity.HasIndex(x => x.Code).IsUnique();

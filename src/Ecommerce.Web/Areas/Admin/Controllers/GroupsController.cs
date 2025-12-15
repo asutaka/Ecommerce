@@ -196,8 +196,9 @@ public class GroupsController(EcommerceDbContext dbContext) : Controller
             return NotFound();
         }
 
-        // Update permissions from form
-        group.Permissions.Clear();
+        // Create NEW dictionary instead of modifying existing one
+        // This is required for EF Core change tracking with HasConversion
+        var newPermissions = new Dictionary<string, int>();
         
         // Process all modules and their permissions
         foreach (var module in PermissionsViewModel.AllModules)
@@ -225,9 +226,12 @@ public class GroupsController(EcommerceDbContext dbContext) : Controller
             // Only add to dictionary if has any permissions
             if (permissions > 0)
             {
-                group.Permissions[module.Key] = permissions;
+                newPermissions[module.Key] = permissions;
             }
         }
+
+        // Assign new dictionary to trigger EF Core change detection
+        group.Permissions = newPermissions;
 
         group.UpdatedAt = DateTime.UtcNow;
         await dbContext.SaveChangesAsync();
