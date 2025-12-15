@@ -1,0 +1,110 @@
+@model Ecommerce.Web.Areas.Admin.ViewModels.GroupFormViewModel
+
+@{
+    ViewData["Title"] = "Chỉnh sửa nhóm";
+}
+
+<!-- Content Header -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-12">
+                <h1 class="m-0">
+                    <i class="fas fa-user-shield text-success"></i> Chỉnh sửa nhóm
+                </h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card card-warning">
+                    <div class="card-header">
+                        <h3 class="card-title">Thông tin nhóm</h3>
+                    </div>
+                    
+                    <form asp-action="Edit" method="post">
+                        <input type="hidden" asp-for="Id" />
+                        
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label asp-for="Code" class="required"></label>
+                                <input asp-for="Code" class="form-control" readonly style="background-color: #f4f4f4;">
+                                <span asp-validation-for="Code" class="text-danger"></span>
+                                <small class="form-text text-muted">
+                                    <i class="fas fa-lock"></i> Mã nhóm không thể thay đổi sau khi tạo
+                                </small>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="Name" class="required"></label>
+                                <input asp-for="Name" class="form-control" placeholder="Ví dụ: Quản trị viên, Người dùng">
+                                <span asp-validation-for="Name" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="Description"></label>
+                                <textarea asp-for="Description" class="form-control" rows="3" placeholder="Mô tả vai trò và chức năng của nhóm này"></textarea>
+                                <span asp-validation-for="Description" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="custom-control custom-switch">
+                                    <input asp-for="IsActive" type="checkbox" class="custom-control-input" id="isActiveSwitch">
+                                    <label class="custom-control-label" for="isActiveSwitch">
+                                        <strong>Trạng thái hoạt động</strong>
+                                        <small class="d-block text-muted">Chỉ các nhóm đang hoạt động mới có thể gán cho người dùng</small>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-footer">
+                            <button type="submit" class="btn btn-warning">
+                                <i class="fas fa-save"></i> Cập nhật
+                            </button>
+                            <a asp-action="Index" class="btn btn-default">
+                                <i class="fas fa-times"></i> Hủy
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card card-info">
+                    <div class="card-header">
+                        <h3 class="card-title">Thông tin</h3>
+                    </div>
+                    <div class="card-body">
+                        <h6><i class="fas fa-info-circle"></i> Thông tin nhóm</h6>
+                        <table class="table table-sm table-borderless">
+                            <tr>
+                                <td><strong>Mã nhóm:</strong></td>
+                                <td><span class="badge badge-success">@Model.Code</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Ngày tạo:</strong></td>
+                                <td><small class="text-muted">Xem tại danh sách</small></td>
+                            </tr>
+                        </table>
+
+                        <h6 class="mt-3"><i class="fas fa-shield-alt"></i> Phân quyền</h6>
+                        <p class="text-sm">Quyền hạn của nhóm này sẽ được quản lý trong màn hình Phân quyền (sẽ phát triển sau).</p>
+
+                        <h6 class="mt-3"><i class="fas fa-exclamation-triangle text-warning"></i> Lưu ý</h6>
+                        <p class="text-sm">Khi vô hiệu hóa nhóm, các người dùng thuộc nhóm này sẽ không có quyền truy cập tương ứng.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

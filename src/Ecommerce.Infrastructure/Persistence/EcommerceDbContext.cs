@@ -20,6 +20,7 @@ public class EcommerceDbContext(DbContextOptions<EcommerceDbContext> options) : 
     public DbSet<Coupon> Coupons => Set<Coupon>();
     public DbSet<Supplier> Suppliers => Set<Supplier>();
     public DbSet<Warehouse> Warehouses => Set<Warehouse>();
+    public DbSet<Group> Groups => Set<Group>();
 
     // In OnModelCreating
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -201,6 +202,19 @@ public class EcommerceDbContext(DbContextOptions<EcommerceDbContext> options) : 
             entity.Property(x => x.PhoneNumbers).HasColumnType("text[]");
 
             entity.HasIndex(x => x.Code).IsUnique();
+        });
+
+        modelBuilder.Entity<Group>(entity =>
+        {
+            entity.Property(x => x.Code).HasMaxLength(50).IsRequired();
+            entity.Property(x => x.Name).HasMaxLength(200).IsRequired();
+            entity.Property(x => x.Description).HasMaxLength(500);
+            entity.Property(x => x.Permissions)
+                  .HasColumnType("jsonb")
+                  .HasDefaultValueSql("'{}'::jsonb");  // Default to empty JSON object
+
+            entity.HasIndex(x => x.Code).IsUnique();
+            entity.HasIndex(x => x.IsActive);
         });
 
         modelBuilder.SeedInitialData();

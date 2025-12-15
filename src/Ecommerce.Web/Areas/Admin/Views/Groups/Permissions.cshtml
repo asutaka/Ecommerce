@@ -1,0 +1,150 @@
+@model Ecommerce.Web.Areas.Admin.ViewModels.PermissionsViewModel
+@using Ecommerce.Web.Helpers
+
+@{
+    ViewData["Title"] = "Phân quyền nhóm";
+}
+
+<!-- Content Header -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-12">
+                <h1 class="m-0">
+                    <i class="fas fa-shield-alt text-success"></i> Phân quyền: @Model.GroupName
+                </h1>
+                <p class="text-muted">
+                    Mã nhóm: <strong>@Model.GroupCode</strong> | 
+                    Số quyền hiện tại: <strong>@Model.Permissions.Count</strong> modules
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <form asp-action="Permissions" method="post">
+            <input type="hidden" asp-for="GroupId" />
+            
+            <div class="card">
+                <div class="card-header bg-primary">
+                    <h3 class="card-title">Ma trận phân quyền</h3>
+                </div>
+                
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover mb-0">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th style="width: 40%;">Chức năng/Tên</th>
+                                    <th class="text-center" style="width: 15%;">
+                                        <i class="fas fa-eye"></i> Xem
+                                    </th>
+                                    <th class="text-center" style="width: 15%;">
+                                        <i class="fas fa-plus"></i> Thêm
+                                    </th>
+                                    <th class="text-center" style="width: 15%;">
+                                        <i class="fas fa-edit"></i> Sửa
+                                    </th>
+                                    <th class="text-center" style="width: 15%;">
+                                        <i class="fas fa-trash"></i> Xóa
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var module in PermissionsViewModel.AllModules)
+                                {
+                                    var hasPermissions = Model.Permissions.TryGetValue(module.Key, out var perms);
+                                    var canView = hasPermissions && (perms & (int)EPermission.View) != 0;
+                                    var canAdd = hasPermissions && (perms & (int)EPermission.Add) != 0;
+                                    var canEdit = hasPermissions && (perms & (int)EPermission.Edit) != 0;
+                                    var canDelete = hasPermissions && (perms & (int)EPermission.Delete) != 0;
+                                    
+                                    <tr>
+                                        <td>
+                                            <strong>@module.Name</strong>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" 
+                                                       class="custom-control-input" 
+                                                       id="view_@module.Key" 
+                                                       name="view_@module.Key" 
+                                                       value="true"
+                                                       @(canView ? "checked" : "")>
+                                                <label class="custom-control-label" for="view_@module.Key"></label>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" 
+                                                       class="custom-control-input" 
+                                                       id="add_@module.Key" 
+                                                       name="add_@module.Key" 
+                                                       value="true"
+                                                       @(canAdd ? "checked" : "")>
+                                                <label class="custom-control-label" for="add_@module.Key"></label>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" 
+                                                       class="custom-control-input" 
+                                                       id="edit_@module.Key" 
+                                                       name="edit_@module.Key" 
+                                                       value="true"
+                                                       @(canEdit ? "checked" : "")>
+                                                <label class="custom-control-label" for="edit_@module.Key"></label>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" 
+                                                       class="custom-control-input" 
+                                                       id="delete_@module.Key" 
+                                                       name="delete_@module.Key" 
+                                                       value="true"
+                                                       @(canDelete ? "checked" : "")>
+                                                <label class="custom-control-label" for="delete_@module.Key"></label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Lưu lại
+                    </button>
+                    <a asp-action="Index" class="btn btn-default">
+                        <i class="fas fa-times"></i> Quay lại
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+
+<style>
+    .table th {
+        vertical-align: middle;
+        font-weight: 600;
+    }
+    
+    .table td {
+        vertical-align: middle;
+    }
+    
+    .custom-control-label {
+        cursor: pointer;
+    }
+    
+    tbody tr:hover {
+        background-color: #f8f9fa;
+    }
+</style>

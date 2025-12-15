@@ -1,0 +1,107 @@
+@model Ecommerce.Web.Areas.Admin.ViewModels.GroupFormViewModel
+
+@{
+    ViewData["Title"] = "Thêm nhóm mới";
+}
+
+<!-- Content Header -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-12">
+                <h1 class="m-0">
+                    <i class="fas fa-user-shield text-success"></i> Thêm nhóm mới
+                </h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Thông tin nhóm</h3>
+                    </div>
+                    
+                    <form asp-action="Create" method="post">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label asp-for="Code" class="required"></label>
+                                <input asp-for="Code" class="form-control" placeholder="Ví dụ: ADMIN, USER, MANAGER">
+                                <span asp-validation-for="Code" class="text-danger"></span>
+                                <small class="form-text text-muted">Mã định danh duy nhất cho nhóm (chỉ chữ in hoa, không dấu, không khoảng trắng)</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="Name" class="required"></label>
+                                <input asp-for="Name" class="form-control" placeholder="Ví dụ: Quản trị viên, Người dùng">
+                                <span asp-validation-for="Name" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="Description"></label>
+                                <textarea asp-for="Description" class="form-control" rows="3" placeholder="Mô tả vai trò và chức năng của nhóm này"></textarea>
+                                <span asp-validation-for="Description" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="custom-control custom-switch">
+                                    <input asp-for="IsActive" type="checkbox" class="custom-control-input" id="isActiveSwitch" checked>
+                                    <label class="custom-control-label" for="isActiveSwitch">
+                                        <strong>Trạng thái hoạt động</strong>
+                                        <small class="d-block text-muted">Chỉ các nhóm đang hoạt động mới có thể gán cho người dùng</small>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-footer">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Lưu nhóm
+                            </button>
+                            <a asp-action="Index" class="btn btn-default">
+                                <i class="fas fa-times"></i> Hủy
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card card-info">
+                    <div class="card-header">
+                        <h3 class="card-title">Hướng dẫn</h3>
+                    </div>
+                    <div class="card-body">
+                        <h6><i class="fas fa-info-circle"></i> Về nhóm tài khoản</h6>
+                        <p class="text-sm">Nhóm tài khoản được sử dụng để phân loại và quản lý quyền hạn của người dùng trong hệ thống.</p>
+                        
+                        <h6><i class="fas fa-lightbulb"></i> Lưu ý</h6>
+                        <ul class="text-sm pl-3">
+                            <li>Mã nhóm nên ngắn gọn, dễ nhớ</li>
+                            <li>Tên nhóm nên rõ ràng, thể hiện vai trò</li>
+                            <li>Quyền hạn sẽ được gán trong màn hình Phân quyền</li>
+                        </ul>
+
+                        <h6><i class="fas fa-exclamation-triangle text-warning"></i> Quan trọng</h6>
+                        <p class="text-sm">Mã nhóm không thể thay đổi sau khi tạo. Hãy chọn mã phù hợp ngay từ đầu.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Auto uppercase for Code field
+        document.getElementById('Code').addEventListener('input', function() {
+            this.value = this.value.toUpperCase().replace(/[^A-Z0-9_]/g, '');
+        });
+    </script>
+}

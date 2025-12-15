@@ -1,7 +1,7 @@
-@model Ecommerce.Web.Models.PaginatedList<Ecommerce.Infrastructure.Entities.Warehouse>
+@model Ecommerce.Web.Models.PaginatedList<Ecommerce.Infrastructure.Entities.Group>
 
 @{
-    ViewData["Title"] = "Quản lý kho hàng";
+    ViewData["Title"] = "Quản lý nhóm tài khoản";
 }
 
 <!-- Content Header -->
@@ -10,7 +10,7 @@
         <div class="row mb-2">
             <div class="col-sm-6">
                 <h1 class="m-0">
-                    <i class="fas fa-warehouse text-info"></i> Quản lý kho hàng
+                    <i class="fas fa-user-shield text-success"></i> Quản lý nhóm tài khoản
                 </h1>
             </div>
             <div class="col-sm-6">
@@ -19,7 +19,7 @@
                         <i class="fas fa-arrow-left"></i> Quay lại
                     </a>
                     <a asp-action="Create" class="btn btn-primary">
-                        <i class="fas fa-plus"></i> Thêm kho hàng
+                        <i class="fas fa-plus"></i> Thêm nhóm
                     </a>
                 </div>
             </div>
@@ -32,7 +32,7 @@
     <div class="container-fluid">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Danh sách kho hàng</h3>
+                <h3 class="card-title">Danh sách nhóm</h3>
                 <div class="card-tools">
                     <form asp-action="Index" method="get" class="form-inline">
                         <div class="input-group input-group-sm" style="width: 300px;">
@@ -57,10 +57,10 @@
                 <table class="table table-hover text-nowrap">
                     <thead>
                         <tr>
-                            <th>Mã kho</th>
-                            <th>Tên kho</th>
-                            <th>Địa chỉ</th>
-                            <th>Số điện thoại</th>
+                            <th>Mã nhóm</th>
+                            <th>Tên nhóm</th>
+                            <th>Mô tả</th>
+                            <th>Trạng thái</th>
                             <th>Ngày tạo</th>
                             <th class="text-right">Thao tác</th>
                         </tr>
@@ -68,56 +68,64 @@
                     <tbody>
                         @if (Model.Any())
                         {
-                            @foreach (var item in Model)
+                            @foreach (var group in Model)
                             {
                                 <tr>
                                     <td>
-                                        <span class="badge badge-info">@item.Code</span>
+                                        <span class="badge badge-success">@group.Code</span>
                                     </td>
                                     <td>
-                                        <strong>@item.Name</strong>
+                                        <strong>@group.Name</strong>
                                     </td>
                                     <td>
-                                        <small class="text-muted">@item.Address</small>
-                                    </td>
-                                    <td>
-                                        @if (item.PhoneNumbers.Any())
+                                        @if (!string.IsNullOrEmpty(group.Description))
                                         {
-                                            <div>
-                                                @foreach (var phone in item.PhoneNumbers.Take(2))
-                                                {
-                                                    <div class="text-sm">
-                                                        <i class="fas fa-phone text-success"></i>
-                                                        <span>@phone</span>
-                                                    </div>
-                                                }
-                                                @if (item.PhoneNumbers.Count > 2)
-                                                {
-                                                    <small class="text-muted">+@(item.PhoneNumbers.Count - 2) khác</small>
-                                                }
-                                            </div>
+                                            <small class="text-muted">@group.Description</small>
                                         }
                                         else
                                         {
-                                            <span class="text-muted">Chưa có</span>
+                                            <span class="text-muted">-</span>
                                         }
                                     </td>
                                     <td>
-                                        <small>@item.CreatedAt.ToString("dd/MM/yyyy")</small>
+                                        @if (group.IsActive)
+                                        {
+                                            <span class="badge badge-success">
+                                                <i class="fas fa-check"></i> Hoạt động
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge badge-secondary">
+                                                <i class="fas fa-times"></i> Không hoạt động
+                                            </span>
+                                        }
                                     </td>
-                                    <td class="text-right">
-                                        <div class="btn-group">
-                                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-info" title="Chỉnh sửa">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
-                                            <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline" 
-                                                  onsubmit="return confirm('Bạn có chắc chắn muốn xóa kho hàng @item.Name?');">
-                                                <button type="submit" class="btn btn-sm btn-danger" title="Xóa">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
-                                            </form>
-                                        </div>
+                                    <td>
+                                        <small>@group.CreatedAt.ToString("dd/MM/yyyy")</small>
                                     </td>
+                                        <td class="text-right">
+                                            <div class="btn-group">
+                                                <a asp-action="Permissions" asp-route-id="@group.Id" class="btn btn-sm btn-primary" title="Phân quyền">
+                                                    <i class="fas fa-shield-alt"></i>
+                                                </a>
+                                                <form asp-action="ToggleActive" asp-route-id="@group.Id" method="post" class="d-inline">
+                                                    <button type="submit" class="btn btn-sm @(group.IsActive ? "btn-warning" : "btn-success")" 
+                                                            title="@(group.IsActive ? "Vô hiệu hóa" : "Kích hoạt")">
+                                                        <i class="fas fa-power-off"></i>
+                                                    </button>
+                                                </form>
+                                                <a asp-action="Edit" asp-route-id="@group.Id" class="btn btn-sm btn-info" title="Chỉnh sửa">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <form asp-action="Delete" asp-route-id="@group.Id" method="post" class="d-inline" 
+                                                      onsubmit="return confirm('Bạn có chắc chắn muốn xóa nhóm @group.Name?');">
+                                                    <button type="submit" class="btn btn-sm btn-danger" title="Xóa">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
                                 </tr>
                             }
                         }
@@ -126,7 +134,7 @@
                             <tr>
                                 <td colspan="6" class="text-center text-muted py-4">
                                     <i class="fas fa-inbox fa-3x mb-3 d-block"></i>
-                                    <p class="mb-0">Không có kho hàng nào</p>
+                                    <p class="mb-0">Không có nhóm nào</p>
                                     @if (!string.IsNullOrEmpty(ViewBag.SearchTerm as string))
                                     {
                                         <small>Không tìm thấy kết quả cho "<strong>@ViewBag.SearchTerm</strong>"</small>
@@ -144,7 +152,7 @@
                     <div class="float-left">
                         <small class="text-muted">
                             Trang @Model.PageIndex / @Model.TotalPages
-                            (Tổng: <strong>@Model.TotalCount</strong> kho hàng)
+                            (Tổng: <strong>@Model.TotalCount</strong> nhóm)
                         </small>
                     </div>
                     <ul class="pagination pagination-sm m-0 float-right">

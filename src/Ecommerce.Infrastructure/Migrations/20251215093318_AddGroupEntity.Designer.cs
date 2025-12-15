@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Ecommerce.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Ecommerce.Infrastructure.Migrations
 {
     [DbContext(typeof(EcommerceDbContext))]
-    partial class EcommerceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251215093318_AddGroupEntity")]
+    partial class AddGroupEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -71,12 +74,12 @@ namespace Ecommerce.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2025, 12, 15, 10, 3, 4, 92, DateTimeKind.Utc).AddTicks(9032),
+                            CreatedAt = new DateTime(2025, 12, 15, 9, 33, 16, 686, DateTimeKind.Utc).AddTicks(2487),
                             Email = "admin@ecommerce.com",
                             FullName = "Administrator",
                             IsActive = true,
-                            PasswordHash = "$2a$11$hZVSzUuS/rJgAQxnIHbpQeH3ILr7LQ/d/qgHmIvU6DUXyQQrgXfQS",
-                            UpdatedAt = new DateTime(2025, 12, 15, 10, 3, 4, 92, DateTimeKind.Utc).AddTicks(9035),
+                            PasswordHash = "$2a$11$zqzS3ECHcThAXbD3RFAaHuB3x3a3JbLiKCcw4AYXqdvELzsEtz0gm",
+                            UpdatedAt = new DateTime(2025, 12, 15, 9, 33, 16, 686, DateTimeKind.Utc).AddTicks(2491),
                             Username = "admin"
                         });
                 });
@@ -217,61 +220,61 @@ namespace Ecommerce.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("b9ed7b14-469f-4368-bd59-e00d546aab65"),
+                            Id = new Guid("bf1762dd-5d1e-4bd1-9ebf-a4c74315536d"),
                             Code = "GIAM40K",
-                            CreatedAt = new DateTime(2025, 12, 15, 10, 3, 3, 962, DateTimeKind.Utc).AddTicks(3297),
+                            CreatedAt = new DateTime(2025, 12, 15, 9, 33, 16, 555, DateTimeKind.Utc).AddTicks(6156),
                             Description = "Giảm 40.000đ cho đơn hàng từ 500.000đ",
                             DiscountAmount = 40000m,
-                            EndDate = new DateTime(2026, 1, 14, 10, 3, 3, 962, DateTimeKind.Utc).AddTicks(3297),
+                            EndDate = new DateTime(2026, 1, 14, 9, 33, 16, 555, DateTimeKind.Utc).AddTicks(6156),
                             IsActive = true,
                             MinimumOrderAmount = 500000m,
-                            StartDate = new DateTime(2025, 12, 8, 10, 3, 3, 962, DateTimeKind.Utc).AddTicks(3297),
-                            UpdatedAt = new DateTime(2025, 12, 15, 10, 3, 3, 962, DateTimeKind.Utc).AddTicks(3297),
+                            StartDate = new DateTime(2025, 12, 8, 9, 33, 16, 555, DateTimeKind.Utc).AddTicks(6156),
+                            UpdatedAt = new DateTime(2025, 12, 15, 9, 33, 16, 555, DateTimeKind.Utc).AddTicks(6156),
                             UsageLimit = 100,
                             UsedCount = 0
                         },
                         new
                         {
-                            Id = new Guid("e84040a4-e72b-4b9b-97ea-27e5b129ef2e"),
+                            Id = new Guid("cd706f41-e87c-4dae-ac23-2959c16b7ce5"),
                             Code = "GIAM50K",
-                            CreatedAt = new DateTime(2025, 12, 15, 10, 3, 3, 962, DateTimeKind.Utc).AddTicks(3297),
+                            CreatedAt = new DateTime(2025, 12, 15, 9, 33, 16, 555, DateTimeKind.Utc).AddTicks(6156),
                             Description = "Giảm 50.000đ cho đơn hàng từ 800.000đ",
                             DiscountAmount = 50000m,
-                            EndDate = new DateTime(2026, 1, 29, 10, 3, 3, 962, DateTimeKind.Utc).AddTicks(3297),
+                            EndDate = new DateTime(2026, 1, 29, 9, 33, 16, 555, DateTimeKind.Utc).AddTicks(6156),
                             IsActive = true,
                             MinimumOrderAmount = 800000m,
-                            StartDate = new DateTime(2025, 12, 10, 10, 3, 3, 962, DateTimeKind.Utc).AddTicks(3297),
-                            UpdatedAt = new DateTime(2025, 12, 15, 10, 3, 3, 962, DateTimeKind.Utc).AddTicks(3297),
+                            StartDate = new DateTime(2025, 12, 10, 9, 33, 16, 555, DateTimeKind.Utc).AddTicks(6156),
+                            UpdatedAt = new DateTime(2025, 12, 15, 9, 33, 16, 555, DateTimeKind.Utc).AddTicks(6156),
                             UsageLimit = 50,
                             UsedCount = 0
                         },
                         new
                         {
-                            Id = new Guid("ef69a7fb-8da0-4dd4-a9e8-a994c18315c6"),
+                            Id = new Guid("38cdf653-2d9c-405e-8949-ddac2e00a7ac"),
                             Code = "GIAM100K",
-                            CreatedAt = new DateTime(2025, 12, 15, 10, 3, 3, 962, DateTimeKind.Utc).AddTicks(3297),
+                            CreatedAt = new DateTime(2025, 12, 15, 9, 33, 16, 555, DateTimeKind.Utc).AddTicks(6156),
                             Description = "Giảm 100.000đ cho đơn hàng từ 1.500.000đ",
                             DiscountAmount = 100000m,
-                            EndDate = new DateTime(2026, 2, 13, 10, 3, 3, 962, DateTimeKind.Utc).AddTicks(3297),
+                            EndDate = new DateTime(2026, 2, 13, 9, 33, 16, 555, DateTimeKind.Utc).AddTicks(6156),
                             IsActive = true,
                             MinimumOrderAmount = 1500000m,
-                            StartDate = new DateTime(2025, 12, 12, 10, 3, 3, 962, DateTimeKind.Utc).AddTicks(3297),
-                            UpdatedAt = new DateTime(2025, 12, 15, 10, 3, 3, 962, DateTimeKind.Utc).AddTicks(3297),
+                            StartDate = new DateTime(2025, 12, 12, 9, 33, 16, 555, DateTimeKind.Utc).AddTicks(6156),
+                            UpdatedAt = new DateTime(2025, 12, 15, 9, 33, 16, 555, DateTimeKind.Utc).AddTicks(6156),
                             UsageLimit = 30,
                             UsedCount = 0
                         },
                         new
                         {
-                            Id = new Guid("be44c249-019e-4e9c-9175-6d2e4d9d5cc7"),
+                            Id = new Guid("7508f25e-79f7-4506-adaa-8c527848d031"),
                             Code = "FREESHIP",
-                            CreatedAt = new DateTime(2025, 12, 15, 10, 3, 3, 962, DateTimeKind.Utc).AddTicks(3297),
+                            CreatedAt = new DateTime(2025, 12, 15, 9, 33, 16, 555, DateTimeKind.Utc).AddTicks(6156),
                             Description = "Miễn phí vận chuyển cho đơn hàng từ 300.000đ",
                             DiscountAmount = 30000m,
-                            EndDate = new DateTime(2026, 3, 15, 10, 3, 3, 962, DateTimeKind.Utc).AddTicks(3297),
+                            EndDate = new DateTime(2026, 3, 15, 9, 33, 16, 555, DateTimeKind.Utc).AddTicks(6156),
                             IsActive = true,
                             MinimumOrderAmount = 300000m,
-                            StartDate = new DateTime(2025, 12, 5, 10, 3, 3, 962, DateTimeKind.Utc).AddTicks(3297),
-                            UpdatedAt = new DateTime(2025, 12, 15, 10, 3, 3, 962, DateTimeKind.Utc).AddTicks(3297),
+                            StartDate = new DateTime(2025, 12, 5, 9, 33, 16, 555, DateTimeKind.Utc).AddTicks(6156),
+                            UpdatedAt = new DateTime(2025, 12, 15, 9, 33, 16, 555, DateTimeKind.Utc).AddTicks(6156),
                             UsageLimit = 200,
                             UsedCount = 0
                         });
@@ -381,12 +384,6 @@ namespace Ecommerce.Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
-
-                    b.Property<Dictionary<string, int>>("Permissions")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("jsonb")
-                        .HasDefaultValueSql("'{}'::jsonb");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
