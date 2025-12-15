@@ -140,32 +140,38 @@
                 </button>
                 <button class="btn btn-block btn-primary" onclick="buyNow('@Model.Id', document.getElementById('quantity').value)">Mua ngay</button>
             </div>
-
-            <!-- Accordions -->
-            <div class="product-details-accordion">
-                <details open>
-                    <summary>Mô tả chi tiết</summary>
-                    <div class="accordion-content">
-                        @Model.Description
-                        <br/><br/>
-                        Một sản phẩm chất lượng cao từ Moderno. Thiết kế tinh tế, chất liệu bền đẹp phù hợp với xu hướng thời trang hiện đại.
-                    </div>
-                </details>
-                <details>
-                    <summary>Chính sách đổi trả</summary>
-                    <div class="accordion-content">
-                        Chúng tôi chấp nhận đổi trả trong vòng 30 ngày nếu sản phẩm còn nguyên tem mác và chưa qua sử dụng. Vui lòng liên hệ CSKH để được hỗ trợ.
-                    </div>
-                </details>
-                <details>
-                    <summary>Vận chuyển</summary>
-                    <div class="accordion-content">
-                        Miễn phí vận chuyển cho đơn hàng trên 1.000.000đ. Thời gian giao hàng dự kiến từ 2-4 ngày làm việc.
-                    </div>
-                </details>
-            </div>
         </div>
     </div>
+
+    <!-- Detailed Description Section - Full Width with Expandable Content -->
+    <div class="product-description-section">
+        <h3 class="description-title">@Model.Name</h3>
+        <div class="description-content" id="descriptionContent">
+            <div class="description-text">
+                @Model.Description
+                <br/><br/>
+                Là một sản phẩm không thể thiếu được để tạo nên outfit hoàn hảo cho outfit hằng ngày. Áo Phao Dày Ultrawarm Puffer Gile II là sự kết hợp hoàn hảo giữa khả năng giữ ấm vượt trội với phong cách năng động hiện đại. Được làm từ chất liệu cao cấp với công nghệ cách nhiệt tiên tiến, áo phù hợp với thời tiết lạnh giá nhất. Đường may tỉ mỉ cùng kiểu dáng hiện đại, áo mang đến cảm giác thời trang, mà tôi luôn mong muốn- một món đồ sang trọng, cổ điển và hợp thời trang. Là một phần tách rời mà bạn sẽ nhớ đến trong mùa đông -  một điều không thể bỏ qua vào những ngày se lạnh. Phong cách chung cho cả nam và nữ nhưng lại không bao giờ lỗi thời. Dáng áo phong phú và thời thượng.
+            </div>
+        </div>
+        <button class="btn-show-more" id="btnShowMore" onclick="toggleDescription()">
+            XEM THÊM
+        </button>
+    </div>
+
+    <script>
+        function toggleDescription() {
+            const content = document.getElementById('descriptionContent');
+            const btn = document.getElementById('btnShowMore');
+            
+            if (content.classList.contains('expanded')) {
+                content.classList.remove('expanded');
+                btn.textContent = 'XEM THÊM';
+            } else {
+                content.classList.add('expanded');
+                btn.textContent = 'THU GỌN';
+            }
+        }
+    </script>
 
     <!-- Related Products -->
     @if (Model.RelatedProducts.Any())

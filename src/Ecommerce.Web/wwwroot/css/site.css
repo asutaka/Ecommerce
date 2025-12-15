@@ -199,12 +199,147 @@ img {
 }
 
 .moderno-footer {
-  padding: 32px 24px;
-  border-top: 1px solid var(--border);
+  background: var(--accent-2);
+  color: #e5e7eb;
+  padding: 48px 24px 0;
+  margin-top: 60px;
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 40px;
+  padding-bottom: 40px;
+}
+
+.footer-section .brand-title {
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 1.5rem;
+  letter-spacing: 2px;
+  color: #fff;
+  margin-bottom: 12px;
+}
+
+.footer-tagline {
+  font-size: 0.9rem;
+  color: #cbd5e1;
+  margin: 8px 0;
+}
+
+.footer-description {
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: #94a3b8;
+  margin-bottom: 20px;
+}
+
+.footer-social {
   display: flex;
-  justify-content: space-between;
-  color: var(--muted);
-  background: var(--card);
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.social-link {
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.social-link:hover {
+  background: var(--accent);
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(241, 114, 106, 0.4);
+}
+
+.footer-heading {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #fff;
+  margin: 0 0 16px 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.footer-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-links li {
+  margin-bottom: 12px;
+}
+
+.footer-links a {
+  color: #94a3b8;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.2s ease;
+}
+
+.footer-links a:hover {
+  color: #fff;
+  padding-left: 4px;
+}
+
+.footer-contact {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-contact li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 16px;
+  font-size: 0.9rem;
+  color: #94a3b8;
+}
+
+.footer-contact svg {
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+
+.footer-contact a {
+  color: #cbd5e1;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.footer-contact a:hover {
+  color: #fff;
+}
+
+.footer-bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 24px 0;
+  text-align: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.footer-bottom p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #94a3b8;
+}
+
+@media (max-width: 768px) {
+  .footer-content {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
 }
 
 .pill {
@@ -1326,7 +1461,7 @@ img {
 .gallery-container {
   display: flex;
   gap: 20px;
-  height: 600px;
+  height: 730px;
 }
 
 .gallery-thumbnails {
@@ -1549,6 +1684,78 @@ img {
   line-height: 1.6;
   font-size: 0.95rem;
 }
+
+/* Product Description Section with Expandable Content */
+.product-description-section {
+  margin-top: 60px;
+  margin-bottom: 40px;
+  padding-top: 32px;
+  border-top: 1px solid var(--border);
+}
+
+.description-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0 0 20px 0;
+  color: var(--text);
+}
+
+.description-content {
+  max-height: 200px;
+  overflow: hidden;
+  position: relative;
+  transition: max-height 0.4s ease;
+}
+
+.description-content.expanded {
+  max-height: none;
+}
+
+.description-content::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 80px;
+  background: linear-gradient(to bottom, transparent, var(--bg));
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.description-content.expanded::after {
+  opacity: 0;
+}
+
+.description-text {
+  color: var(--muted);
+  line-height: 1.8;
+  font-size: 0.95rem;
+  text-align: justify;
+}
+
+.btn-show-more {
+  display: block;
+  margin: 20px auto 0;
+  padding: 10px 32px;
+  background: transparent;
+  border: 1.5px solid var(--text);
+  border-radius: 50px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: var(--text);
+}
+
+.btn-show-more:hover {
+  background: var(--text);
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
 
 /* Quantity Selector */
 .quantity-selector {
