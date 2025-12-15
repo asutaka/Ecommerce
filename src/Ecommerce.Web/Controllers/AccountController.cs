@@ -44,6 +44,15 @@ public class AccountController(
             return View(model);
         }
 
+        // Check if password is default (12345)
+        if (BCrypt.Net.BCrypt.Verify("12345", customer.PasswordHash))
+        {
+            // Store customer ID in TempData for password change
+            TempData["RequirePasswordChange"] = customer.Id.ToString();
+            TempData["Info"] = "Bạn đang sử dụng mật khẩu mặc định. Vui lòng đổi mật khẩu mới để tiếp tục.";
+            return RedirectToAction(nameof(ChangePassword));
+        }
+
         // Create claims
         var claims = new List<Claim>
         {
@@ -266,6 +275,92 @@ public class AccountController(
         logger.LogInformation("Customer {Email} logged in via {Provider}", customer.Email, provider);
 
         return RedirectToLocal(returnUrl);
+    }
+
+    [HttpGet]
+    [AllowAnonymous]
+    public IActionResult ChangePassword()
+    {
+        // Check if this is a required password change
+        if (TempData["RequirePasswordChange"] == null)
+        {
+            return RedirectToAction(nameof(Login));
+        }
+
+        // Pass customer ID via ViewBag to persist it in the view
+        ViewBag.CustomerId = TempData["RequirePasswordChange"]?.ToString();
+        ViewBag.RequirePasswordChange = true;
+        return View();
+    }
+
+    [HttpPost]
+    [AllowAnonymous]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model, string customerId)
+    {
+        if (!ModelState.IsValid)
+        {
+            ViewBag.CustomerId = customerId;
+            ViewBag.RequirePasswordChange = true;
+            return View(model);
+        }
+
+        // Check if new password is not default
+        if (model.NewPassword == "12345")
+        {
+            ModelState.AddModelError(nameof(model.NewPassword), "Mật khẩu mới không được là mật khẩu mặc định (12345).");
+            ViewBag.CustomerId = customerId;
+            ViewBag.RequirePasswordChange = true;
+            return View(model);
+        }
+
+        // Get customer ID from form parameter
+        if (string.IsNullOrEmpty(customerId) || !Guid.TryParse(customerId, out var customerGuid))
+        {
+            return RedirectToAction(nameof(Login));
+        }
+
+        var customer = await customerAuthService.GetByIdAsync(customerGuid);
+        if (customer == null)
+        {
+            return RedirectToAction(nameof(Login));
+        }
+
+        // Update password
+        customer.PasswordHash = BCrypt.Net.BCrypt.HashPassword(model.NewPassword);
+        customer.UpdatedAt = DateTime.UtcNow;
+        await dbContext.SaveChangesAsync();
+
+        // Auto login after password change
+        var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.NameIdentifier, customer.Id.ToString()),
+            new Claim(ClaimTypes.Email, customer.Email),
+            new Claim(ClaimTypes.Role, "Customer")
+        };
+
+        if (!string.IsNullOrEmpty(customer.FullName))
+        {
+            claims.Add(new Claim(ClaimTypes.Name, customer.FullName));
+        }
+
+        var claimsIdentity = new ClaimsIdentity(claims, CustomerAuthScheme);
+        var authProperties = new AuthenticationProperties
+        {
+            IsPersistent = true,
+            ExpiresUtc = DateTimeOffset.UtcNow.AddDays(30)
+        };
+
+        await HttpContext.SignInAsync(
+            CustomerAuthScheme,
+            new ClaimsPrincipal(claimsIdentity),
+            authProperties);
+
+        await customerAuthService.UpdateLastLoginAsync(customer.Id);
+        logger.LogInformation("Customer {Email} changed password and logged in", customer.Email);
+
+        TempData["Success"] = "Đổi mật khẩu thành công!";
+        return RedirectToAction("Index", "Home");
     }
 
     private IActionResult RedirectToLocal(string? returnUrl)

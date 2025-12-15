@@ -1,0 +1,350 @@
+@model Ecommerce.Web.Models.PaginatedList<Ecommerce.Infrastructure.Entities.Customer>
+
+@{
+    ViewData["Title"] = "Quản lý khách hàng";
+}
+
+<!-- Content Header -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">
+                    <i class="fas fa-users text-secondary"></i> Quản lý khách hàng
+                </h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- Stats Row -->
+        <div class="row">
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-info">
+                    <div class="inner">
+                        <h3>@Model.TotalCount</h3>
+                        <p>Tổng khách hàng</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-success">
+                    <div class="inner">
+                        <h3>@Model.Count(c => c.EmailConfirmed)</h3>
+                        <p>Email đã xác nhận</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-warning">
+                    <div class="inner">
+                        <h3>@Model.Count(c => !c.EmailConfirmed)</h3>
+                        <p>Chưa xác nhận</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-danger">
+                    <div class="inner">
+                        <h3>@Model.Count(c => c.Orders.Any())</h3>
+                        <p>Có đơn hàng</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Danh sách khách hàng</h3>
+                <div class="card-tools">
+                    <form asp-action="Index" method="get" class="form-inline">
+                        <div class="input-group input-group-sm mr-2" style="width: 250px;">
+                            <input type="text" name="searchTerm" class="form-control" placeholder="Tìm kiếm..." value="@ViewBag.SearchTerm">
+                            <div class="input-group-append">
+                                <button type="submit" class="btn btn-default">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                                @if (!string.IsNullOrEmpty(ViewBag.SearchTerm as string))
+                                {
+                                    <a asp-action="Index" class="btn btn-default">
+                                        <i class="fas fa-times"></i>
+                                    </a>
+                                }
+                            </div>
+                        </div>
+                        <select name="emailConfirmed" class="form-control form-control-sm" onchange="this.form.submit()">
+                            <option value="">Tất cả trạng thái</option>
+                            <option value="true" selected="@(ViewBag.EmailConfirmed == true ? "selected" : null)">Đã xác nhận</option>
+                            <option value="false" selected="@(ViewBag.EmailConfirmed == false ? "selected" : null)">Chưa xác nhận</option>
+                        </select>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="card-body table-responsive p-0">
+                <table class="table table-hover text-nowrap">
+                    <thead>
+                        <tr>
+                            <th>Email</th>
+                            <th>Họ tên</th>
+                            <th>Số điện thoại</th>
+                            <th>Đơn hàng</th>
+                            <th>Email xác nhận</th>
+                            <th>Đăng nhập gần nhất</th>
+                            <th>Ngày tạo</th>
+                            <th class="text-right">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Any())
+                        {
+                            @foreach (var customer in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        <strong>@customer.Email</strong>
+                                    </td>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(customer.FullName))
+                                        {
+                                            @customer.FullName
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">Chưa cập nhật</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(customer.Phone))
+                                        {
+                                            <i class="fas fa-phone text-success"></i>
+                                            <span>@customer.Phone</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">-</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (customer.Orders.Any())
+                                        {
+                                            <span class="badge badge-primary">@customer.Orders.Count đơn</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">Chưa có</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (customer.EmailConfirmed)
+                                        {
+                                            <span class="badge badge-success">
+                                                <i class="fas fa-check"></i> Đã xác nhận
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge badge-warning">
+                                                <i class="fas fa-exclamation"></i> Chưa xác nhận
+                                            </span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (customer.LastLoginAt.HasValue)
+                                        {
+                                            <small>@customer.LastLoginAt.Value.ToString("dd/MM/yyyy HH:mm")</small>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">Chưa đăng nhập</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <small>@customer.CreatedAt.ToString("dd/MM/yyyy")</small>
+                                    </td>
+                                    <td class="text-right">
+                                        <div class="btn-group">
+                                            <a asp-action="Details" asp-route-id="@customer.Id" class="btn btn-sm btn-info" title="Chi tiết">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <button type="button" class="btn btn-sm btn-primary" 
+                                                    data-toggle="modal" 
+                                                    data-target="#emailModal"
+                                                    data-customer-id="@customer.Id"
+                                                    data-customer-email="@customer.Email"
+                                                    title="Gửi email">
+                                                <i class="fas fa-envelope"></i>
+                                            </button>
+                                            <form asp-action="ResetPassword" asp-route-id="@customer.Id" method="post" class="d-inline"
+                                                  onsubmit="return confirm('Bạn có chắc chắn muốn reset mật khẩu cho @customer.Email về 12345?');">
+                                                <button type="submit" class="btn btn-sm btn-warning" title="Reset mật khẩu">
+                                                    <i class="fas fa-key"></i>
+                                                </button>
+                                            </form>
+                                            @if (!customer.Orders.Any())
+                                            {
+                                                <form asp-action="Delete" asp-route-id="@customer.Id" method="post" class="d-inline" 
+                                                      onsubmit="return confirm('Bạn có chắc chắn muốn xóa tài khoản @customer.Email?');">
+                                                    <button type="submit" class="btn btn-sm btn-danger" title="Xóa">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </form>
+                                            }
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="8" class="text-center text-muted py-4">
+                                    <i class="fas fa-inbox fa-3x mb-3 d-block"></i>
+                                    <p class="mb-0">Không có khách hàng nào</p>
+                                    @if (!string.IsNullOrEmpty(ViewBag.SearchTerm as string))
+                                    {
+                                        <small>Không tìm thấy kết quả cho "<strong>@ViewBag.SearchTerm</strong>"</small>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            
+            @if (Model.TotalPages > 1)
+            {
+                <div class="card-footer clearfix">
+                    <div class="float-left">
+                        <small class="text-muted">
+                            Trang @Model.PageIndex / @Model.TotalPages
+                            (Tổng: <strong>@Model.TotalCount</strong> khách hàng)
+                        </small>
+                    </div>
+                    <ul class="pagination pagination-sm m-0 float-right">
+                        @if (Model.HasPreviousPage)
+                        {
+                            <li class="page-item">
+                                <a asp-action="Index" 
+                                   asp-route-pageNumber="@(Model.PageIndex - 1)"
+                                   asp-route-searchTerm="@ViewBag.SearchTerm"
+                                   asp-route-emailConfirmed="@ViewBag.EmailConfirmed"
+                                   class="page-link">
+                                    <i class="fas fa-chevron-left"></i>
+                                </a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="page-item disabled">
+                                <span class="page-link"><i class="fas fa-chevron-left"></i></span>
+                            </li>
+                        }
+                        
+                        @for (int i = Math.Max(1, Model.PageIndex - 2); i <= Math.Min(Model.TotalPages, Model.PageIndex + 2); i++)
+                        {
+                            <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+                                <a asp-action="Index" 
+                                   asp-route-pageNumber="@i"
+                                   asp-route-searchTerm="@ViewBag.SearchTerm"
+                                   asp-route-emailConfirmed="@ViewBag.EmailConfirmed"
+                                   class="page-link">@i</a>
+                            </li>
+                        }
+                        
+                        @if (Model.HasNextPage)
+                        {
+                            <li class="page-item">
+                                <a asp-action="Index" 
+                                   asp-route-pageNumber="@(Model.PageIndex + 1)"
+                                   asp-route-searchTerm="@ViewBag.SearchTerm"
+                                   asp-route-emailConfirmed="@ViewBag.EmailConfirmed"
+                                   class="page-link">
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="page-item disabled">
+                                <span class="page-link"><i class="fas fa-chevron-right"></i></span>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- Email Modal -->
+<div class="modal fade" id="emailModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form asp-action="SendEmail" method="post">
+                <div class="modal-header bg-primary">
+                    <h5 class="modal-title">
+                        <i class="fas fa-envelope"></i> Gửi Email
+                    </h5>
+                    <button type="button" class="close text-white" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="id" id="customerId">
+                    <div class="form-group">
+                        <label>Gửi đến:</label>
+                        <input type="text" class="form-control" id="customerEmail" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="subject">Tiêu đề:</label>
+                        <input type="text" class="form-control" name="subject" id="subject" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Nội dung:</label>
+                        <textarea class="form-control" name="message" id="message" rows="5" required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        <i class="fas fa-times"></i> Hủy
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-paper-plane"></i> Gửi Email
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $('#emailModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var customerId = button.data('customer-id');
+            var customerEmail = button.data('customer-email');
+            
+            var modal = $(this);
+            modal.find('#customerId').val(customerId);
+            modal.find('#customerEmail').val(customerEmail);
+            modal.find('#subject').val('');
+            modal.find('#message').val('');
+        });
+    </script>
+}

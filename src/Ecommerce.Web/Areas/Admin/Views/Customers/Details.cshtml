@@ -1,0 +1,311 @@
+@model Ecommerce.Infrastructure.Entities.Customer
+@using Ecommerce.Infrastructure.Entities
+
+@{
+    ViewData["Title"] = "Chi tiết khách hàng";
+}
+
+<!-- Content Header -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">
+                    <i class="fas fa-user text-secondary"></i> Chi tiết khách hàng
+                </h1>
+            </div>
+            <div class="col-sm-6">
+                <a asp-action="Index" class="btn btn-secondary float-right">
+                    <i class="fas fa-arrow-left"></i> Quay lại
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <!-- Thông tin cá nhân -->
+                <div class="card card-primary card-outline">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-info-circle"></i> Thông tin cá nhân
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <dl class="row">
+                            <dt class="col-sm-4">
+                                <i class="fas fa-envelope text-info"></i> Email
+                            </dt>
+                            <dd class="col-sm-8">
+                                <strong>@Model.Email</strong>
+                                @if (Model.EmailConfirmed)
+                                {
+                                    <span class="badge badge-success ml-2">
+                                        <i class="fas fa-check"></i> Đã xác nhận
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-warning ml-2">
+                                        <i class="fas fa-exclamation"></i> Chưa xác nhận
+                                    </span>
+                                }
+                            </dd>
+
+                            <dt class="col-sm-4">
+                                <i class="fas fa-user text-primary"></i> Họ và tên
+                            </dt>
+                            <dd class="col-sm-8">
+                                @if (!string.IsNullOrEmpty(Model.FullName))
+                                {
+                                    @Model.FullName
+                                }
+                                else
+                                {
+                                    <span class="text-muted">Chưa cập nhật</span>
+                                }
+                            </dd>
+
+                            <dt class="col-sm-4">
+                                <i class="fas fa-phone text-success"></i> Số điện thoại
+                            </dt>
+                            <dd class="col-sm-8">
+                                @if (!string.IsNullOrEmpty(Model.Phone))
+                                {
+                                    @Model.Phone
+                                }
+                                else
+                                {
+                                    <span class="text-muted">Chưa cập nhật</span>
+                                }
+                            </dd>
+
+                            <dt class="col-sm-4">
+                                <i class="fas fa-calendar text-info"></i> Ngày đăng ký
+                            </dt>
+                            <dd class="col-sm-8">
+                                @Model.CreatedAt.ToString("dd/MM/yyyy HH:mm")
+                            </dd>
+
+                            <dt class="col-sm-4">
+                                <i class="fas fa-clock text-warning"></i> Đăng nhập gần nhất
+                            </dt>
+                            <dd class="col-sm-8">
+                                @if (Model.LastLoginAt.HasValue)
+                                {
+                                    @Model.LastLoginAt.Value.ToString("dd/MM/yyyy HH:mm")
+                                }
+                                else
+                                {
+                                    <span class="text-muted">Chưa đăng nhập</span>
+                                }
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+
+                <!-- External Logins -->
+                @if (Model.ExternalLogins.Any())
+                {
+                    <div class="card card-info card-outline">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-link"></i> Đăng nhập bên ngoài
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-unstyled">
+                                @foreach (var login in Model.ExternalLogins)
+                                {
+                                    <li class="mb-2">
+                                        @if (login.Provider == "Google")
+                                        {
+                                            <i class="fab fa-google text-danger"></i>
+                                        }
+                                        else if (login.Provider == "Facebook")
+                                        {
+                                            <i class="fab fa-facebook text-primary"></i>
+                                        }
+                                        else
+                                        {
+                                            <i class="fas fa-sign-in-alt"></i>
+                                        }
+                                        <strong>@login.Provider</strong>
+                                        <small class="text-muted ml-2">(@login.ProviderKey)</small>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                }
+
+                <!-- Đơn hàng -->
+                <div class="card card-success card-outline">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-shopping-cart"></i> Lịch sử đơn hàng
+                        </h3>
+                        <div class="card-tools">
+                            <span class="badge badge-primary">@Model.Orders.Count đơn hàng</span>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        @if (Model.Orders.Any())
+                        {
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Ngày đặt</th>
+                                        <th>Tổng tiền</th>
+                                        <th>Trạng thái</th>
+                                        <th class="text-right">Số món</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var order in Model.Orders.OrderByDescending(o => o.CreatedAt))
+                                    {
+                                        <tr>
+                                            <td>
+                                                <a asp-controller="Orders" asp-action="Details" asp-route-id="@order.Id">
+                                                    <strong>#@order.Id.ToString().Substring(0, 8)</strong>
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <small>@order.CreatedAt.ToString("dd/MM/yyyy")</small>
+                                            </td>
+                                            <td>
+                                                <strong>@order.Total.ToString("N0") VNĐ</strong>
+                                            </td>
+                                            <td>
+                                                @switch (order.Status)
+                                                {
+                                                    case OrderStatus.PendingInvoice:
+                                                        <span class="badge badge-warning">Chờ xử lý</span>
+                                                        break;
+                                                    case OrderStatus.Invoiced:
+                                                    case OrderStatus.PaymentProcessing:
+                                                        <span class="badge badge-info">Đang xử lý</span>
+                                                        break;
+                                                    case OrderStatus.Paid:
+                                                        <span class="badge badge-primary">Đã thanh toán</span>
+                                                        break;
+                                                    case OrderStatus.Completed:
+                                                        <span class="badge badge-success">Hoàn thành</span>
+                                                        break;
+                                                    case OrderStatus.Cancelled:
+                                                        <span class="badge badge-danger">Đã hủy</span>
+                                                        break;
+                                                    default:
+                                                        <span class="badge badge-secondary">@order.Status</span>
+                                                        break;
+                                                }
+                                            </td>
+                                            <td class="text-right">
+                                                <span class="badge badge-secondary">@order.Items.Count</span>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                        else
+                        {
+                            <div class="text-center text-muted py-4">
+                                <i class="fas fa-shopping-basket fa-2x mb-2 d-block"></i>
+                                <p class="mb-0">Khách hàng chưa có đơn hàng nào</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="card card-warning card-outline">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-cogs"></i> Thao tác
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <button type="button" class="btn btn-primary" 
+                                data-toggle="modal" 
+                                data-target="#emailModal"
+                                data-customer-id="@Model.Id"
+                                data-customer-email="@Model.Email">
+                            <i class="fas fa-envelope"></i> Gửi Email cho khách hàng
+                        </button>
+
+                        <form asp-action="ResetPassword" asp-route-id="@Model.Id" method="post" class="d-inline ml-2"
+                              onsubmit="return confirm('Bạn có chắc chắn muốn reset mật khẩu về 12345?');">
+                            <button type="submit" class="btn btn-warning">
+                                <i class="fas fa-key"></i> Reset mật khẩu về mặc định
+                            </button>
+                        </form>
+
+                        @if (!Model.Orders.Any())
+                        {
+                            <form asp-action="Delete" asp-route-id="@Model.Id" method="post" class="d-inline float-right"
+                                  onsubmit="return confirm('Bạn có chắc chắn muốn xóa tài khoản này?');">
+                                <button type="submit" class="btn btn-danger">
+                                    <i class="fas fa-trash"></i> Xóa tài khoản
+                                </button>
+                            </form>
+                        }
+                        else
+                        {
+                            <div class="alert alert-info mt-3 mb-0">
+                                <i class="icon fas fa-info"></i>
+                                Không thể xóa tài khoản vì khách hàng đã có đơn hàng.
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Email Modal -->
+<div class="modal fade" id="emailModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form asp-action="SendEmail" method="post">
+                <div class="modal-header bg-primary">
+                    <h5 class="modal-title">
+                        <i class="fas fa-envelope"></i> Gửi Email
+                    </h5>
+                    <button type="button" class="close text-white" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="id" id="customerId" value="@Model.Id">
+                    <div class="form-group">
+                        <label>Gửi đến:</label>
+                        <input type="text" class="form-control" id="customerEmail" value="@Model.Email" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="subject">Tiêu đề:</label>
+                        <input type="text" class="form-control" name="subject" id="subject" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Nội dung:</label>
+                        <textarea class="form-control" name="message" id="message" rows="5" required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        <i class="fas fa-times"></i> Hủy
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-paper-plane"></i> Gửi Email
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
