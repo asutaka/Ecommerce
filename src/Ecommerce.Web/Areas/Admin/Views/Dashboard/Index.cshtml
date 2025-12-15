@@ -1,75 +1,144 @@
 @model DashboardViewModel
 @{
-    ViewData["Title"] = "Bảng điều khiển";
+    ViewData["Title"] = "Dashboard";
 }
 
-<section class="admin-hero">
-    <div class="d-flex justify-content-between align-items-center">
-        <div>
-            <p class="eyebrow text-muted">Moderno Admin</p>
-            <h1>Bảng điều khiển Saga</h1>
-            <p>Giám sát vòng đời hóa đơn → thanh toán → thông báo.</p>
-        </div>
-        <div class="d-flex gap-2">
-            <a asp-controller="Orders" asp-action="Index" class="btn btn-outline-light rounded-pill px-4">
-                <i class="bi bi-receipt me-2"></i>Quản lý đơn hàng
-            </a>
-            <a asp-controller="Products" asp-action="Index" class="btn btn-outline-light rounded-pill px-4">
-                <i class="bi bi-box-seam me-2"></i>Quản lý sản phẩm
-            </a>
-            <a asp-controller="Categories" asp-action="Index" class="btn btn-outline-light rounded-pill px-4">
-                <i class="bi bi-tags me-2"></i>Quản lý danh mục
-            </a>
-            <a class="ghost" asp-area="" asp-controller="Home" asp-action="Index">← Về Storefront</a>
+<!-- Info boxes -->
+<div class="row">
+    <div class="col-12 col-sm-6 col-md-3">
+        <div class="info-box">
+            <span class="info-box-icon bg-info elevation-1"><i class="fas fa-shopping-cart"></i></span>
+            <div class="info-box-content">
+                <span class="info-box-text">Đơn hàng</span>
+                <span class="info-box-number">@Model.Stats.Orders</span>
+            </div>
         </div>
     </div>
-</section>
 
-<section class="admin-stats">
-    <article>
-        <p>Đơn hàng</p>
-        <strong>@Model.Stats.Orders</strong>
-    </article>
-    <article>
-        <p>Đã thanh toán</p>
-        <strong>@Model.Stats.PaidOrders</strong>
-    </article>
-    <article>
-        <p>Revenue</p>
-        <strong>@Model.Stats.Revenue.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))</strong>
-    </article>
-    <article>
-        <p>Notifications</p>
-        <strong>@Model.Stats.Notifications</strong>
-    </article>
-</section>
+    <div class="col-12 col-sm-6 col-md-3">
+        <div class="info-box mb-3">
+            <span class="info-box-icon bg-success elevation-1"><i class="fas fa-check-circle"></i></span>
+            <div class="info-box-content">
+                <span class="info-box-text">Đã thanh toán</span>
+                <span class="info-box-number">@Model.Stats.PaidOrders</span>
+            </div>
+        </div>
+    </div>
 
-<section class="admin-table">
-    <header>
-        <h2>Đơn hàng gần nhất</h2>
-        <small>ID Correlation = OrderId</small>
-    </header>
-    <table>
-        <thead>
-            <tr>
-                <th>OrderId</th>
-                <th>Khách hàng</th>
-                <th>Trạng thái</th>
-                <th>Tổng</th>
-                <th>Thời gian</th>
-            </tr>
-        </thead>
-        <tbody>
-        @foreach (var order in Model.RecentOrders)
-        {
-            <tr>
-                <td><code>@order.OrderId</code></td>
-                <td>@order.Customer</td>
-                <td>@order.Status</td>
-                <td>@order.Total.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))</td>
-                <td>@order.CreatedAt.ToLocalTime().ToString("dd/MM HH:mm")</td>
-            </tr>
-        }
-        </tbody>
-    </table>
-</section>
+    <div class="col-12 col-sm-6 col-md-3">
+        <div class="info-box mb-3">
+            <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-dollar-sign"></i></span>
+            <div class="info-box-content">
+                <span class="info-box-text">Doanh thu</span>
+                <span class="info-box-number">@Model.Stats.Revenue.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-sm-6 col-md-3">
+        <div class="info-box mb-3">
+            <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-bell"></i></span>
+            <div class="info-box-content">
+                <span class="info-box-text">Thông báo</span>
+                <span class="info-box-number">@Model.Stats.Notifications</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row mb-3">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-bolt mr-1"></i>
+                    Hành động nhanh
+                </h3>
+            </div>
+            <div class="card-body">
+                <a asp-controller="Products" asp-action="Create" class="btn btn-success mr-2">
+                    <i class="fas fa-plus"></i> Thêm sản phẩm
+                </a>
+                <a asp-controller="Categories" asp-action="Create" class="btn btn-primary mr-2">
+                    <i class="fas fa-plus"></i> Thêm danh mục
+                </a>
+                <a asp-controller="Orders" asp-action="Index" class="btn btn-info mr-2">
+                    <i class="fas fa-list"></i> Xem đơn hàng
+                </a>
+                <a asp-area="" asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary" target="_blank">
+                    <i class="fas fa-external-link-alt"></i> Xem Storefront
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Orders Table -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-shopping-cart mr-1"></i>
+                    Đơn hàng gần nhất
+                </h3>
+                <div class="card-tools">
+                    <span class="badge badge-primary">ID Correlation = OrderId</span>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>OrderId</th>
+                                <th>Khách hàng</th>
+                                <th>Trạng thái</th>
+                                <th>Tổng tiền</th>
+                                <th>Thời gian</th>
+                                <th>Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var order in Model.RecentOrders)
+                            {
+                                <tr>
+                                    <td><code>@order.OrderId</code></td>
+                                    <td>@order.Customer</td>
+                                    <td>
+                                        @if (order.Status == "Paid" || order.Status == "Completed")
+                                        {
+                                            <span class="badge badge-success">@order.Status</span>
+                                        }
+                                        else if (order.Status == "Pending")
+                                        {
+                                            <span class="badge badge-warning">@order.Status</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge badge-secondary">@order.Status</span>
+                                        }
+                                    </td>
+                                    <td><strong>@order.Total.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))</strong></td>
+                                    <td>@order.CreatedAt.ToLocalTime().ToString("dd/MM HH:mm")</td>
+                                    <td>
+                                        <a asp-controller="Orders" asp-action="Details" asp-route-id="@order.OrderId" class="btn btn-sm btn-info">
+                                            <i class="fas fa-eye"></i> Chi tiết
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card-footer clearfix">
+                <a asp-controller="Orders" asp-action="Index" class="btn btn-sm btn-primary float-right">
+                    <i class="fas fa-arrow-circle-right"></i> Xem tất cả đơn hàng
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
