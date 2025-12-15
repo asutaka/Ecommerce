@@ -1,3 +1,5 @@
+@inject Ecommerce.Web.Services.IPermissionService PermissionService
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -131,63 +133,84 @@
                 <!-- Sidebar Menu -->
                 <nav class="mt-2">
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-                        <!-- Dashboard -->
-                        <li class="nav-item">
-                            <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Dashboard" ? "active" : "")">
-                                <i class="nav-icon fas fa-tachometer-alt"></i>
-                                <p>Dashboard</p>
-                            </a>
-                        </li>
+                        <!-- Dashboard - Check permission -->
+                        @if (await PermissionService.HasPermissionAsync("dashboard.view"))
+                        {
+                            <li class="nav-item">
+                                <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index" class="nav-link">
+                                    <i class="nav-icon fas fa-tachometer-alt"></i>
+                                    <p>Dashboard</p>
+                                </a>
+                            </li>
+                        }
 
-                        <!-- Products -->
-                        <li class="nav-item">
-                            <a asp-area="Admin" asp-controller="Products" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Products" ? "active" : "")">
-                                <i class="nav-icon fas fa-box"></i>
-                                <p>Sản phẩm</p>
-                            </a>
-                        </li>
-
-                        <!-- Categories -->
-                        <li class="nav-item">
-                            <a asp-area="Admin" asp-controller="Categories" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Categories" ? "active" : "")">
-                                <i class="nav-icon fas fa-tags"></i>
-                                <p>Danh mục</p>
-                            </a>
-                        </li>
-
-                        <!-- Orders -->
-                        <li class="nav-item">
-                            <a asp-area="Admin" asp-controller="Orders" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Orders" ? "active" : "")">
-                                <i class="nav-icon fas fa-shopping-cart"></i>
-                                <p>Đơn hàng</p>
-                            </a>
-                        </li>
-
-                        <!-- Reports -->
-                        <li class="nav-item">
-                            <a asp-area="Admin" asp-controller="Reports" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Reports" ? "active" : "")">
-                                <i class="nav-icon fas fa-chart-bar"></i>
-                                <p>Báo cáo</p>
-                            </a>
-                        </li>
-
-                        <!-- Carts (Admin View) -->
-                        <li class="nav-item">
-                            <a asp-area="Admin" asp-controller="Carts" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Carts" ? "active" : "")">
-                                <i class="nav-icon fas fa-shopping-basket"></i>
-                                <p>Giỏ hàng</p>
-                            </a>
-                        </li>
-
-                        <li class="nav-header">HỆ THỐNG</li>
 
                         <!-- Settings / Configuration -->
-                        <li class="nav-item">
-                            <a asp-area="Admin" asp-controller="Settings" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Settings" ? "active" : "")">
-                                <i class="nav-icon fas fa-cog"></i>
-                                <p>Cấu hình</p>
-                            </a>
-                        </li>
+                        <!-- Settings / Configuration - Check permission -->
+                        @if (await PermissionService.HasPermissionAsync("settings.view"))
+                        {
+                            <li class="nav-item">
+                                <a asp-area="Admin" asp-controller="Settings" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Settings" ? "active" : "")">
+                                    <i class="nav-icon fas fa-cog"></i>
+                                    <p>Cấu hình</p>
+                                </a>
+                            </li>
+                        }
+
+                        <!-- Products - Check permission -->
+                        @if (await PermissionService.HasPermissionAsync("products.view"))
+                        {
+                            <li class="nav-item">
+                                <a asp-area="Admin" asp-controller="Products" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Products" ? "active" : "")">
+                                    <i class="nav-icon fas fa-box"></i>
+                                    <p>Sản phẩm</p>
+                                </a>
+                            </li>
+                        }
+
+                        <!-- Categories - Check permission -->
+                        @if (await PermissionService.HasPermissionAsync("categories.view"))
+                        {
+                            <li class="nav-item">
+                                <a asp-area="Admin" asp-controller="Categories" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Categories" ? "active" : "")">
+                                    <i class="nav-icon fas fa-tags"></i>
+                                    <p>Danh mục</p>
+                                </a>
+                            </li>
+                        }
+
+                        <!-- Orders - Check permission -->
+                        @if (await PermissionService.HasPermissionAsync("orders.view"))
+                        {
+                            <li class="nav-item">
+                                <a asp-area="Admin" asp-controller="Orders" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Orders" ? "active" : "")">
+                                    <i class="nav-icon fas fa-shopping-cart"></i>
+                                    <p>Đơn hàng</p>
+                                </a>
+                            </li>
+                        }
+
+                        <!-- Reports - Check permission -->
+                        @if (await PermissionService.HasPermissionAsync("reports.view"))
+                        {
+                            <li class="nav-item">
+                                <a asp-area="Admin" asp-controller="Reports" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Reports" ? "active" : "")">
+                                    <i class="nav-icon fas fa-chart-bar"></i>
+                                    <p>Báo cáo</p>
+                                </a>
+                            </li>
+                        }
+
+                        <!-- Carts - Check permission -->
+                        @if (await PermissionService.HasPermissionAsync("carts.view"))
+                        {
+                            <li class="nav-item">
+                                <a asp-area="Admin" asp-controller="Carts" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Carts" ? "active" : "")">
+                                    <i class="nav-icon fas fa-shopping-basket"></i>
+                                    <p>Giỏ hàng</p>
+                                </a>
+                            </li>
+                        }
                     </ul>
                 </nav>
                 <!-- /.sidebar-menu -->

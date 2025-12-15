@@ -24,6 +24,10 @@ builder.Services.AddScoped<Ecommerce.Web.Services.IAdminAuthService, Ecommerce.W
 // Register customer authentication service
 builder.Services.AddScoped<Ecommerce.Web.Services.ICustomerAuthService, Ecommerce.Web.Services.CustomerAuthService>();
 
+// Register permission service
+builder.Services.AddScoped<Ecommerce.Web.Services.IPermissionService, Ecommerce.Web.Services.PermissionService>();
+builder.Services.AddHttpContextAccessor(); // Required for PermissionService to get current user
+
 // Configure dual authentication schemes (Admin + Customer)
 builder.Services.AddAuthentication(options =>
 {
