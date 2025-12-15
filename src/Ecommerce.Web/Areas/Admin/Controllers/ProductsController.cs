@@ -13,7 +13,7 @@ public class ProductsController(EcommerceDbContext dbContext) : Controller
 {
     public async Task<IActionResult> Index(string? searchTerm, int? pageNumber)
     {
-        var query = dbContext.Products.Include(x => x.Category).AsQueryable();
+        var query = dbContext.Products.Include(x => x.PrimaryCategory).AsQueryable();
 
         if (!string.IsNullOrWhiteSpace(searchTerm))
         {
@@ -67,8 +67,14 @@ public class ProductsController(EcommerceDbContext dbContext) : Controller
             Price = model.Price,
             IsFeatured = model.IsFeatured,
             Images = validImages,
-            CategoryId = model.CategoryId
+            PrimaryCategoryId = model.PrimaryCategoryId
         };
+
+        // Add to many-to-many relation
+        product.ProductCategories.Add(new ProductCategory
+        {
+            CategoryId = model.PrimaryCategoryId
+        });
 
         dbContext.Products.Add(product);
         await dbContext.SaveChangesAsync();
@@ -93,7 +99,7 @@ public class ProductsController(EcommerceDbContext dbContext) : Controller
             Price = product.Price,
             IsFeatured = product.IsFeatured,
             ImageUrls = new List<string>(product.Images),
-            CategoryId = product.CategoryId,
+            PrimaryCategoryId = product.PrimaryCategoryId ?? Guid.Empty,
             Categories = await GetCategories()
         };
 
@@ -141,7 +147,23 @@ public class ProductsController(EcommerceDbContext dbContext) : Controller
         product.Price = model.Price;
         product.IsFeatured = model.IsFeatured;
         product.Images = validImages;
-        product.CategoryId = model.CategoryId;
+        product.PrimaryCategoryId = model.PrimaryCategoryId;
+        
+        // Update many-to-many: ensure it's in the list
+        // Note: For full M-N support, we would clear and re-add list based on selection
+        // For now, we just ensure Primary is in there.
+        var existing = await dbContext.ProductCategories
+            .FirstOrDefaultAsync(x => x.ProductId == id && x.CategoryId == model.PrimaryCategoryId);
+            
+        if (existing == null)
+        {
+            dbContext.ProductCategories.Add(new ProductCategory
+            {
+                ProductId = id,
+                CategoryId = model.PrimaryCategoryId
+            });
+        }
+
         product.UpdatedAt = DateTime.UtcNow;
 
         await dbContext.SaveChangesAsync();

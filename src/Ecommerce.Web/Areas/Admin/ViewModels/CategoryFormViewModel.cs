@@ -14,4 +14,9 @@ public class CategoryFormViewModel
     [MaxLength(500, ErrorMessage = "Mô tả không được quá 500 ký tự")]
     [Display(Name = "Mô tả")]
     public string? Description { get; set; }
+
+    [Display(Name = "Danh mục cha")]
+    public Guid? ParentId { get; set; }
+
+    public List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> Categories { get; set; } = new();
 }

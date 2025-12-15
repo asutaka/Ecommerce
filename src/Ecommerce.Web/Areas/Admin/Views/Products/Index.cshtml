@@ -63,7 +63,7 @@
                                 <div class="fw-bold">@item.Name</div>
                                 <div class="small text-muted text-truncate" style="max-width: 200px;">@item.Description</div>
                             </td>
-                            <td>@(item.Category?.Name ?? "N/A")</td>
+                            <td>@(item.PrimaryCategory?.Name ?? "N/A")</td>
                             <td>@item.Price.ToString("N0") ₫</td>
                             <td>
                                 @if (item.IsFeatured)

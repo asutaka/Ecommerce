@@ -1,0 +1,223 @@
+@model Ecommerce.Web.Models.PaginatedList<Ecommerce.Infrastructure.Entities.Coupon>
+
+@{
+    ViewData["Title"] = "Quản lý mã khuyến mãi";
+}
+
+<!-- Content Header -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">
+                    <i class="fas fa-tag text-warning"></i> Quản lý mã khuyến mãi
+                </h1>
+            </div>
+            <div class="col-sm-6">
+                <a asp-action="Create" class="btn btn-primary float-right">
+                    <i class="fas fa-plus"></i> Thêm mã khuyến mãi
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Danh sách mã khuyến mãi</h3>
+                <div class="card-tools">
+                    <form asp-action="Index" method="get" class="form-inline">
+                        <div class="input-group input-group-sm" style="width: 300px;">
+                            <input type="text" name="searchTerm" class="form-control" placeholder="Tìm kiếm..." value="@ViewBag.SearchTerm">
+                            <div class="input-group-append">
+                                <button type="submit" class="btn btn-default">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                                @if (!string.IsNullOrEmpty(ViewBag.SearchTerm as string))
+                                {
+                                    <a asp-action="Index" class="btn btn-default">
+                                        <i class="fas fa-times"></i>
+                                    </a>
+                                }
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="card-body table-responsive p-0">
+                <table class="table table-hover text-nowrap">
+                    <thead>
+                        <tr>
+                            <th>Mã</th>
+                            <th>Mô tả</th>
+                            <th>Giảm giá</th>
+                            <th>Đơn tối thiểu</th>
+                            <th>Thời gian</th>
+                            <th>Sử dụng</th>
+                            <th>Trạng thái</th>
+                            <th class="text-right">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Any())
+                        {
+                            @foreach (var item in Model)
+                            {
+                                var now = DateTime.Now;
+                                var isExpired = item.EndDate < now;
+                                var isUpcoming = item.StartDate > now;
+                                var isActive = item.StartDate <= now && item.EndDate >= now && item.IsActive;
+                                
+                                <tr>
+                                    <td>
+                                        <strong class="text-primary">@item.Code</strong>
+                                    </td>
+                                    <td>
+                                        <small class="text-muted">@item.Description</small>
+                                    </td>
+                                    <td>
+                                        @if (item.DiscountPercentage.HasValue && item.DiscountPercentage > 0)
+                                        {
+                                            <span class="badge badge-success">-@item.DiscountPercentage%</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge badge-info">-@item.DiscountAmount.ToString("N0") VNĐ</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <small>@item.MinimumOrderAmount.ToString("N0") VNĐ</small>
+                                    </td>
+                                    <td>
+                                        <small>
+                                            @item.StartDate.ToString("dd/MM/yyyy")<br/>
+                                            → @item.EndDate.ToString("dd/MM/yyyy")
+                                        </small>
+                                    </td>
+                                    <td>
+                                        <span class="badge @(item.UsedCount >= item.UsageLimit ? "badge-danger" : "badge-secondary")">
+                                            @item.UsedCount / @item.UsageLimit
+                                        </span>
+                                    </td>
+                                    <td>
+                                        @if (isExpired)
+                                        {
+                                            <span class="badge badge-dark">Hết hạn</span>
+                                        }
+                                        else if (isUpcoming)
+                                        {
+                                            <span class="badge badge-info">Sắp diễn ra</span>
+                                        }
+                                        else if (isActive)
+                                        {
+                                            <span class="badge badge-success">Đang hoạt động</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge badge-warning">Tạm dừng</span>
+                                        }
+                                    </td>
+                                    <td class="text-right">
+                                        <div class="btn-group">
+                                            <form asp-action="ToggleActive" asp-route-id="@item.Id" method="post" class="d-inline">
+                                                <button type="submit" class="btn btn-sm @(item.IsActive ? "btn-warning" : "btn-success")" 
+                                                        title="@(item.IsActive ? "Vô hiệu hóa" : "Kích hoạt")">
+                                                    <i class="fas fa-power-off"></i>
+                                                </button>
+                                            </form>
+                                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-info" title="Chỉnh sửa">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline" 
+                                                  onsubmit="return confirm('Bạn có chắc chắn muốn xóa mã @item.Code?');">
+                                                <button type="submit" class="btn btn-sm btn-danger" title="Xóa">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="8" class="text-center text-muted py-4">
+                                    <i class="fas fa-inbox fa-3x mb-3 d-block"></i>
+                                    <p class="mb-0">Không có mã khuyến mãi nào</p>
+                                    @if (!string.IsNullOrEmpty(ViewBag.SearchTerm as string))
+                                    {
+                                        <small>Không tìm thấy kết quả cho "<strong>@ViewBag.SearchTerm</strong>"</small>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            
+            @if (Model.TotalPages > 1)
+            {
+                <div class="card-footer clearfix">
+                    <div class="float-left">
+                        <small class="text-muted">
+                            Trang @Model.PageIndex / @Model.TotalPages
+                            (Tổng: <strong>@Model.TotalCount</strong> mã khuyến mãi)
+                        </small>
+                    </div>
+                    <ul class="pagination pagination-sm m-0 float-right">
+                        @if (Model.HasPreviousPage)
+                        {
+                            <li class="page-item">
+                                <a asp-action="Index" 
+                                   asp-route-pageNumber="@(Model.PageIndex - 1)"
+                                   asp-route-searchTerm="@ViewBag.SearchTerm"
+                                   class="page-link">
+                                    <i class="fas fa-chevron-left"></i>
+                                </a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="page-item disabled">
+                                <span class="page-link"><i class="fas fa-chevron-left"></i></span>
+                            </li>
+                        }
+                        
+                        @for (int i = Math.Max(1, Model.PageIndex - 2); i <= Math.Min(Model.TotalPages, Model.PageIndex + 2); i++)
+                        {
+                            <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+                                <a asp-action="Index" 
+                                   asp-route-pageNumber="@i"
+                                   asp-route-searchTerm="@ViewBag.SearchTerm"
+                                   class="page-link">@i</a>
+                            </li>
+                        }
+                        
+                        @if (Model.HasNextPage)
+                        {
+                            <li class="page-item">
+                                <a asp-action="Index" 
+                                   asp-route-pageNumber="@(Model.PageIndex + 1)"
+                                   asp-route-searchTerm="@ViewBag.SearchTerm"
+                                   class="page-link">
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="page-item disabled">
+                                <span class="page-link"><i class="fas fa-chevron-right"></i></span>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            }
+        </div>
+    </div>
+</section>

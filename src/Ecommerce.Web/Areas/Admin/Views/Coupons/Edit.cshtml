@@ -1,0 +1,192 @@
+@model Ecommerce.Web.Areas.Admin.ViewModels.CouponFormViewModel
+
+@{
+    ViewData["Title"] = "Chỉnh sửa mã khuyến mãi";
+}
+
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">
+                    <i class="fas fa-tag text-warning"></i>
+                    Chỉnh sửa mã khuyến mãi
+                </h1>
+            </div>
+            <div class="col-sm-6">
+                <a asp-action="Index" class="btn btn-secondary float-right">
+                    <i class="fas fa-arrow-left"></i> Quay lại
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="content">
+    <div class="container-fluid">
+        <form asp-action="Edit" method="post">
+            <input type="hidden" asp-for="Id" />
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <!-- Thông tin cơ bản -->
+                    <div class="card card-warning card-outline">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-info-circle"></i> Thông tin cơ bản
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label asp-for="Code">
+                                            <i class="fas fa-barcode text-warning"></i>
+                                            @Html.DisplayNameFor(m => m.Code)
+                                        </label>
+                                        <input asp-for="Code" class="form-control form-control-lg text-uppercase" placeholder="VD: SUMMER2024">
+                                        <span asp-validation-for="Code" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label asp-for="IsActive">
+                                            <i class="fas fa-toggle-on text-success"></i>
+                                            @Html.DisplayNameFor(m => m.IsActive)
+                                        </label>
+                                        <div class="custom-control custom-switch">
+                                            <input asp-for="IsActive" type="checkbox" class="custom-control-input" id="isActiveSwitch">
+                                            <label class="custom-control-label" for="isActiveSwitch">Kích hoạt</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label asp-for="Description">
+                                    <i class="fas fa-align-left"></i>
+                                    @Html.DisplayNameFor(m => m.Description)
+                                </label>
+                                <textarea asp-for="Description" class="form-control" rows="3" placeholder="Mô tả chương trình khuyến mãi..."></textarea>
+                                <span asp-validation-for="Description" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Giảm giá -->
+                    <div class="card card-success card-outline">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-percentage"></i> Thiết lập giảm giá
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label asp-for="DiscountAmount">
+                                            <i class="fas fa-money-bill text-success"></i>
+                                            @Html.DisplayNameFor(m => m.DiscountAmount)
+                                        </label>
+                                        <input asp-for="DiscountAmount" type="number" class="form-control" step="1000">
+                                        <span asp-validation-for="DiscountAmount" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label asp-for="DiscountPercentage">
+                                            <i class="fas fa-percent text-info"></i>
+                                            @Html.DisplayNameFor(m => m.DiscountPercentage)
+                                        </label>
+                                        <input asp-for="DiscountPercentage" type="number" class="form-control" step="0.1" max="100">
+                                        <span asp-validation-for="DiscountPercentage" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label asp-for="MinimumOrderAmount">
+                                            <i class="fas fa-shopping-cart text-primary"></i>
+                                            @Html.DisplayNameFor(m => m.MinimumOrderAmount)
+                                        </label>
+                                        <input asp-for="MinimumOrderAmount" type="number" class="form-control" step="1000">
+                                        <span asp-validation-for="MinimumOrderAmount" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="alert alert-info">
+                                <i class="icon fas fa-info"></i> Nếu nhập cả 2 loại giảm giá, hệ thống sẽ ưu tiên áp dụng <strong>Giảm theo %</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Thời gian & Giới hạn -->
+                    <div class="card card-primary card-outline">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-clock"></i> Thời gian & Giới hạn sử dụng
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label asp-for="StartDate">
+                                            <i class="fas fa-calendar-plus text-success"></i>
+                                            @Html.DisplayNameFor(m => m.StartDate)
+                                        </label>
+                                        <input asp-for="StartDate" type="datetime-local" class="form-control">
+                                        <span asp-validation-for="StartDate" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label asp-for="EndDate">
+                                            <i class="fas fa-calendar-times text-danger"></i>
+                                            @Html.DisplayNameFor(m => m.EndDate)
+                                        </label>
+                                        <input asp-for="EndDate" type="datetime-local" class="form-control">
+                                        <span asp-validation-for="EndDate" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label asp-for="UsageLimit">
+                                            <i class="fas fa-users text-primary"></i>
+                                            @Html.DisplayNameFor(m => m.UsageLimit)
+                                        </label>
+                                        <input asp-for="UsageLimit" type="number" class="form-control" min="0">
+                                        <span asp-validation-for="UsageLimit" class="text-danger"></span>
+                                        <small class="form-text text-muted">0 = Không giới hạn</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="row">
+                        <div class="col-12">
+                            <a asp-action="Index" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Hủy
+                            </a>
+                            <button type="submit" class="btn btn-primary float-right">
+                                <i class="fas fa-save"></i> Cập nhật mã khuyến mãi
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        // Auto uppercase code
+        document.querySelector('input[name="Code"]').addEventListener('input', function(e) {
+            e.target.value = e.target.value.toUpperCase();
+        });
+    </script>
+}

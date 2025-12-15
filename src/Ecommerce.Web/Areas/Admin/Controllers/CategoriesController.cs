@@ -33,9 +33,13 @@ public class CategoriesController(EcommerceDbContext dbContext) : Controller
     }
 
     [HttpGet]
-    public IActionResult Create()
+    public async Task<IActionResult> Create()
     {
-        return View(new CategoryFormViewModel());
+        var model = new CategoryFormViewModel
+        {
+            Categories = await GetCategoriesForDropdown()
+        };
+        return View(model);
     }
 
     [HttpPost]
@@ -43,13 +47,15 @@ public class CategoriesController(EcommerceDbContext dbContext) : Controller
     {
         if (!ModelState.IsValid)
         {
+            model.Categories = await GetCategoriesForDropdown();
             return View(model);
         }
 
         var category = new Category
         {
             Name = model.Name,
-            Description = model.Description
+            Description = model.Description,
+            ParentId = model.ParentId
         };
 
         dbContext.Categories.Add(category);
@@ -72,7 +78,9 @@ public class CategoriesController(EcommerceDbContext dbContext) : Controller
         {
             Id = category.Id,
             Name = category.Name,
-            Description = category.Description
+            Description = category.Description,
+            ParentId = category.ParentId,
+            Categories = await GetCategoriesForDropdown(id)
         };
 
         return View(model);
@@ -88,6 +96,7 @@ public class CategoriesController(EcommerceDbContext dbContext) : Controller
 
         if (!ModelState.IsValid)
         {
+            model.Categories = await GetCategoriesForDropdown(id);
             return View(model);
         }
 
@@ -97,8 +106,17 @@ public class CategoriesController(EcommerceDbContext dbContext) : Controller
             return NotFound();
         }
 
+        // Prevent setting parent to itself or creating circular reference
+        if (model.ParentId == id)
+        {
+            ModelState.AddModelError("ParentId", "Danh mục không thể là cha của chính nó");
+            model.Categories = await GetCategoriesForDropdown(id);
+            return View(model);
+        }
+
         category.Name = model.Name;
         category.Description = model.Description;
+        category.ParentId = model.ParentId;
         category.UpdatedAt = DateTime.UtcNow;
 
         await dbContext.SaveChangesAsync();
@@ -117,7 +135,7 @@ public class CategoriesController(EcommerceDbContext dbContext) : Controller
         }
 
         // Check if category is used by any product
-        var hasProducts = await dbContext.Products.AnyAsync(x => x.CategoryId == id);
+        var hasProducts = await dbContext.ProductCategories.AnyAsync(x => x.CategoryId == id);
         if (hasProducts)
         {
             TempData["Error"] = "Không thể xóa danh mục đang có sản phẩm";
@@ -129,5 +147,20 @@ public class CategoriesController(EcommerceDbContext dbContext) : Controller
 
         TempData["Success"] = "Xóa danh mục thành công";
         return RedirectToAction(nameof(Index));
+    }
+
+    private async Task<List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>> GetCategoriesForDropdown(Guid? excludeId = null)
+    {
+        var categories = await dbContext.Categories
+            .Where(c => excludeId == null || c.Id != excludeId)
+            .OrderBy(c => c.Name)
+            .Select(c => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
+            {
+                Value = c.Id.ToString(),
+                Text = c.Name
+            })
+            .ToListAsync();
+        
+        return categories;
     }
 }

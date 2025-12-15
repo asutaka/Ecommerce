@@ -6,6 +6,7 @@ namespace Ecommerce.Infrastructure.Persistence;
 public class EcommerceDbContext(DbContextOptions<EcommerceDbContext> options) : DbContext(options)
 {
     public DbSet<Product> Products => Set<Product>();
+    public DbSet<ProductCategory> ProductCategories => Set<ProductCategory>();
     public DbSet<Category> Categories => Set<Category>();
     public DbSet<Order> Orders => Set<Order>();
     public DbSet<OrderItem> OrderItems => Set<OrderItem>();
@@ -17,25 +18,48 @@ public class EcommerceDbContext(DbContextOptions<EcommerceDbContext> options) : 
     public DbSet<Customer> Customers => Set<Customer>();
     public DbSet<ExternalLogin> ExternalLogins => Set<ExternalLogin>();
     public DbSet<Coupon> Coupons => Set<Coupon>();
+    public DbSet<Supplier> Suppliers => Set<Supplier>();
+    public DbSet<Warehouse> Warehouses => Set<Warehouse>();
 
+    // In OnModelCreating
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Product>(entity =>
         {
             entity.Property(x => x.Name).HasMaxLength(250);
             entity.Property(x => x.Price).HasPrecision(18, 2);
-            entity.Ignore(x => x.HeroImageUrl); // Computed property
-            entity.Property(x => x.Images).HasColumnType("text[]"); // Postgres array
+            entity.Ignore(x => x.HeroImageUrl);
+            entity.Property(x => x.Images).HasColumnType("text[]");
 
-            entity.HasOne(x => x.Category)
+            entity.HasOne(x => x.PrimaryCategory)
                 .WithMany()
-                .HasForeignKey(x => x.CategoryId);
+                .HasForeignKey(x => x.PrimaryCategoryId)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.SetNull);
+        });
+
+        modelBuilder.Entity<ProductCategory>(entity =>
+        {
+            entity.HasKey(pc => new { pc.ProductId, pc.CategoryId });
+
+            entity.HasOne(pc => pc.Product)
+                .WithMany(p => p.ProductCategories)
+                .HasForeignKey(pc => pc.ProductId);
+
+            entity.HasOne(pc => pc.Category)
+                .WithMany(c => c.ProductCategories)
+                .HasForeignKey(pc => pc.CategoryId);
         });
 
         modelBuilder.Entity<Category>(entity =>
         {
             entity.Property(x => x.Name).HasMaxLength(100).IsRequired();
             entity.Property(x => x.Description).HasMaxLength(500);
+
+            entity.HasOne(x => x.Parent)
+                .WithMany(x => x.Children)
+                .HasForeignKey(x => x.ParentId)
+                .OnDelete(DeleteBehavior.Restrict);
         });
 
         modelBuilder.Entity<Order>(entity =>
@@ -157,6 +181,26 @@ public class EcommerceDbContext(DbContextOptions<EcommerceDbContext> options) : 
             
             entity.HasIndex(x => x.Code).IsUnique();
             entity.HasIndex(x => x.IsActive);
+        });
+
+        modelBuilder.Entity<Supplier>(entity =>
+        {
+            entity.Property(x => x.Code).HasMaxLength(50).IsRequired();
+            entity.Property(x => x.Name).HasMaxLength(200).IsRequired();
+            entity.Property(x => x.Address).HasMaxLength(500).IsRequired();
+            entity.Property(x => x.PhoneNumbers).HasColumnType("text[]");
+
+            entity.HasIndex(x => x.Code).IsUnique();
+        });
+
+        modelBuilder.Entity<Warehouse>(entity =>
+        {
+            entity.Property(x => x.Code).HasMaxLength(50).IsRequired();
+            entity.Property(x => x.Name).HasMaxLength(200).IsRequired();
+            entity.Property(x => x.Address).HasMaxLength(500).IsRequired();
+            entity.Property(x => x.PhoneNumbers).HasColumnType("text[]");
+
+            entity.HasIndex(x => x.Code).IsUnique();
         });
 
         modelBuilder.SeedInitialData();

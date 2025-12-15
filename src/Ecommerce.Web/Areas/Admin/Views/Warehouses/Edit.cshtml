@@ -1,0 +1,123 @@
+@model Ecommerce.Web.Areas.Admin.ViewModels.WarehouseFormViewModel
+
+@{
+    ViewData["Title"] = "Chỉnh sửa kho hàng";
+}
+
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">
+                    <i class="fas fa-warehouse text-info"></i>
+                    Chỉnh sửa kho hàng
+                </h1>
+            </div>
+            <div class="col-sm-6">
+                <a asp-action="Index" class="btn btn-secondary float-right">
+                    <i class="fas fa-arrow-left"></i> Quay lại
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="content">
+    <div class="container-fluid">
+        <form asp-action="Edit" method="post">
+            <input type="hidden" asp-for="Id" />
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <!-- Thông tin cơ bản -->
+                    <div class="card card-primary card-outline">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-info-circle"></i> Thông tin cơ bản
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label asp-for="Code">
+                                            <i class="fas fa-barcode text-info"></i>
+                                            @Html.DisplayNameFor(m => m.Code)
+                                        </label>
+                                        <input asp-for="Code" class="form-control form-control-lg" placeholder="Nhập mã kho (VD: KH-HN-01)">
+                                        <span asp-validation-for="Code" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label asp-for="Name">
+                                            <i class="fas fa-warehouse text-primary"></i>
+                                            @Html.DisplayNameFor(m => m.Name)
+                                        </label>
+                                        <input asp-for="Name" class="form-control form-control-lg" placeholder="Nhập tên kho">
+                                        <span asp-validation-for="Name" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label asp-for="Address">
+                                    <i class="fas fa-map-marker-alt text-danger"></i>
+                                    @Html.DisplayNameFor(m => m.Address)
+                                </label>
+                                <textarea asp-for="Address" class="form-control" rows="3" placeholder="Nhập địa chỉ đầy đủ của kho..."></textarea>
+                                <span asp-validation-for="Address" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Thông tin liên hệ -->
+                    <div class="card card-success card-outline">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-phone"></i> Thông tin liên hệ
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <p class="text-muted"><small><i class="fas fa-info-circle"></i> Bạn có thể thêm tối đa 5 số điện thoại. Chỉ nhập vào các ô cần thiết.</small></p>
+                            
+                            <div class="row">
+                                @for (int i = 0; i < 5; i++)
+                                {
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Số điện thoại @(i + 1)</label>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                                </div>
+                                                <input asp-for="PhoneNumbers[i]" class="form-control" type="tel" placeholder="Nhập số điện thoại @(i + 1)...">
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="row">
+                        <div class="col-12">
+                            <a asp-action="Index" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Hủy
+                            </a>
+                            <button type="submit" class="btn btn-primary float-right">
+                                <i class="fas fa-save"></i> Cập nhật kho hàng
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -18,7 +18,7 @@ public class CategoryController(EcommerceDbContext dbContext) : Controller
         }
 
         var query = dbContext.Products
-            .Where(x => x.CategoryId == id);
+            .Where(x => x.ProductCategories.Any(pc => pc.CategoryId == id));
 
         if (!string.IsNullOrWhiteSpace(search))
         {
@@ -49,7 +49,7 @@ public class CategoryController(EcommerceDbContext dbContext) : Controller
             Id = category.Id,
             Name = category.Name,
             Description = category.Description,
-            ProductCount = await dbContext.Products.CountAsync(x => x.CategoryId == id),
+            ProductCount = await dbContext.ProductCategories.CountAsync(pc => pc.CategoryId == id),
             Products = products.Select(p => new ProductViewModel
             {
                 Id = p.Id,

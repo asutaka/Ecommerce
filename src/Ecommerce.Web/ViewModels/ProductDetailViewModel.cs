@@ -12,7 +12,7 @@ public class ProductDetailViewModel
     public bool IsFeatured { get; set; }
     
     // Category information
-    public Guid CategoryId { get; set; }
+    public Guid PrimaryCategoryId { get; set; }
     public string CategoryName { get; set; } = string.Empty;
     
     // Related products

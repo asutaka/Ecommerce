@@ -22,7 +22,7 @@ public class ProductFormViewModel
 
     [Required(ErrorMessage = "Vui lòng chọn danh mục")]
     [Display(Name = "Danh mục")]
-    public Guid CategoryId { get; set; }
+    public Guid PrimaryCategoryId { get; set; }
 
     public List<SelectListItem> Categories { get; set; } = new();
 

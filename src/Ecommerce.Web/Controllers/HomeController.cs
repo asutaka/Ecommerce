@@ -42,7 +42,7 @@ public class HomeController(
                 Id = c.Id,
                 Name = c.Name,
                 Description = c.Description,
-                ProductCount = dbContext.Products.Count(p => p.CategoryId == c.Id)
+                ProductCount = dbContext.ProductCategories.Count(pc => pc.CategoryId == c.Id)
             })
             .OrderByDescending(c => c.ProductCount)
             .Take(6)
@@ -98,7 +98,7 @@ public class HomeController(
             if (cat != null)
             {
                 var catProducts = await dbContext.Products
-                    .Where(p => p.CategoryId == cat.Id)
+                    .Where(p => p.ProductCategories.Any(pc => pc.CategoryId == cat.Id))
                     .OrderByDescending(p => p.CreatedAt)
                     .Take(8)
                     .Select(x => new ProductViewModel

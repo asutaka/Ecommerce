@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Ecommerce.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Ecommerce.Infrastructure.Migrations
 {
     [DbContext(typeof(EcommerceDbContext))]
-    partial class EcommerceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251215041317_ManyToManyProductCategory")]
+    partial class ManyToManyProductCategory
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -71,12 +74,12 @@ namespace Ecommerce.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2025, 12, 15, 6, 7, 50, 251, DateTimeKind.Utc).AddTicks(6520),
+                            CreatedAt = new DateTime(2025, 12, 15, 4, 13, 15, 820, DateTimeKind.Utc).AddTicks(8620),
                             Email = "admin@ecommerce.com",
                             FullName = "Administrator",
                             IsActive = true,
-                            PasswordHash = "$2a$11$J8Dn0/CJzPYsHGmS1OVOBO0XW.FQyyjvDYqlUMXhKnwW1dUil311e",
-                            UpdatedAt = new DateTime(2025, 12, 15, 6, 7, 50, 251, DateTimeKind.Utc).AddTicks(6525),
+                            PasswordHash = "$2a$11$yELtFxlbPAYwezMgjlWX.OfXOMpRjekvnUheBcb79WriCjH8YjmLq",
+                            UpdatedAt = new DateTime(2025, 12, 15, 4, 13, 15, 820, DateTimeKind.Utc).AddTicks(8629),
                             Username = "admin"
                         });
                 });
@@ -143,15 +146,10 @@ namespace Ecommerce.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
-                    b.Property<Guid?>("ParentId")
-                        .HasColumnType("uuid");
-
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ParentId");
 
                     b.ToTable("Categories");
                 });
@@ -217,61 +215,61 @@ namespace Ecommerce.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("15738cbc-31c4-4d2c-8a8c-fedbc5b0bdd4"),
+                            Id = new Guid("3e752b0f-acf1-429f-bfd8-0bd8885bf98f"),
                             Code = "GIAM40K",
-                            CreatedAt = new DateTime(2025, 12, 15, 6, 7, 49, 947, DateTimeKind.Utc).AddTicks(141),
+                            CreatedAt = new DateTime(2025, 12, 15, 4, 13, 15, 690, DateTimeKind.Utc).AddTicks(6036),
                             Description = "Giảm 40.000đ cho đơn hàng từ 500.000đ",
                             DiscountAmount = 40000m,
-                            EndDate = new DateTime(2026, 1, 14, 6, 7, 49, 947, DateTimeKind.Utc).AddTicks(141),
+                            EndDate = new DateTime(2026, 1, 14, 4, 13, 15, 690, DateTimeKind.Utc).AddTicks(6036),
                             IsActive = true,
                             MinimumOrderAmount = 500000m,
-                            StartDate = new DateTime(2025, 12, 8, 6, 7, 49, 947, DateTimeKind.Utc).AddTicks(141),
-                            UpdatedAt = new DateTime(2025, 12, 15, 6, 7, 49, 947, DateTimeKind.Utc).AddTicks(141),
+                            StartDate = new DateTime(2025, 12, 8, 4, 13, 15, 690, DateTimeKind.Utc).AddTicks(6036),
+                            UpdatedAt = new DateTime(2025, 12, 15, 4, 13, 15, 690, DateTimeKind.Utc).AddTicks(6036),
                             UsageLimit = 100,
                             UsedCount = 0
                         },
                         new
                         {
-                            Id = new Guid("5ddfa261-c28d-401f-9890-9d8de000c1c9"),
+                            Id = new Guid("a095ce13-fefa-41d8-b520-c24182024737"),
                             Code = "GIAM50K",
-                            CreatedAt = new DateTime(2025, 12, 15, 6, 7, 49, 947, DateTimeKind.Utc).AddTicks(141),
+                            CreatedAt = new DateTime(2025, 12, 15, 4, 13, 15, 690, DateTimeKind.Utc).AddTicks(6036),
                             Description = "Giảm 50.000đ cho đơn hàng từ 800.000đ",
                             DiscountAmount = 50000m,
-                            EndDate = new DateTime(2026, 1, 29, 6, 7, 49, 947, DateTimeKind.Utc).AddTicks(141),
+                            EndDate = new DateTime(2026, 1, 29, 4, 13, 15, 690, DateTimeKind.Utc).AddTicks(6036),
                             IsActive = true,
                             MinimumOrderAmount = 800000m,
-                            StartDate = new DateTime(2025, 12, 10, 6, 7, 49, 947, DateTimeKind.Utc).AddTicks(141),
-                            UpdatedAt = new DateTime(2025, 12, 15, 6, 7, 49, 947, DateTimeKind.Utc).AddTicks(141),
+                            StartDate = new DateTime(2025, 12, 10, 4, 13, 15, 690, DateTimeKind.Utc).AddTicks(6036),
+                            UpdatedAt = new DateTime(2025, 12, 15, 4, 13, 15, 690, DateTimeKind.Utc).AddTicks(6036),
                             UsageLimit = 50,
                             UsedCount = 0
                         },
                         new
                         {
-                            Id = new Guid("1f53f4c5-3f0a-409e-afd7-24891b1867fd"),
+                            Id = new Guid("bf149b6b-faf9-42a6-961b-7601c0ea0f3b"),
                             Code = "GIAM100K",
-                            CreatedAt = new DateTime(2025, 12, 15, 6, 7, 49, 947, DateTimeKind.Utc).AddTicks(141),
+                            CreatedAt = new DateTime(2025, 12, 15, 4, 13, 15, 690, DateTimeKind.Utc).AddTicks(6036),
                             Description = "Giảm 100.000đ cho đơn hàng từ 1.500.000đ",
                             DiscountAmount = 100000m,
-                            EndDate = new DateTime(2026, 2, 13, 6, 7, 49, 947, DateTimeKind.Utc).AddTicks(141),
+                            EndDate = new DateTime(2026, 2, 13, 4, 13, 15, 690, DateTimeKind.Utc).AddTicks(6036),
                             IsActive = true,
                             MinimumOrderAmount = 1500000m,
-                            StartDate = new DateTime(2025, 12, 12, 6, 7, 49, 947, DateTimeKind.Utc).AddTicks(141),
-                            UpdatedAt = new DateTime(2025, 12, 15, 6, 7, 49, 947, DateTimeKind.Utc).AddTicks(141),
+                            StartDate = new DateTime(2025, 12, 12, 4, 13, 15, 690, DateTimeKind.Utc).AddTicks(6036),
+                            UpdatedAt = new DateTime(2025, 12, 15, 4, 13, 15, 690, DateTimeKind.Utc).AddTicks(6036),
                             UsageLimit = 30,
                             UsedCount = 0
                         },
                         new
                         {
-                            Id = new Guid("c477cbfb-f831-47fc-b091-dd0fa892778b"),
+                            Id = new Guid("969abe04-bdf3-43d5-bbf5-16717578bcef"),
                             Code = "FREESHIP",
-                            CreatedAt = new DateTime(2025, 12, 15, 6, 7, 49, 947, DateTimeKind.Utc).AddTicks(141),
+                            CreatedAt = new DateTime(2025, 12, 15, 4, 13, 15, 690, DateTimeKind.Utc).AddTicks(6036),
                             Description = "Miễn phí vận chuyển cho đơn hàng từ 300.000đ",
                             DiscountAmount = 30000m,
-                            EndDate = new DateTime(2026, 3, 15, 6, 7, 49, 947, DateTimeKind.Utc).AddTicks(141),
+                            EndDate = new DateTime(2026, 3, 15, 4, 13, 15, 690, DateTimeKind.Utc).AddTicks(6036),
                             IsActive = true,
                             MinimumOrderAmount = 300000m,
-                            StartDate = new DateTime(2025, 12, 5, 6, 7, 49, 947, DateTimeKind.Utc).AddTicks(141),
-                            UpdatedAt = new DateTime(2025, 12, 15, 6, 7, 49, 947, DateTimeKind.Utc).AddTicks(141),
+                            StartDate = new DateTime(2025, 12, 5, 4, 13, 15, 690, DateTimeKind.Utc).AddTicks(6036),
+                            UpdatedAt = new DateTime(2025, 12, 15, 4, 13, 15, 690, DateTimeKind.Utc).AddTicks(6036),
                             UsageLimit = 200,
                             UsedCount = 0
                         });
@@ -634,84 +632,6 @@ namespace Ecommerce.Infrastructure.Migrations
                     b.ToTable("ShoppingCarts");
                 });
 
-            modelBuilder.Entity("Ecommerce.Infrastructure.Entities.Supplier", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
-
-                    b.Property<string>("Code")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
-
-                    b.Property<List<string>>("PhoneNumbers")
-                        .IsRequired()
-                        .HasColumnType("text[]");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Code")
-                        .IsUnique();
-
-                    b.ToTable("Suppliers");
-                });
-
-            modelBuilder.Entity("Ecommerce.Infrastructure.Entities.Warehouse", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
-
-                    b.Property<string>("Code")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
-
-                    b.Property<List<string>>("PhoneNumbers")
-                        .IsRequired()
-                        .HasColumnType("text[]");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Code")
-                        .IsUnique();
-
-                    b.ToTable("Warehouses");
-                });
-
             modelBuilder.Entity("Ecommerce.Infrastructure.Entities.CartItem", b =>
                 {
                     b.HasOne("Ecommerce.Infrastructure.Entities.ShoppingCart", "Cart")
@@ -729,16 +649,6 @@ namespace Ecommerce.Infrastructure.Migrations
                     b.Navigation("Cart");
 
                     b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("Ecommerce.Infrastructure.Entities.Category", b =>
-                {
-                    b.HasOne("Ecommerce.Infrastructure.Entities.Category", "Parent")
-                        .WithMany("Children")
-                        .HasForeignKey("ParentId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("Parent");
                 });
 
             modelBuilder.Entity("Ecommerce.Infrastructure.Entities.ExternalLogin", b =>
@@ -836,8 +746,6 @@ namespace Ecommerce.Infrastructure.Migrations
 
             modelBuilder.Entity("Ecommerce.Infrastructure.Entities.Category", b =>
                 {
-                    b.Navigation("Children");
-
                     b.Navigation("ProductCategories");
                 });
 

@@ -32,11 +32,11 @@
                     </div>
 
                     <div class="mb-3">
-                        <label asp-for="CategoryId" class="form-label"></label>
-                        <select asp-for="CategoryId" asp-items="Model.Categories" class="form-select bg-dark text-white border-secondary">
+                        <label asp-for="PrimaryCategoryId" class="form-label"></label>
+                        <select asp-for="PrimaryCategoryId" asp-items="Model.Categories" class="form-select bg-dark text-white border-secondary">
                             <option value="">-- Chọn danh mục --</option>
                         </select>
-                        <span asp-validation-for="CategoryId" class="text-danger"></span>
+                        <span asp-validation-for="PrimaryCategoryId" class="text-danger"></span>
                     </div>
 
                     <div class="mb-3">

@@ -31,7 +31,7 @@ public class HomeDapperController(IConfiguration configuration) : Controller
 
             -- 2. Featured Categories
             SELECT c.""Id"", c.""Name"", c.""Description"", 
-                   (SELECT COUNT(*) FROM ""Products"" p WHERE p.""CategoryId"" = c.""Id"") as ""ProductCount""
+                   (SELECT COUNT(*) FROM ""Products"" p WHERE p.""PrimaryCategoryId"" = c.""Id"") as ""ProductCount""
             FROM ""Categories"" c
             ORDER BY ""ProductCount"" DESC
             LIMIT 6;
