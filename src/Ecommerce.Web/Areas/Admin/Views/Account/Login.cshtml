@@ -43,14 +43,14 @@
                     <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
 
                     <div class="mb-3">
-                        <label asp-for="Email" class="form-label">Email</label>
+                        <label asp-for="EmailOrUsername" class="form-label">Email hoặc Username</label>
                         <div class="input-group">
                             <span class="input-group-text bg-dark border-secondary">
-                                <i class="bi bi-envelope"></i>
+                                <i class="bi bi-person-circle"></i>
                             </span>
-                            <input asp-for="Email" class="form-control bg-dark border-secondary text-white" placeholder="admin@ecommerce.com" />
+                            <input asp-for="EmailOrUsername" class="form-control bg-dark border-secondary text-white" placeholder="admin@ecommerce.com hoặc admin" />
                         </div>
-                        <span asp-validation-for="Email" class="text-danger small"></span>
+                        <span asp-validation-for="EmailOrUsername" class="text-danger small"></span>
                     </div>
 
                     <div class="mb-3">

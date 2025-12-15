@@ -1,0 +1,119 @@
+@model Ecommerce.Web.Areas.Admin.ViewModels.ProfileViewModel
+
+@{
+    ViewData["Title"] = "Hồ sơ cá nhân";
+}
+
+<!-- Content Header -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-12">
+                <h1 class="m-0">
+                    <i class="fas fa-user text-primary"></i> Hồ sơ cá nhân
+                </h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Thông tin tài khoản</h3>
+                    </div>
+                    
+                    <form asp-action="Profile" method="post">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label asp-for="Username"></label>
+                                <input asp-for="Username" class="form-control" readonly>
+                                <small class="form-text text-muted">Username không thể thay đổi</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="Email" class="required"></label>
+                                <input asp-for="Email" class="form-control" type="email">
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="FullName"></label>
+                                <input asp-for="FullName" class="form-control">
+                                <span asp-validation-for="FullName" class="text-danger"></span>
+                            </div>
+
+                            <hr class="my-4">
+                            <h5 class="mb-3"><i class="fas fa-key text-warning"></i> Đổi mật khẩu</h5>
+                            <p class="text-muted small">Để thay đổi mật khẩu, vui lòng điền đầy đủ các trường bên dưới</p>
+
+                            <div class="form-group">
+                                <label asp-for="CurrentPassword"></label>
+                                <input asp-for="CurrentPassword" class="form-control" type="password">
+                                <span asp-validation-for="CurrentPassword" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="NewPassword"></label>
+                                <input asp-for="NewPassword" class="form-control" type="password">
+                                <span asp-validation-for="NewPassword" class="text-danger"></span>
+                                <small class="form-text text-muted">Mật khẩu phải có ít nhất 6 ký tự</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="ConfirmNewPassword"></label>
+                                <input asp-for="ConfirmNewPassword" class="form-control" type="password">
+                                <span asp-validation-for="ConfirmNewPassword" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="card-footer">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Cập nhật hồ sơ
+                            </button>
+                            <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index" class="btn btn-default">
+                                <i class="fas fa-times"></i> Hủy
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card card-info">
+                    <div class="card-header">
+                        <h3 class="card-title">Hướng dẫn</h3>
+                    </div>
+                    <div class="card-body">
+                        <h6><i class="fas fa-info-circle"></i> Cập nhật thông tin</h6>
+                        <p class="text-sm">Bạn có thể cập nhật email và họ tên của mình. Username không thể thay đổi.</p>
+                        
+                        <h6><i class="fas fa-key text-warning"></i> Đổi mật khẩu</h6>
+                        <p class="text-sm">Để đổi mật khẩu, bạn cần:</p>
+                        <ul class="text-sm pl-3">
+                            <li>Nhập mật khẩu hiện tại</li>
+                            <li>Nhập mật khẩu mới (ít nhất 6 ký tự)</li>
+                            <li>Xác nhận lại mật khẩu mới</li>
+                        </ul>
+
+                        <h6><i class="fas fa-shield-alt text-success"></i> Bảo mật</h6>
+                        <p class="text-sm">Mật khẩu được mã hóa an toàn bằng BCrypt. Hãy sử dụng mật khẩu mạnh và không chia sẻ với người khác.</p>
+
+                        <div class="alert alert-warning mt-3">
+                            <h6><i class="fas fa-exclamation-triangle"></i> Lưu ý</h6>
+                            <p class="mb-0 small">Nếu bạn chỉ muốn cập nhật email/họ tên mà không đổi mật khẩu, hãy để trống các trường mật khẩu.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

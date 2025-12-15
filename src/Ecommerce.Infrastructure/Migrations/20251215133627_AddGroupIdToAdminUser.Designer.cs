@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Ecommerce.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Ecommerce.Infrastructure.Migrations
 {
     [DbContext(typeof(EcommerceDbContext))]
-    partial class EcommerceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251215133627_AddGroupIdToAdminUser")]
+    partial class AddGroupIdToAdminUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -222,21 +225,6 @@ namespace Ecommerce.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("76087f3f-2674-4a87-b45a-f0bb56391a3a"),
-                            Code = "GIAM40K",
-                            CreatedAt = new DateTime(2025, 12, 15, 13, 36, 26, 137, DateTimeKind.Utc).AddTicks(2264),
-                            Description = "Giảm 40.000đ cho đơn hàng từ 500.000đ",
-                            DiscountAmount = 40000m,
-                            EndDate = new DateTime(2026, 1, 14, 13, 36, 26, 137, DateTimeKind.Utc).AddTicks(2264),
-                            IsActive = true,
-                            MinimumOrderAmount = 500000m,
-                            StartDate = new DateTime(2025, 12, 8, 13, 36, 26, 137, DateTimeKind.Utc).AddTicks(2264),
-                            UpdatedAt = new DateTime(2025, 12, 15, 13, 36, 26, 137, DateTimeKind.Utc).AddTicks(2264),
-                            UsageLimit = 100,
-                            UsedCount = 0
-                        },
-                        new
-                        {
                             Id = new Guid("8b9ff976-d40e-4da2-856f-9519d5049ba8"),
                             Code = "GIAM50K",
                             CreatedAt = new DateTime(2025, 12, 15, 13, 36, 26, 137, DateTimeKind.Utc).AddTicks(2264),
@@ -248,36 +236,6 @@ namespace Ecommerce.Infrastructure.Migrations
                             StartDate = new DateTime(2025, 12, 10, 13, 36, 26, 137, DateTimeKind.Utc).AddTicks(2264),
                             UpdatedAt = new DateTime(2025, 12, 15, 13, 36, 26, 137, DateTimeKind.Utc).AddTicks(2264),
                             UsageLimit = 50,
-                            UsedCount = 0
-                        },
-                        new
-                        {
-                            Id = new Guid("c14a0ff9-2e7f-4b54-b31d-82660ceedc53"),
-                            Code = "GIAM100K",
-                            CreatedAt = new DateTime(2025, 12, 15, 13, 36, 26, 137, DateTimeKind.Utc).AddTicks(2264),
-                            Description = "Giảm 100.000đ cho đơn hàng từ 1.500.000đ",
-                            DiscountAmount = 100000m,
-                            EndDate = new DateTime(2026, 2, 13, 13, 36, 26, 137, DateTimeKind.Utc).AddTicks(2264),
-                            IsActive = true,
-                            MinimumOrderAmount = 1500000m,
-                            StartDate = new DateTime(2025, 12, 12, 13, 36, 26, 137, DateTimeKind.Utc).AddTicks(2264),
-                            UpdatedAt = new DateTime(2025, 12, 15, 13, 36, 26, 137, DateTimeKind.Utc).AddTicks(2264),
-                            UsageLimit = 30,
-                            UsedCount = 0
-                        },
-                        new
-                        {
-                            Id = new Guid("69c18bf4-5fb9-48b6-b418-88f17ce0fc0b"),
-                            Code = "FREESHIP",
-                            CreatedAt = new DateTime(2025, 12, 15, 13, 36, 26, 137, DateTimeKind.Utc).AddTicks(2264),
-                            Description = "Miễn phí vận chuyển cho đơn hàng từ 300.000đ",
-                            DiscountAmount = 30000m,
-                            EndDate = new DateTime(2026, 3, 15, 13, 36, 26, 137, DateTimeKind.Utc).AddTicks(2264),
-                            IsActive = true,
-                            MinimumOrderAmount = 300000m,
-                            StartDate = new DateTime(2025, 12, 5, 13, 36, 26, 137, DateTimeKind.Utc).AddTicks(2264),
-                            UpdatedAt = new DateTime(2025, 12, 15, 13, 36, 26, 137, DateTimeKind.Utc).AddTicks(2264),
-                            UsageLimit = 200,
                             UsedCount = 0
                         });
                 });

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Ecommerce.Web.Areas.Admin.Controllers;
 
 [Area("Admin")]
-[Authorize]
+[Authorize(AuthenticationSchemes = "AdminAuth")]
 public class ProductsController(EcommerceDbContext dbContext) : Controller
 {
     public async Task<IActionResult> Index(string? searchTerm, int? pageNumber)

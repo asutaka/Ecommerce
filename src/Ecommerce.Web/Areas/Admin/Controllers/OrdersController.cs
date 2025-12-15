@@ -12,7 +12,7 @@ using OfficeOpenXml;
 namespace Ecommerce.Web.Areas.Admin.Controllers;
 
 [Area("Admin")]
-[Authorize]
+[Authorize(AuthenticationSchemes = "AdminAuth")]
 public class OrdersController(EcommerceDbContext dbContext) : Controller
 {
     public async Task<IActionResult> Index(int? pageNumber, OrderStatus? status, string? keyword, DateTime? fromDate, DateTime? toDate)

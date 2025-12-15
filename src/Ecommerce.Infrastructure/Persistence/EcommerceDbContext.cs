@@ -1,6 +1,7 @@
 using System.Text.Json;
 using Ecommerce.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Ecommerce.Infrastructure.Persistence;
 
@@ -133,6 +134,12 @@ public class EcommerceDbContext(DbContextOptions<EcommerceDbContext> options) : 
             
             entity.HasIndex(x => x.Username).IsUnique();
             entity.HasIndex(x => x.Email).IsUnique();
+            
+            // Foreign key to Group
+            entity.HasOne(x => x.Group)
+                .WithMany()
+                .HasForeignKey(x => x.GroupId)
+                .OnDelete(DeleteBehavior.SetNull);
         });
         
         modelBuilder.Entity<Customer>(entity =>
@@ -214,7 +221,12 @@ public class EcommerceDbContext(DbContextOptions<EcommerceDbContext> options) : 
                   .HasColumnType("jsonb")
                   .HasConversion(
                       v => JsonSerializer.Serialize(v, (JsonSerializerOptions?)null),
-                      v => JsonSerializer.Deserialize<Dictionary<string, int>>(v, (JsonSerializerOptions?)null) ?? new Dictionary<string, int>()
+                      v => JsonSerializer.Deserialize<Dictionary<string, int>>(v, (JsonSerializerOptions?)null) ?? new Dictionary<string, int>(),
+                      new ValueComparer<Dictionary<string, int>>(
+                          (c1, c2) => c1!.SequenceEqual(c2!),
+                          c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
+                          c => c.ToDictionary(e => e.Key, e => e.Value)
+                      )
                   )
                   .HasDefaultValueSql("'{}'::jsonb");  // Default to empty JSON object
 

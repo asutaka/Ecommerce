@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Ecommerce.Web.Areas.Admin.Controllers;
 
 [Area("Admin")]
-[Authorize]
+[Authorize(AuthenticationSchemes = "AdminAuth")]
 public class SettingsController : Controller
 {
     public IActionResult Index()

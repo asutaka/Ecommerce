@@ -32,7 +32,7 @@ public class AccountController(
             return View(model);
         }
 
-        var admin = await adminAuthService.ValidateCredentialsAsync(model.Email, model.Password);
+        var admin = await adminAuthService.ValidateCredentialsAsync(model.EmailOrUsername, model.Password);
 
         if (admin == null)
         {
@@ -71,11 +71,79 @@ public class AccountController(
         return RedirectToLocal(returnUrl);
     }
 
+    [HttpGet]
+    [Authorize(AuthenticationSchemes = "AdminAuth")]
+    public async Task<IActionResult> Profile()
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId == null)
+        {
+            return RedirectToAction(nameof(Login));
+        }
+
+        var admin = await adminAuthService.GetAdminByIdAsync(Guid.Parse(userId));
+        if (admin == null)
+        {
+            return RedirectToAction(nameof(Login));
+        }
+
+        var model = new ProfileViewModel
+        {
+            Username = admin.Username,
+            Email = admin.Email,
+            FullName = admin.FullName
+        };
+
+        return View(model);
+    }
+
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(AuthenticationSchemes = "AdminAuth")]
+    public async Task<IActionResult> Profile(ProfileViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return View(model);
+        }
+
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId == null)
+        {
+            return RedirectToAction(nameof(Login));
+        }
+
+        var success = await adminAuthService.UpdateProfileAsync(
+            Guid.Parse(userId),
+            model.Email,
+            model.FullName,
+            model.CurrentPassword,
+            model.NewPassword
+        );
+
+        if (!success)
+        {
+            ModelState.AddModelError(string.Empty, "Không thể cập nhật hồ sơ. Vui lòng kiểm tra mật khẩu hiện tại.");
+            return View(model);
+        }
+
+        TempData["Success"] = "Cập nhật hồ sơ thành công";
+        return RedirectToAction(nameof(Profile));
+    }
+
+    [HttpPost]
     public async Task<IActionResult> Logout()
     {
         await HttpContext.SignOutAsync("AdminAuth");
+        
+        // Explicitly delete the admin auth cookie
+        Response.Cookies.Delete("Ecommerce.Admin.Auth");
+        
+        // Add cache control headers to prevent caching
+        Response.Headers["Cache-Control"] = "no-cache, no-store, must-revalidate";
+        Response.Headers["Pragma"] = "no-cache";
+        Response.Headers["Expires"] = "0";
+        
         logger.LogInformation("Admin logged out");
         return RedirectToAction(nameof(Login));
     }
