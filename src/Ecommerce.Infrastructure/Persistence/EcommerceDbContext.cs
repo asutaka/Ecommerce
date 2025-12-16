@@ -48,7 +48,15 @@ public class EcommerceDbContext(DbContextOptions<EcommerceDbContext> options) : 
             entity.Property(x => x.Color).HasMaxLength(50);
             entity.Property(x => x.Size).HasMaxLength(20);
             entity.Property(x => x.Price).HasPrecision(18, 2);
-            entity.Property(x => x.ImageUrl).HasMaxLength(500);
+            entity.Property(x => x.ImageUrls)
+                .HasColumnType("jsonb")
+                .HasConversion(
+                    v => JsonSerializer.Serialize(v, (JsonSerializerOptions?)null),
+                    v => JsonSerializer.Deserialize<List<string>>(v, (JsonSerializerOptions?)null) ?? new List<string>(),
+                    new ValueComparer<List<string>>(
+                        (c1, c2) => c1!.SequenceEqual(c2!),
+                        c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
+                        c => c.ToList()));
 
             // Unique index on SKU
             entity.HasIndex(x => x.SKU).IsUnique();

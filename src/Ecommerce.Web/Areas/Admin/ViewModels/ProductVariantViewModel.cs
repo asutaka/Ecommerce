@@ -28,9 +28,8 @@ public class ProductVariantFormViewModel
     [Display(Name = "Giá riêng (tùy chọn)")]
     public decimal? Price { get; set; }
     
-    [MaxLength(500, ErrorMessage = "URL ảnh không được quá 500 ký tự")]
-    [Display(Name = "Link ảnh")]
-    public string? ImageUrl { get; set; }
+    [Display(Name = "Danh sách ảnh")]
+    public List<string> ImageUrls { get; set; } = new();
     
     [Display(Name = "Hoạt động")]
     public bool IsActive { get; set; } = true;
@@ -44,6 +43,6 @@ public class ProductVariantListViewModel
     public string? Size { get; set; }
     public int Stock { get; set; }
     public decimal? Price { get; set; }
-    public string? ImageUrl { get; set; }
+    public List<string> ImageUrls { get; set; } = new();
     public bool IsActive { get; set; }
 }

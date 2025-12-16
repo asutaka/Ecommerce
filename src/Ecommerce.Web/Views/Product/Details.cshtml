@@ -56,7 +56,7 @@
             <div>
                 <h1 class="product-title">@Model.Name</h1>
                 <br>
-                <p class="product-sku">Mã sp: @Model.SKU</p>
+                <p class="product-sku" id="product-sku" style="display: none;">SKU: <span id="variant-sku"></span></p>
                 <div class="product-price-section">
                     @if (Model.OriginalPrice.HasValue && Model.OriginalPrice > Model.Price)
                     {

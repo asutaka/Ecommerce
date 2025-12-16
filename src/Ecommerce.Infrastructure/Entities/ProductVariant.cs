@@ -15,8 +15,8 @@ public class ProductVariant : BaseEntity
     // Optional: Override product price if variant has different price
     public decimal? Price { get; set; }
     
-    // Optional: Variant-specific image
-    public string? ImageUrl { get; set; }
+    // Optional: Variant-specific images (multiple)
+    public List<string> ImageUrls { get; set; } = new();
     
     public bool IsActive { get; set; } = true;
 }

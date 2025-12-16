@@ -100,7 +100,61 @@
     
     <script>
     (function() {
-        const variantsData = JSON.parse(document.getElementById('variantsData').textContent);
+        // Parse variants data
+        const variantsJson = document.getElementById('variantsData').textContent;
+        const variantsData = JSON.parse(variantsJson);
+        
+        console.log('Variants loaded:', variantsData);
+        
+        // Save original product price
+        let originalProductPrice = '';
+        const priceEl = document.querySelector('.product-price');
+        if (priceEl) {
+            originalProductPrice = priceEl.textContent;
+        }
+        
+        // Save original product images
+        let originalProductImages = [];
+        const thumbnailContainer = document.querySelector('.gallery-thumbnails');
+        if (thumbnailContainer) {
+            const thumbs = thumbnailContainer.querySelectorAll('.thumb-img');
+            thumbs.forEach(thumb => {
+                originalProductImages.push({
+                    src: thumb.src,
+                    isActive: thumb.classList.contains('active')
+                });
+            });
+        }
+        
+        // Function to restore original product images
+        window.restoreProductImages = function() {
+            const mainImage = document.getElementById('mainProductImage');
+            const thumbnailContainer = document.querySelector('.gallery-thumbnails');
+            
+            if (thumbnailContainer && originalProductImages.length > 0) {
+                thumbnailContainer.innerHTML = '';
+                
+                originalProductImages.forEach((imgData, index) => {
+                    const thumb = document.createElement('img');
+                    thumb.src = imgData.src;
+                    thumb.className = 'thumb-img' + (imgData.isActive ? ' active' : '');
+                    thumb.onclick = function() {
+                        if (mainImage) mainImage.src = imgData.src;
+                        document.querySelectorAll('.thumb-img').forEach(t => t.classList.remove('active'));
+                        this.classList.add('active');
+                    };
+                    thumbnailContainer.appendChild(thumb);
+                });
+                
+                // Restore main image to first original
+                if (mainImage && originalProductImages.length > 0) {
+                    const activeImg = originalProductImages.find(img => img.isActive);
+                    mainImage.src = activeImg ? activeImg.src : originalProductImages[0].src;
+                }
+            }
+        }
+        
+        // Selection state
         let selectedColor = null;
         let selectedSize = null;
         
@@ -110,6 +164,21 @@
                 document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
                 this.classList.add('active');
                 selectedColor = this.dataset.color;
+                
+                // Auto-select first available size for this color
+                const firstMatchingVariant = variantsData.find(v => 
+                    v.Color && v.Color.toLowerCase() === selectedColor.toLowerCase()
+                );
+                
+                if (firstMatchingVariant && firstMatchingVariant.Size) {
+                    // Find and click the size button
+                    const sizeBtn = document.querySelector(`.size-btn[data-size="${firstMatchingVariant.Size}"]`);
+                    if (sizeBtn) {
+                        sizeBtn.click();
+                        return; // Size click will trigger updateVariantSelection
+                    }
+                }
+                
                 updateVariantSelection();
             });
         });
@@ -137,8 +206,21 @@
             
             if (variant) {
                 document.getElementById('selectedVariantId').value = variant.Id;
-                document.getElementById('selected-sku').textContent = variant.SKU;
-                document.getElementById('selected-stock').textContent = variant.Stock + ' sản phẩm';
+                
+                // Update SKU display
+                const skuElement = document.getElementById('product-sku');
+                const skuSpan = document.getElementById('variant-sku');
+                if (skuElement && skuSpan && variant.SKU) {
+                    skuSpan.textContent = variant.SKU;
+                    skuElement.style.display = 'block';
+                }
+                
+                // Update variant details (old compatibility)
+                const oldSkuEl = document.getElementById('selected-sku');
+                if (oldSkuEl) oldSkuEl.textContent = variant.SKU;
+                
+                const stockEl = document.getElementById('selected-stock');
+                if (stockEl) stockEl.textContent = variant.Stock + ' sản phẩm';
                 
                 // Update stock status
                 const stockStatus = document.querySelector('.stock-status');
@@ -151,16 +233,43 @@
                 // Show variant details
                 document.querySelector('.variant-details').classList.remove('d-none');
                 
-                // Update main product image if variant has custom image
-                if (variant.ImageUrl) {
-                    console.log('Updating image to:', variant.ImageUrl);
+                // Update entire gallery if variant has custom images
+                if (variant.ImageUrls && variant.ImageUrls.length > 0) {
+                    console.log('Updating gallery to variant images:', variant.ImageUrls);
+                    
+                    // Update main image with first variant image
                     const mainImage = document.getElementById('mainProductImage');
                     if (mainImage) {
-                        mainImage.src = variant.ImageUrl;
-                        console.log('Image updated!');
-                    } else {
-                        console.log('mainProductImage element not found!');
+                        mainImage.src = variant.ImageUrls[0];
                     }
+                    
+                    // Replace all thumbnails with variant images
+                    const thumbnailContainer = document.querySelector('.gallery-thumbnails');
+                    if (thumbnailContainer) {
+                        // Clear existing thumbnails
+                        thumbnailContainer.innerHTML = '';
+                        
+                        // Add all variant image thumbnails
+                        variant.ImageUrls.forEach((url, index) => {
+                            const thumb = document.createElement('img');
+                            thumb.src = url;
+                            thumb.className = 'thumb-img' + (index === 0 ? ' active' : '');
+                            thumb.onclick = function() {
+                                // Update Main Image
+                                if (mainImage) mainImage.src = url;
+                                // Update Active Styling
+                                document.querySelectorAll('.thumb-img').forEach(t => t.classList.remove('active'));
+                                this.classList.add('active');
+                            };
+                            thumbnailContainer.appendChild(thumb);
+                        });
+                    }
+                    
+                    console.log('Gallery updated with variant images!');
+                } else {
+                    // Variant exists but has no images - restore product images
+                    console.log('Variant has no images, restoring product images');
+                    restoreProductImages();
                 }
                 
                 // Update price if variant has custom price
@@ -171,6 +280,13 @@
                     }
                 }
                 
+                // Reset quantity based on stock
+                const quantityInput = document.getElementById('quantity');
+                if (quantityInput) {
+                    quantityInput.value = variant.Stock > 0 ? 1 : 0;
+                    quantityInput.max = variant.Stock;
+                }
+                
                 // Enable add to cart button
                 const addToCartBtn = document.querySelector('.add-to-cart-btn');
                 if (addToCartBtn) {
@@ -179,8 +295,66 @@
             } else {
                 document.getElementById('selectedVariantId').value = '';
                 document.querySelector('.variant-details').classList.add('d-none');
+                
+                // Hide SKU when no variant
+                const skuElement = document.getElementById('product-sku');
+                if (skuElement) {
+                    skuElement.style.display = 'none';
+                }
+                
+                // Restore original product images when no variant match
+                restoreProductImages();
+                
+                // Update stock status to 0
+                const stockStatus = document.querySelector('.stock-status');
+                if (stockStatus) {
+                    stockStatus.innerHTML = '<i class="bi bi-x-circle text-danger"></i> <strong>0 sản phẩm</strong> - Không có sẵn';
+                }
+                
+                // Restore original product price
+                const priceEl = document.querySelector('.product-price');
+                if (priceEl && originalProductPrice) {
+                    priceEl.textContent = originalProductPrice;
+                }
+                
+                // Reset quantity to 0
+                const quantityInput = document.getElementById('quantity');
+                if (quantityInput) {
+                    quantityInput.value = 0;
+                    quantityInput.max = 0;
+                }
+                
+                // Disable Add to Cart button
+                const addToCartBtn = document.querySelector('.add-to-cart-btn');
+                if (addToCartBtn) {
+                    addToCartBtn.disabled = true;
+                }
             }
         }
+        
+        // Auto-select first available variant on page load
+        (function autoSelectFirstAvailableVariant() {
+            // Find first variant with stock > 0
+            const firstAvailable = variantsData.find(v => v.Stock > 0);
+            
+            if (firstAvailable) {
+                // Auto-select color if available
+                if (firstAvailable.Color) {
+                    const colorBtn = document.querySelector(`.color-btn[data-color="${firstAvailable.Color}"]`);
+                    if (colorBtn) {
+                        colorBtn.click();
+                    }
+                }
+                
+                // Auto-select size if available
+                if (firstAvailable.Size) {
+                    const sizeBtn = document.querySelector(`.size-btn[data-size="${firstAvailable.Size}"]`);
+                    if (sizeBtn) {
+                        sizeBtn.click();
+                    }
+                }
+            }
+        })();
     })();
     </script>
 }

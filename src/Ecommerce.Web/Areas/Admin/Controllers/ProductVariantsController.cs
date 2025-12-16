@@ -27,7 +27,7 @@ public class ProductVariantsController(EcommerceDbContext dbContext) : Controlle
                 Size = v.Size,
                 Stock = v.Stock,
                 Price = v.Price,
-                ImageUrl = v.ImageUrl,
+                ImageUrls = v.ImageUrls,
                 IsActive = v.IsActive
             })
             .ToListAsync();
@@ -66,7 +66,7 @@ public class ProductVariantsController(EcommerceDbContext dbContext) : Controlle
             Size = model.Size,
             Stock = model.Stock,
             Price = model.Price,
-            ImageUrl = model.ImageUrl,
+            ImageUrls = model.ImageUrls,
             IsActive = model.IsActive
         };
 
@@ -81,7 +81,7 @@ public class ProductVariantsController(EcommerceDbContext dbContext) : Controlle
             Size = variant.Size,
             Stock = variant.Stock,
             Price = variant.Price,
-            ImageUrl = variant.ImageUrl,
+            ImageUrls = variant.ImageUrls,
             IsActive = variant.IsActive
         };
 
@@ -118,7 +118,7 @@ public class ProductVariantsController(EcommerceDbContext dbContext) : Controlle
         variant.Size = model.Size;
         variant.Stock = model.Stock;
         variant.Price = model.Price;
-        variant.ImageUrl = model.ImageUrl;
+        variant.ImageUrls = model.ImageUrls;
         variant.IsActive = model.IsActive;
         variant.UpdatedAt = DateTime.UtcNow;
 
@@ -132,7 +132,7 @@ public class ProductVariantsController(EcommerceDbContext dbContext) : Controlle
             Size = variant.Size,
             Stock = variant.Stock,
             Price = variant.Price,
-            ImageUrl = variant.ImageUrl,
+            ImageUrls = variant.ImageUrls,
             IsActive = variant.IsActive
         };
 

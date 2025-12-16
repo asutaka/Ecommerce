@@ -175,7 +175,7 @@ public class ProductController(EcommerceDbContext dbContext) : Controller
                 Size = v.Size,
                 Stock = v.Stock,
                 Price = v.Price,
-                ImageUrl = v.ImageUrl,
+                ImageUrls = v.ImageUrls,
                 IsActive= v.IsActive
             })
             .ToListAsync();

@@ -89,15 +89,14 @@
                     </div>
                     
                     <div class="form-group">
-                        <label for="variantImageUrl">Link ảnh (tùy chọn)</label>
-                        <input type="url" class="form-control" id="variantImageUrl" placeholder="https://...">
+                        <label>Danh sách ảnh (tùy chọn)</label>
+                        <div id="variantImageUrlsList"></div>
+                        <button type="button" class="btn btn-sm btn-secondary mt-2" onclick="addImageUrlInput()">
+                            <i class="fas fa-plus"></i> Thêm ảnh
+                        </button>
                         <small class="form-text text-muted">Ảnh riêng cho biến thể này</small>
-                        <div id="variantImagePreview" class="mt-2" style="display: none;">
-                            <img id="variantImagePreviewImg" src="" alt="Preview" 
-                                 style="max-width: 200px; max-height: 200px; cursor: pointer; border: 1px solid #ddd; border-radius: 4px;" 
-                                 onclick="previewVariantImage()">
-                        </div>
                     </div>
+                    
                     
                     <div class="form-group">
                         <div class="custom-control custom-checkbox">
@@ -135,9 +134,11 @@ $(document).ready(function() {
 
 function loadVariants() {
     $.get('/Admin/ProductVariants/GetVariants?productId=' + productId, function(data) {
+        console.log('Loaded variants:', data);
         renderVariants(data);
-    }).fail(function() {
-        $('#variants-list').html('<tr><td colspan="7" class="text-center text-danger">Lỗi tải dữ liệu</td></tr>');
+    }).fail(function(xhr, status, error) {
+        console.error('Error loading variants:', xhr.responseText, status, error);
+        $('#variants-list').html('<tr><td colspan="7" class="text-center text-danger">Lỗi tải dữ liệu: ' + (xhr.responseText || error) + '</td></tr>');
     });
 }
 
@@ -187,6 +188,11 @@ window.showAddVariantModal = function() {
     $('#variantProductId').val(productId);
     $('#variantIsActive').prop('checked', true);
     $('#variantImagePreview').hide(); // Hide preview when adding new
+    
+    // Initialize with one empty image URL input
+    $('#variantImageUrlsList').html('');
+    addImageUrlInput();
+    
     $('#variantModal').modal('show');
 }
 
@@ -198,15 +204,14 @@ window.editVariant = function(variant) {
     $('#variantSize').val(variant.size || '');
     $('#variantStock').val(variant.stock);
     $('#variantPrice').val(variant.price || '');
-    $('#variantImageUrl').val(variant.imageUrl || '');
     $('#variantIsActive').prop('checked', variant.isActive);
     
-    // Trigger image preview if ImageUrl exists
-    if (variant.imageUrl) {
-        $('#variantImagePreviewImg').attr('src', variant.imageUrl);
-        $('#variantImagePreview').show();
+    // Load existing images
+    $('#variantImageUrlsList').html('');
+    if (variant.imageUrls && variant.imageUrls.length > 0) {
+        variant.imageUrls.forEach(url => addImageUrlInput(url));
     } else {
-        $('#variantImagePreview').hide();
+        addImageUrlInput();
     }
     
     $('#variantModal').modal('show');
@@ -214,6 +219,14 @@ window.editVariant = function(variant) {
 
 window.saveVariant = function() {
     const id = $('#variantId').val();
+    
+    // Collect all image URLs
+    const imageUrls = [];
+    $('.variant-image-url-input').each(function() {
+        const url = $(this).val().trim();
+        if (url) imageUrls.push(url);
+    });
+    
     const data = {
         id: id || null,
         productId: productId,
@@ -222,7 +235,7 @@ window.saveVariant = function() {
         size: $('#variantSize').val() || null,
         stock: parseInt($('#variantStock').val()) || 0,
         price: $('#variantPrice').val() ? parseFloat($('#variantPrice').val()) : null,
-        imageUrl: $('#variantImageUrl').val() || null,
+        imageUrls: imageUrls,
         isActive: $('#variantIsActive').is(':checked')
     };
     
@@ -266,48 +279,32 @@ function formatCurrency(value) {
     return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value);
 }
 
-// Image preview functionality
-$('#variantImageUrl').on('input', function() {
-    const url = $(this).val();
-    if (url) {
-        $('#variantImagePreviewImg').attr('src', url);
-        $('#variantImagePreview').show();
-    } else {
-        $('#variantImagePreview').hide();
-    }
-});
-
-function previewVariantImage() {
-    const imgUrl = $('#variantImagePreviewImg').attr('src');
-    if (imgUrl) {
-        // Create simple modal for image preview
-        const modal = `
-            <div class="modal fade" id="imagePreviewModal" tabindex="-1">
-                <div class="modal-dialog modal-lg modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Xem ảnh</h5>
-                            <button type="button" class="close" data-dismiss="modal">
-                                <span>&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body text-center">
-                            <img src="${imgUrl}" class="img-fluid" style="max-height: 500px;">
-                        </div>
-                    </div>
-                </div>
+// Dynamic image URL input management
+let imageInputCounter = 0;
+window.addImageUrlInput = function(url = '') {
+    const inputId = `imageUrl_${imageInputCounter++}`;
+    const html = `
+        <div class="input-group mb-2" id="imageInputGroup_${inputId}">
+            <input type="url" class="form-control variant-image-url-input" 
+                   placeholder="https://..." value="${url}">
+            <div class="input-group-append">
+                <button type="button" class="btn btn-outline-danger" 
+                        onclick="removeImageUrlInput('${inputId}')" title="Xóa">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
-        `;
-        // Remove existing modal if any
-        $('#imagePreviewModal').remove();
-        // Add and show new modal
-        $('body').append(modal);
-        $('#imagePreviewModal').modal('show');
-        // Remove modal after closing
-        $('#imagePreviewModal').on('hidden.bs.modal', function() {
-            $(this).remove();
-        });
+        </div>
+    `;
+    $('#variantImageUrlsList').append(html);
+}
+
+window.removeImageUrlInput = function(inputId) {
+    $(`#imageInputGroup_imageUrl_${inputId}`).remove();
+    // Ensure at least one input remains
+    if ($('.variant-image-url-input').length === 0) {
+        addImageUrlInput();
     }
 }
+
 }
 </script>
