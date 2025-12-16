@@ -33,18 +33,31 @@
                 element.classList.add('active');
             }
 
-            function updateQuantity(change) {
+            function updateQuantityDetail(change) {
                 var qtyInput = document.getElementById('quantity');
+                if (!qtyInput) {
+                    console.error('Không tìm thấy input quantity');
+                    return;
+                }
+                
                 var currentQty = parseInt(qtyInput.value) || 1;
                 var newQty = currentQty + change;
-                var max = parseInt(qtyInput.max) || 999;
-                var min = parseInt(qtyInput.min) || 1;
+                var max = parseInt(qtyInput.getAttribute('max'));
+                var min = parseInt(qtyInput.getAttribute('min')) || 1;
+                
+                // Nếu không có max, sử dụng giá trị mặc định
+                if (!max || isNaN(max)) {
+                    max = 999;
+                }
+                
+                console.log('Update Quantity:', { currentQty, change, newQty, min, max });
                 
                 // Respect min and max boundaries
                 if (newQty < min) newQty = min;
                 if (newQty > max) newQty = max;
                 
                 qtyInput.value = newQty;
+                console.log('New quantity set to:', newQty);
             }
 
             function applyCoupon(code) {
@@ -114,9 +127,9 @@
             <div class="quantity-selector-group" style="margin-bottom: 20px;">
                 <label style="margin-bottom: 8px; display: block; font-weight: 600;">Số lượng</label>
                 <div class="quantity-selector">
-                    <button class="qty-btn minus" type="button" onclick="updateQuantity(-1)">-</button>
-                    <input type="number" id="quantity" value="1" min="1" class="qty-input" />
-                    <button class="qty-btn plus" type="button" onclick="updateQuantity(1)">+</button>
+                    <button class="qty-btn minus" type="button" onclick="updateQuantityDetail(-1)">-</button>
+                    <input type="number" id="quantity" value="1" min="1" max="1" class="qty-input" readonly />
+                    <button class="qty-btn plus" type="button" onclick="updateQuantityDetail(1)">+</button>
                 </div>
             </div>
             <div class="product-actions">

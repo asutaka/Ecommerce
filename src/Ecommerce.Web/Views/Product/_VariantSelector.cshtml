@@ -91,6 +91,8 @@
     </style>
     
     <script>
+    // Đợi một chút để đảm bảo tất cả elements đã được render
+    setTimeout(function() {
     (function() {
         // Parse variants data
         const variantsJson = document.getElementById('variantsData').textContent;
@@ -274,8 +276,10 @@
                 // Reset quantity based on stock
                 const quantityInput = document.getElementById('quantity');
                 if (quantityInput) {
+                    console.log('Setting max to variant stock:', variant.Stock);
                     quantityInput.value = variant.Stock > 0 ? 1 : 0;
-                    quantityInput.max = variant.Stock;
+                    quantityInput.setAttribute('max', String(variant.Stock));
+                    console.log('Max attribute after set:', quantityInput.getAttribute('max'));
                 }
                 
                 // Enable add to cart button
@@ -312,7 +316,7 @@
                 const quantityInput = document.getElementById('quantity');
                 if (quantityInput) {
                     quantityInput.value = 0;
-                    quantityInput.max = 0;
+                    quantityInput.setAttribute('max', 0);
                 }
                 
                 // Disable Add to Cart button
@@ -347,6 +351,7 @@
             }
         })();
     })();
+    }, 0); // Delay 0ms để đợi DOM render xong
     </script>
 }
 else
