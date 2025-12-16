@@ -26,7 +26,7 @@ public class CartService(EcommerceDbContext dbContext, ILogger<CartService> logg
         return cart.Id;
     }
 
-    public async Task<bool> AddItemAsync(Guid cartId, Guid productId, int quantity = 1)
+    public async Task<bool> AddItemAsync(Guid cartId, Guid productId, int quantity = 1, Guid? variantId = null)
     {
         if (quantity <= 0)
         {
@@ -51,8 +51,8 @@ public class CartService(EcommerceDbContext dbContext, ILogger<CartService> logg
             return false;
         }
 
-        // Check if product already in cart
-        var existingItem = cart.Items.FirstOrDefault(x => x.ProductId == productId);
+        // Check if same product AND variant already in cart
+        var existingItem = cart.Items.FirstOrDefault(x => x.ProductId == productId && x.ProductVariantId == variantId);
         if (existingItem != null)
         {
             // Update quantity instead of adding duplicate
@@ -68,6 +68,7 @@ public class CartService(EcommerceDbContext dbContext, ILogger<CartService> logg
             {
                 CartId = cartId,
                 ProductId = productId,
+                ProductVariantId = variantId,
                 ProductName = product.Name,
                 ProductImageUrl = product.HeroImageUrl,
                 UnitPrice = product.Price,

@@ -29,10 +29,10 @@ public class CartController(ICartService cartService, ILogger<CartController> lo
     /// Add product to cart (AJAX)
     /// </summary>
     [HttpPost]
-    public async Task<IActionResult> AddToCart(Guid productId, int quantity = 1)
+    public async Task<IActionResult> AddToCart(Guid productId, int quantity = 1, Guid? variantId = null)
     {
         var cartId = await GetOrCreateCartIdAsync();
-        var success = await cartService.AddItemAsync(cartId, productId, quantity);
+        var success = await cartService.AddItemAsync(cartId, productId, quantity, variantId);
 
         if (!success)
         {

@@ -12,7 +12,7 @@ public interface ICartService
     /// <summary>
     /// Add a product to the cart (or update quantity if already exists)
     /// </summary>
-    Task<bool> AddItemAsync(Guid cartId, Guid productId, int quantity = 1);
+    Task<bool> AddItemAsync(Guid cartId, Guid productId, int quantity = 1, Guid? variantId = null);
 
     /// <summary>
     /// Update the quantity of a cart item

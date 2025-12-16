@@ -35,9 +35,15 @@
 
             function updateQuantity(change) {
                 var qtyInput = document.getElementById('quantity');
-                var currentQty = parseInt(qtyInput.value);
+                var currentQty = parseInt(qtyInput.value) || 1;
                 var newQty = currentQty + change;
-                if (newQty < 1) newQty = 1;
+                var max = parseInt(qtyInput.max) || 999;
+                var min = parseInt(qtyInput.min) || 1;
+                
+                // Respect min and max boundaries
+                if (newQty < min) newQty = min;
+                if (newQty > max) newQty = max;
+                
                 qtyInput.value = newQty;
             }
 
@@ -109,12 +115,12 @@
                 <label style="margin-bottom: 8px; display: block; font-weight: 600;">Số lượng</label>
                 <div class="quantity-selector">
                     <button class="qty-btn minus" type="button" onclick="updateQuantity(-1)">-</button>
-                    <input type="number" id="quantity" value="1" min="1" class="qty-input" readonly />
+                    <input type="number" id="quantity" value="1" min="1" class="qty-input" />
                     <button class="qty-btn plus" type="button" onclick="updateQuantity(1)">+</button>
                 </div>
             </div>
             <div class="product-actions">
-                <button class="btn btn-block btn-outline add-to-cart-btn" onclick="addToCart('@Model.Id', document.getElementById('quantity').value)">
+                <button class="btn btn-block btn-outline add-to-cart-btn" onclick="addToCart('@Model.Id', document.getElementById('quantity').value, document.getElementById('selectedVariantId').value)">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 3px;">
                         <circle cx="9" cy="21" r="1"></circle>
                         <circle cx="20" cy="21" r="1"></circle>
@@ -122,7 +128,7 @@
                     </svg>
                     Thêm vào giỏ hàng
                 </button>
-                <button class="btn btn-block btn-primary" onclick="buyNow('@Model.Id', document.getElementById('quantity').value)">Mua ngay</button>
+                <button class="btn btn-block btn-primary" onclick="buyNow('@Model.Id', document.getElementById('quantity').value, document.getElementById('selectedVariantId').value)">Mua ngay</button>
             </div>
         </div>
     </div>
