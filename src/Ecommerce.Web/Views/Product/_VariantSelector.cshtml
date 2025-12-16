@@ -69,14 +69,6 @@
                 <i class="bi bi-box-seam"></i> Vui lòng chọn @(colors.Any() ? "màu" : "") @(colors.Any() && sizes.Any() ? "và " : "")@(sizes.Any() ? "size" : "") để xem tồn kho
             </span>
         </div>
-        
-        @* Selected Variant Details *@
-        <div class="variant-details d-none">
-            <div class="alert alert-info">
-                <strong>SKU:</strong> <span id="selected-sku">-</span><br>
-                <strong>Tồn kho:</strong> <span id="selected-stock">-</span>
-            </div>
-        </div>
     </div>
     
     @* Hidden field for selected variant ID *@
@@ -230,9 +222,8 @@
                     stockStatus.innerHTML = `<i class="bi bi-x-circle text-danger"></i> <strong>Hết hàng</strong>`;
                 }
                 
-                // Show variant details
-                document.querySelector('.variant-details').classList.remove('d-none');
                 
+
                 // Update entire gallery if variant has custom images
                 if (variant.ImageUrls && variant.ImageUrls.length > 0) {
                     console.log('Updating gallery to variant images:', variant.ImageUrls);
@@ -294,8 +285,8 @@
                 }
             } else {
                 document.getElementById('selectedVariantId').value = '';
-                document.querySelector('.variant-details').classList.add('d-none');
                 
+
                 // Hide SKU when no variant
                 const skuElement = document.getElementById('product-sku');
                 if (skuElement) {
