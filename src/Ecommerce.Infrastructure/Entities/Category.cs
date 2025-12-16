@@ -4,6 +4,7 @@ public class Category : BaseEntity
 {
     public required string Name { get; set; }
     public string? Description { get; set; }
+    public int Priority { get; set; } = 0; // 0 = lowest priority, higher number = higher priority
     
     public Guid? ParentId { get; set; }
     public Category? Parent { get; set; }

@@ -55,7 +55,8 @@ public class CategoriesController(EcommerceDbContext dbContext) : Controller
         {
             Name = model.Name,
             Description = model.Description,
-            ParentId = model.ParentId
+            ParentId = model.ParentId,
+            Priority = model.Priority
         };
 
         dbContext.Categories.Add(category);
@@ -80,6 +81,7 @@ public class CategoriesController(EcommerceDbContext dbContext) : Controller
             Name = category.Name,
             Description = category.Description,
             ParentId = category.ParentId,
+            Priority = category.Priority,
             Categories = await GetCategoriesForDropdown(id)
         };
 
@@ -117,6 +119,7 @@ public class CategoriesController(EcommerceDbContext dbContext) : Controller
         category.Name = model.Name;
         category.Description = model.Description;
         category.ParentId = model.ParentId;
+        category.Priority = model.Priority;
         category.UpdatedAt = DateTime.UtcNow;
 
         await dbContext.SaveChangesAsync();

@@ -15,6 +15,9 @@ public class CategoryFormViewModel
     [Display(Name = "Mô tả")]
     public string? Description { get; set; }
 
+    [Display(Name = "Độ ưu tiên")]
+    public int Priority { get; set; } = 0;
+
     [Display(Name = "Danh mục cha")]
     public Guid? ParentId { get; set; }
 
