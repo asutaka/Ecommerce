@@ -13,6 +13,7 @@ public class Product : BaseEntity
     public Category? PrimaryCategory { get; set; }
 
     public ICollection<ProductCategory> ProductCategories { get; set; } = new List<ProductCategory>();
+    public ICollection<ProductVariant> ProductVariants { get; set; } = new List<ProductVariant>();
 
     // Helper to maintain compatibility
     public string HeroImageUrl => Images.FirstOrDefault() ?? "https://placehold.co/600x400?text=No+Image";

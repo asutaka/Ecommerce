@@ -1,0 +1,192 @@
+@model List<Ecommerce.Web.ViewModels.ProductVariantViewModel>
+
+@if (Model != null && Model.Any())
+{
+    var colors = Model.Where(v => !string.IsNullOrEmpty(v.Color)).Select(v => v.Color).Distinct().ToList();
+    var sizes = Model.Where(v => !string.IsNullOrEmpty(v.Size)).Select(v => v.Size).Distinct().ToList();
+    
+    <div class="product-variants mb-4">
+        @* Color Selector *@
+        @if (colors.Any())
+        {
+            <div class="mb-3">
+                <label class="fw-bold d-block mb-2">
+                    <i class="bi bi-palette"></i> Màu sắc:
+                </label>
+                <div class="color-options">
+                    @foreach (var color in colors)
+                    {
+                        var variant = Model.FirstOrDefault(v => v.Color == color);
+                        var hasStock = Model.Any(v => v.Color == color && v.Stock > 0);
+                        var btnClass = hasStock ? "btn-outline-primary" : "btn-outline-secondary disabled";
+                        
+                        <button type="button" 
+                                class="btn @btnClass color-btn me-2 mb-2" 
+                                data-color="@color"
+                                @(hasStock ? "" : "disabled")>
+                            @color
+                            @if (!hasStock)
+                            {
+                                <small class="text-muted">(Hết)</small>
+                            }
+                        </button>
+                    }
+                </div>
+            </div>
+        }
+        
+        @* Size Selector *@
+        @if (sizes.Any())
+        {
+            <div class="mb-3">
+                <label class="fw-bold d-block mb-2">
+                    <i class="bi bi-rulers"></i> Kích thước:
+                </label>
+                <div class="size-options">
+                    @foreach (var size in sizes)
+                    {
+                        var hasStock = Model.Any(v => v.Size == size && v.Stock > 0);
+                        var btnClass = hasStock ? "btn-outline-primary" : "btn-outline-secondary disabled";
+                        
+                        <button type="button" 
+                                class="btn @btnClass size-btn me-2 mb-2" 
+                                data-size="@size"
+                                @(hasStock ? "" : "disabled")>
+                            @size
+                            @if (!hasStock)
+                            {
+                                <small>(Hết)</small>
+                            }
+                        </button>
+                    }
+                </div>
+            </div>
+        }
+        
+        @* Stock Display *@
+        <div class="stock-info mb-3">
+            <span class="stock-status text-muted">
+                <i class="bi bi-box-seam"></i> Vui lòng chọn @(colors.Any() ? "màu" : "") @(colors.Any() && sizes.Any() ? "và " : "")@(sizes.Any() ? "size" : "") để xem tồn kho
+            </span>
+        </div>
+        
+        @* Selected Variant Details *@
+        <div class="variant-details d-none">
+            <div class="alert alert-info">
+                <strong>SKU:</strong> <span id="selected-sku">-</span><br>
+                <strong>Tồn kho:</strong> <span id="selected-stock">-</span>
+            </div>
+        </div>
+    </div>
+    
+    @* Hidden field for selected variant ID *@
+    <input type="hidden" id="selectedVariantId" name="variantId" value="">
+    
+    @* Variants data as JSON for JavaScript *@
+    <script id="variantsData" type="application/json">
+        @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model))
+    </script>
+    
+    <style>
+        .color-btn.active, .size-btn.active {
+            background-color: #007bff !important;
+            color: white !important;
+            border-color: #007bff !important;
+        }
+        .color-btn:not(.disabled):hover, .size-btn:not(.disabled):hover {
+            background-color: #f8f9fa;
+        }
+    </style>
+    
+    <script>
+    (function() {
+        const variantsData = JSON.parse(document.getElementById('variantsData').textContent);
+        let selectedColor = null;
+        let selectedSize = null;
+        
+        // Color selection
+        document.querySelectorAll('.color-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                selectedColor = this.dataset.color;
+                updateVariantSelection();
+            });
+        });
+        
+        // Size selection
+        document.querySelectorAll('.size-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                selectedSize = this.dataset.size;
+                updateVariantSelection();
+            });
+        });
+        
+        function updateVariantSelection() {
+            console.log('Selected:', { color: selectedColor, size: selectedSize });
+            
+            // Find matching variant
+            const variant = variantsData.find(v => 
+                (selectedColor === null || v.Color === selectedColor) &&
+                (selectedSize === null || v.Size === selectedSize)
+            );
+            
+            console.log('Found variant:', variant);
+            
+            if (variant) {
+                document.getElementById('selectedVariantId').value = variant.Id;
+                document.getElementById('selected-sku').textContent = variant.SKU;
+                document.getElementById('selected-stock').textContent = variant.Stock + ' sản phẩm';
+                
+                // Update stock status
+                const stockStatus = document.querySelector('.stock-status');
+                if (variant.Stock > 0) {
+                    stockStatus.innerHTML = `<i class="bi bi-check-circle text-success"></i> Còn <strong>${variant.Stock}</strong> sản phẩm`;
+                } else {
+                    stockStatus.innerHTML = `<i class="bi bi-x-circle text-danger"></i> <strong>Hết hàng</strong>`;
+                }
+                
+                // Show variant details
+                document.querySelector('.variant-details').classList.remove('d-none');
+                
+                // Update main product image if variant has custom image
+                if (variant.ImageUrl) {
+                    console.log('Updating image to:', variant.ImageUrl);
+                    const mainImage = document.getElementById('mainProductImage');
+                    if (mainImage) {
+                        mainImage.src = variant.ImageUrl;
+                        console.log('Image updated!');
+                    } else {
+                        console.log('mainProductImage element not found!');
+                    }
+                }
+                
+                // Update price if variant has custom price
+                if (variant.Price) {
+                    const priceEl = document.querySelector('.product-price');
+                    if (priceEl) {
+                        priceEl.textContent = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(variant.Price);
+                    }
+                }
+                
+                // Enable add to cart button
+                const addToCartBtn = document.querySelector('.add-to-cart-btn');
+                if (addToCartBtn) {
+                    addToCartBtn.disabled = variant.Stock === 0;
+                }
+            } else {
+                document.getElementById('selectedVariantId').value = '';
+                document.querySelector('.variant-details').classList.add('d-none');
+            }
+        }
+    })();
+    </script>
+}
+else
+{
+    <div class="alert alert-warning">
+        <i class="bi bi-exclamation-triangle"></i> Sản phẩm chưa có biến thể. Vui lòng liên hệ admin để thêm size/màu sắc.
+    </div>
+}

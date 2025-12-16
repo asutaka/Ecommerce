@@ -19,7 +19,17 @@ public class Order : BaseEntity
 public class OrderItem : BaseEntity
 {
     public Guid ProductId { get; set; }
+    
+    // Optional variant reference
+    public Guid? ProductVariantId { get; set; }
+    
     public required string ProductName { get; set; }
+    
+    // Variant snapshot for historical record
+    public string? VariantSKU { get; set; }
+    public string? VariantColor { get; set; }
+    public string? VariantSize { get; set; }
+    
     public decimal UnitPrice { get; set; }
     public int Quantity { get; set; }
 

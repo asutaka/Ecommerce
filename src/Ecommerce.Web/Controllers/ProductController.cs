@@ -162,6 +162,24 @@ public class ProductController(EcommerceDbContext dbContext) : Controller
             };
         }
 
+        // Load product variants
+        var variants = await dbContext.ProductVariants
+            .Where(v => v.ProductId == product.Id && v.IsActive)
+            .OrderBy(v => v.Color)
+            .ThenBy(v => v.Size)
+            .Select(v => new ProductVariantViewModel
+            {
+                Id = v.Id,
+                SKU = v.SKU,
+                Color = v.Color,
+                Size = v.Size,
+                Stock = v.Stock,
+                Price = v.Price,
+                ImageUrl = v.ImageUrl,
+                IsActive= v.IsActive
+            })
+            .ToListAsync();
+
         var model = new ProductDetailViewModel
         {
             Id = product.Id,
@@ -174,6 +192,7 @@ public class ProductController(EcommerceDbContext dbContext) : Controller
             PrimaryCategoryId = product.PrimaryCategoryId ?? Guid.Empty,
             CategoryName = product.PrimaryCategory?.Name ?? "N/A",
             RelatedProducts = relatedProducts,
+            Variants = variants,
             AvailableCoupons = coupons
         };
 

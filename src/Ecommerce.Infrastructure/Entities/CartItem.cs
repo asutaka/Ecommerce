@@ -23,9 +23,26 @@ public class CartItem : BaseEntity
     public Product Product { get; set; } = default!;
 
     /// <summary>
+    /// Foreign key to ProductVariant (nullable for backward compatibility)
+    /// </summary>
+    public Guid? ProductVariantId { get; set; }
+
+    /// <summary>
+    /// Navigation property to ProductVariant
+    /// </summary>
+    public ProductVariant? ProductVariant { get; set; }
+
+    /// <summary>
     /// Snapshot of product name at time of adding to cart
     /// </summary>
     public required string ProductName { get; set; }
+
+    /// <summary>
+    /// Snapshot of variant info (Color, Size, SKU) for historical record
+    /// </summary>
+    public string? VariantSKU { get; set; }
+    public string? VariantColor { get; set; }
+    public string? VariantSize { get; set; }
 
     /// <summary>
     /// Snapshot of product image URL at time of adding to cart

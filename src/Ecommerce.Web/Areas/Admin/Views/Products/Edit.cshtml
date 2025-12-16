@@ -109,6 +109,7 @@
                                 <span asp-validation-for="ImageUrls" class="text-danger"></span>
                                 <small class="form-text text-muted">Nhập URL trực tiếp của ảnh. Ảnh đầu tiên sẽ là ảnh đại diện.</small>
                             </div>
+                            
                         </div>
 
                         <div class="card-footer">
@@ -120,6 +121,9 @@
                             </a>
                         </div>
                     </form>
+                    
+                    @* Product Variants Section - OUTSIDE form to avoid nesting *@
+                    @await Html.PartialAsync("_VariantsSection", Model.Id)
                 </div>
             </div>
 

@@ -8,6 +8,7 @@ namespace Ecommerce.Infrastructure.Persistence;
 public class EcommerceDbContext(DbContextOptions<EcommerceDbContext> options) : DbContext(options)
 {
     public DbSet<Product> Products => Set<Product>();
+    public DbSet<ProductVariant> ProductVariants => Set<ProductVariant>();
     public DbSet<ProductCategory> ProductCategories => Set<ProductCategory>();
     public DbSet<Category> Categories => Set<Category>();
     public DbSet<Order> Orders => Set<Order>();
@@ -39,6 +40,27 @@ public class EcommerceDbContext(DbContextOptions<EcommerceDbContext> options) : 
                 .HasForeignKey(x => x.PrimaryCategoryId)
                 .IsRequired(false)
                 .OnDelete(DeleteBehavior.SetNull);
+        });
+
+        modelBuilder.Entity<ProductVariant>(entity =>
+        {
+            entity.Property(x => x.SKU).HasMaxLength(50).IsRequired();
+            entity.Property(x => x.Color).HasMaxLength(50);
+            entity.Property(x => x.Size).HasMaxLength(20);
+            entity.Property(x => x.Price).HasPrecision(18, 2);
+            entity.Property(x => x.ImageUrl).HasMaxLength(500);
+
+            // Unique index on SKU
+            entity.HasIndex(x => x.SKU).IsUnique();
+            
+            // Index on ProductId for faster queries
+            entity.HasIndex(x => x.ProductId);
+
+            // Relationship with Product
+            entity.HasOne(x => x.Product)
+                .WithMany(p => p.ProductVariants)
+                .HasForeignKey(x => x.ProductId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
         modelBuilder.Entity<ProductCategory>(entity =>

@@ -18,6 +18,21 @@ public class ProductDetailViewModel
     // Related products
     public List<ProductViewModel> RelatedProducts { get; set; } = new();
     
+    // Product variants
+    public List<ProductVariantViewModel> Variants { get; set; } = new();
+    
     // Available coupons
     public List<CouponViewModel> AvailableCoupons { get; set; } = new();
+}
+
+public class ProductVariantViewModel
+{
+    public Guid Id { get; set; }
+    public string SKU { get; set; } = string.Empty;
+    public string? Color { get; set; }
+    public string? Size { get; set; }
+    public int Stock { get; set; }
+    public decimal? Price { get; set; }
+    public string? ImageUrl { get; set; }
+    public bool IsActive { get; set; }
 }

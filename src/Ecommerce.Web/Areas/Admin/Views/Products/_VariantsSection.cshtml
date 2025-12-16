@@ -1,0 +1,313 @@
+@model Guid
+
+<div class="mt-4">
+    <h6 class="border-bottom pb-2 mb-3">
+        <i class="fas fa-layer-group"></i> Quản lý biến thể (Size, Color, Stock)
+    </h6>
+    
+    <button type="button" class="btn btn-success btn-sm mb-3" onclick="showAddVariantModal()">
+        <i class="fas fa-plus"></i> Thêm biến thể
+    </button>
+    
+    <div id="variants-table-container">
+        <table class="table table-sm table-hover" id="variants-table">
+            <thead class="thead-light">
+                <tr>
+                    <th>SKU</th>
+                    <th>Màu</th>
+                    <th>Size</th>
+                    <th>Stock</th>
+                    <th>Giá</th>
+                    <th>Status</th>
+                    <th>Thao tác</th>
+                </tr>
+            </thead>
+            <tbody id="variants-list">
+                <tr>
+                    <td colspan="7" class="text-center text-muted">
+                        <i class="fas fa-spinner fa-spin"></i> Đang tải...
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Add/Edit Variant Modal -->
+<div class="modal fade" id="variantModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="variantModalTitle">Thêm biến thể</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="variantForm">
+                    <input type="hidden" id="variantId">
+                    <input type="hidden" id="variantProductId" value="@Model">
+                    
+                    <div class="form-group">
+                        <label for="variantSKU">SKU <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="variantSKU" required placeholder="VD: TSH-RED-M-001">
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="variantColor">Màu sắc</label>
+                                <input type="text" class="form-control" id="variantColor" placeholder="VD: Đỏ, Blue">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="variantSize">Kích thước</label>
+                                <select class="form-control" id="variantSize">
+                                    <option value="">-- Chọn size --</option>
+                                    <option>XS</option>
+                                    <option>S</option>
+                                    <option>M</option>
+                                    <option>L</option>
+                                    <option>XL</option>
+                                    <option>XXL</option>
+                                    <option>XXXL</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="variantStock">Số lượng <span class="text-danger">*</span></label>
+                        <input type="number" class="form-control" id="variantStock" required min="0" value="0">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="variantPrice">Giá riêng (tùy chọn)</label>
+                        <input type="number" class="form-control" id="variantPrice" min="0" placeholder="Để trống = dùng giá sản phẩm">
+                        <small class="form-text text-muted">Nếu để trống, biến thể sẽ dùng giá của sản phẩm</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="variantImageUrl">Link ảnh (tùy chọn)</label>
+                        <input type="url" class="form-control" id="variantImageUrl" placeholder="https://...">
+                        <small class="form-text text-muted">Ảnh riêng cho biến thể này</small>
+                        <div id="variantImagePreview" class="mt-2" style="display: none;">
+                            <img id="variantImagePreviewImg" src="" alt="Preview" 
+                                 style="max-width: 200px; max-height: 200px; cursor: pointer; border: 1px solid #ddd; border-radius: 4px;" 
+                                 onclick="previewVariantImage()">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="variantIsActive" checked>
+                            <label class="custom-control-label" for="variantIsActive">Hoạt động</label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-primary" onclick="saveVariant()">
+                    <i class="fas fa-save"></i> Lưu
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Wait for jQuery to be available
+if (typeof jQuery === 'undefined') {
+    window.addEventListener('load', function() { initVariantsSection(); });
+} else {
+    initVariantsSection();
+}
+
+function initVariantsSection() {
+const productId = '@Model';
+
+// Load variants when ready
+$(document).ready(function() {
+    loadVariants();
+});
+
+function loadVariants() {
+    $.get('/Admin/ProductVariants/GetVariants?productId=' + productId, function(data) {
+        renderVariants(data);
+    }).fail(function() {
+        $('#variants-list').html('<tr><td colspan="7" class="text-center text-danger">Lỗi tải dữ liệu</td></tr>');
+    });
+}
+
+function renderVariants(variants) {
+    if (!variants || variants.length === 0) {
+        $('#variants-list').html('<tr><td colspan="7" class="text-center text-muted">Chưa có biến thể nào</td></tr>');
+        return;
+    }
+    
+    let html = '';
+    variants.forEach(v => {
+        const priceDisplay = v.price ? formatCurrency(v.price) : '<em class="text-muted">Giá SP</em>';
+        const statusBadge = v.isActive 
+            ? '<span class="badge badge-success">Active</span>' 
+            : '<span class="badge badge-secondary">Inactive</span>';
+        const stockBadge = v.stock > 0 
+            ? `<span class="badge badge-info">${v.stock}</span>` 
+            : '<span class="badge badge-warning">Hết</span>';
+            
+        html += `
+            <tr>
+                <td><code>${v.sku}</code></td>
+                <td>${v.color || '-'}</td>
+                <td>${v.size || '-'}</td>
+                <td>${stockBadge}</td>
+                <td>${priceDisplay}</td>
+                <td>${statusBadge}</td>
+                <td>
+                    <button class="btn btn-sm btn-primary" onclick='editVariant(${JSON.stringify(v)})' title="Sửa">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn btn-sm btn-danger" onclick="deleteVariant('${v.id}')" title="Xóa">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
+        `;
+    });
+    $('#variants-list').html(html);
+}
+
+window.showAddVariantModal = function() {
+    $('#variantModalTitle').text('Thêm biến thể mới');
+    var form = $('#variantForm')[0];
+    if (form) form.reset();
+    $('#variantId').val('');
+    $('#variantProductId').val(productId);
+    $('#variantIsActive').prop('checked', true);
+    $('#variantImagePreview').hide(); // Hide preview when adding new
+    $('#variantModal').modal('show');
+}
+
+window.editVariant = function(variant) {
+    $('#variantModalTitle').text('Chỉnh sửa biến thể');
+    $('#variantId').val(variant.id);
+    $('#variantSKU').val(variant.sku);
+    $('#variantColor').val(variant.color || '');
+    $('#variantSize').val(variant.size || '');
+    $('#variantStock').val(variant.stock);
+    $('#variantPrice').val(variant.price || '');
+    $('#variantImageUrl').val(variant.imageUrl || '');
+    $('#variantIsActive').prop('checked', variant.isActive);
+    
+    // Trigger image preview if ImageUrl exists
+    if (variant.imageUrl) {
+        $('#variantImagePreviewImg').attr('src', variant.imageUrl);
+        $('#variantImagePreview').show();
+    } else {
+        $('#variantImagePreview').hide();
+    }
+    
+    $('#variantModal').modal('show');
+}
+
+window.saveVariant = function() {
+    const id = $('#variantId').val();
+    const data = {
+        id: id || null,
+        productId: productId,
+        sku: $('#variantSKU').val(),
+        color: $('#variantColor').val() || null,
+        size: $('#variantSize').val() || null,
+        stock: parseInt($('#variantStock').val()) || 0,
+        price: $('#variantPrice').val() ? parseFloat($('#variantPrice').val()) : null,
+        imageUrl: $('#variantImageUrl').val() || null,
+        isActive: $('#variantIsActive').is(':checked')
+    };
+    
+    const url = id ? `/Admin/ProductVariants/Update?id=${id}` : '/Admin/ProductVariants/Create';
+    const method = id ? 'PUT' : 'POST';
+    
+    $.ajax({
+        url: url,
+        method: method,
+        contentType: 'application/json',
+        data: JSON.stringify(data),
+        success: function() {
+            toastr.success(id ? 'Cập nhật thành công!' : 'Thêm biến thể thành công!');
+            $('#variantModal').modal('hide');
+            loadVariants();
+        },
+        error: function(xhr) {
+            const msg = xhr.responseJSON?.message || 'Có lỗi xảy ra';
+            toastr.error(msg);
+        }
+    });
+}
+
+window.deleteVariant = function(id) {
+    if (!confirm('Bạn có chắc muốn xóa biến thể này?')) return;
+    
+    $.ajax({
+        url: `/Admin/ProductVariants/Delete?id=${id}`,
+        method: 'DELETE',
+        success: function() {
+            toastr.success('Đã xóa biến thể!');
+            loadVariants();
+        },
+        error: function() {
+            toastr.error('Không thể xóa biến thể');
+        }
+    });
+}
+
+function formatCurrency(value) {
+    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value);
+}
+
+// Image preview functionality
+$('#variantImageUrl').on('input', function() {
+    const url = $(this).val();
+    if (url) {
+        $('#variantImagePreviewImg').attr('src', url);
+        $('#variantImagePreview').show();
+    } else {
+        $('#variantImagePreview').hide();
+    }
+});
+
+function previewVariantImage() {
+    const imgUrl = $('#variantImagePreviewImg').attr('src');
+    if (imgUrl) {
+        // Create simple modal for image preview
+        const modal = `
+            <div class="modal fade" id="imagePreviewModal" tabindex="-1">
+                <div class="modal-dialog modal-lg modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Xem ảnh</h5>
+                            <button type="button" class="close" data-dismiss="modal">
+                                <span>&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body text-center">
+                            <img src="${imgUrl}" class="img-fluid" style="max-height: 500px;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        // Remove existing modal if any
+        $('#imagePreviewModal').remove();
+        // Add and show new modal
+        $('body').append(modal);
+        $('#imagePreviewModal').modal('show');
+        // Remove modal after closing
+        $('#imagePreviewModal').on('hidden.bs.modal', function() {
+            $(this).remove();
+        });
+    }
+}
+}
+</script>
