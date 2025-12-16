@@ -14,6 +14,16 @@ public class ShoppingCart : BaseEntity
     public Customer? Customer { get; set; }
 
     /// <summary>
+    /// Applied coupon code (if any)
+    /// </summary>
+    public string? AppliedCouponCode { get; set; }
+
+    /// <summary>
+    /// Discount amount from applied coupon
+    /// </summary>
+    public decimal Discount { get; set; }
+
+    /// <summary>
     /// Collection of items in this cart
     /// </summary>
     public ICollection<CartItem> Items { get; set; } = new List<CartItem>();

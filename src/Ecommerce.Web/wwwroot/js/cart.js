@@ -10,18 +10,19 @@ function updateCartBadge(count) {
 }
 
 // Add to cart (called from product pages)
-async function addToCart(productId, quantity = 1) {
-    if (!window.isAuthenticated) {
-        window.location.href = `/Account/Login?returnUrl=${encodeURIComponent(window.location.pathname + window.location.search)}`;
-        return;
-    }
+async function addToCart(productId, quantity = 1, variantId = null) {
     try {
+        let body = `productId=${productId}&quantity=${quantity}`;
+        if (variantId && variantId.trim() !== '') {
+            body += `&variantId=${variantId}`;
+        }
+
         const response = await fetch('/Cart/AddToCart', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
-            body: `productId=${productId}&quantity=${quantity}`
+            body: body
         });
 
         const result = await response.json();
@@ -39,19 +40,19 @@ async function addToCart(productId, quantity = 1) {
 }
 
 // Buy Now function
-async function buyNow(productId, quantity = 1) {
-    if (!window.isAuthenticated) {
-        window.location.href = `/Account/Login?returnUrl=${encodeURIComponent(window.location.pathname + window.location.search)}`;
-        return;
-    }
-
+async function buyNow(productId, quantity = 1, variantId = null) {
     try {
+        let body = `productId=${productId}&quantity=${quantity}`;
+        if (variantId && variantId.trim() !== '') {
+            body += `&variantId=${variantId}`;
+        }
+
         const response = await fetch('/Cart/AddToCart', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
-            body: `productId=${productId}&quantity=${quantity}`
+            body: body
         });
 
         const result = await response.json();
@@ -215,3 +216,66 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.error('Error loading cart count:', error);
     }
 });
+
+// Apply coupon code
+async function applyCoupon() {
+    const couponInput = document.getElementById('couponCodeInput');
+    const couponCode = couponInput?.value?.trim();
+
+    if (!couponCode) {
+        showNotification('Vui lòng nhập mã giảm giá', 'error');
+        return;
+    }
+
+    try {
+        const response = await fetch('/Cart/ApplyCoupon', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `couponCode=${encodeURIComponent(couponCode)}`
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            showNotification(result.message, 'success');
+            // Reload page to show applied coupon
+            setTimeout(() => location.reload(), 1000);
+        } else {
+            showNotification(result.message, 'error');
+        }
+    } catch (error) {
+        console.error('Error applying coupon:', error);
+        showNotification('Có lỗi xảy ra', 'error');
+    }
+}
+
+// Remove applied coupon
+async function removeCoupon() {
+    if (!confirm('Bạn có chắc muốn xóa mã giảm giá?')) {
+        return;
+    }
+
+    try {
+        const response = await fetch('/Cart/RemoveCoupon', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            }
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            showNotification(result.message, 'success');
+            // Reload page to update UI
+            setTimeout(() => location.reload(), 1000);
+        } else {
+            showNotification(result.message, 'error');
+        }
+    } catch (error) {
+        console.error('Error removing coupon:', error);
+        showNotification('Có lỗi xảy ra', 'error');
+    }
+}

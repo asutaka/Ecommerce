@@ -1,5 +1,6 @@
 using Ecommerce.Infrastructure.Entities;
 using Ecommerce.Infrastructure.Persistence;
+using Ecommerce.Web.ViewModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace Ecommerce.Web.Services;
@@ -107,5 +108,24 @@ public class CustomerAuthService(EcommerceDbContext dbContext) : ICustomerAuthSe
             customer.LastLoginAt = DateTime.UtcNow;
             await dbContext.SaveChangesAsync();
         }
+    }
+
+    public async Task<bool> UpdateProfileAsync(Guid customerId, UpdateProfileViewModel model)
+    {
+        var customer = await dbContext.Customers.FindAsync(customerId);
+        if (customer == null)
+        {
+            return false;
+        }
+
+        customer.FullName = model.FullName;
+        customer.Phone = model.Phone;
+        customer.ShippingAddress1 = model.ShippingAddress1;
+        customer.ShippingAddress2 = model.ShippingAddress2;
+        customer.ShippingAddress3 = model.ShippingAddress3;
+        customer.UpdatedAt = DateTime.UtcNow;
+
+        await dbContext.SaveChangesAsync();
+        return true;
     }
 }

@@ -42,39 +42,87 @@
                 </div>
             }
             
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    @TempData["Error"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+            
             <!-- Profile Information -->
             <div id="profile" class="card bg-transparent border-secondary mb-4">
                 <div class="card-body">
                     <h4 class="card-title mb-4">Thông tin cá nhân</h4>
                     
-                    <div class="row mb-3">
-                        <div class="col-sm-4 fw-bold">Email:</div>
-                        <div class="col-sm-8">@Model.Email</div>
-                    </div>
-                    
-                    <div class="row mb-3">
-                        <div class="col-sm-4 fw-bold">Họ và tên:</div>
-                        <div class="col-sm-8">@(Model.FullName ?? "Chưa cập nhật")</div>
-                    </div>
-                    
-                    <div class="row mb-3">
-                        <div class="col-sm-4 fw-bold">Số điện thoại:</div>
-                        <div class="col-sm-8">@(Model.Phone ?? "Chưa cập nhật")</div>
-                    </div>
-                    
-                    <div class="row mb-3">
-                        <div class="col-sm-4 fw-bold">Đăng nhập lần cuối:</div>
-                        <div class="col-sm-8">
-                            @if (Model.LastLoginAt.HasValue)
-                            {
-                                @Model.LastLoginAt.Value.ToLocalTime().ToString("dd/MM/yyyy HH:mm")
-                            }
-                            else
-                            {
-                                <span>Chưa có</span>
-                            }
+                    <form asp-action="UpdateProfile" method="post">
+                        <div class="row mb-3">
+                            <div class="col-sm-4 fw-bold">Email:</div>
+                            <div class="col-sm-8">
+                                @Model.Email
+                                <small class="text-muted d-block">Email không thể thay đổi</small>
+                            </div>
                         </div>
-                    </div>
+                        
+                        <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label fw-bold">Họ và tên:</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" name="FullName" value="@Model.FullName" placeholder="Nhập họ và tên" />
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label fw-bold">Số điện thoại:</label>
+                            <div class="col-sm-8">
+                                <input type="tel" class="form-control" name="Phone" value="@Model.Phone" placeholder="Nhập số điện thoại" />
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-sm-4 fw-bold">Đăng nhập lần cuối:</div>
+                            <div class="col-sm-8">
+                                @if (Model.LastLoginAt.HasValue)
+                                {
+                                    @Model.LastLoginAt.Value.ToLocalTime().ToString("dd/MM/yyyy HH:mm")
+                                }
+                                else
+                                {
+                                    <span>Chưa có</span>
+                                }
+                            </div>
+                        </div>
+
+                        <hr class="my-4" />
+
+                        <h5 class="mb-3">Địa chỉ giao hàng</h5>
+                        
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">
+                                <i class="bi bi-geo-alt-fill text-primary me-2"></i>Địa chỉ 1 (Mặc định)
+                            </label>
+                            <textarea class="form-control" name="ShippingAddress1" rows="2" placeholder="Nhập địa chỉ giao hàng chính">@Model.ShippingAddress1</textarea>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">
+                                <i class="bi bi-geo-alt text-secondary me-2"></i>Địa chỉ 2
+                            </label>
+                            <textarea class="form-control" name="ShippingAddress2" rows="2" placeholder="Nhập địa chỉ giao hàng phụ (tùy chọn)">@Model.ShippingAddress2</textarea>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">
+                                <i class="bi bi-geo-alt text-secondary me-2"></i>Địa chỉ 3
+                            </label>
+                            <textarea class="form-control" name="ShippingAddress3" rows="2" placeholder="Nhập địa chỉ giao hàng phụ (tùy chọn)">@Model.ShippingAddress3</textarea>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-save me-2"></i>Lưu thay đổi
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
             

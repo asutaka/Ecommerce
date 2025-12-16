@@ -1,4 +1,5 @@
 using Ecommerce.Infrastructure.Entities;
+using Ecommerce.Web.ViewModels;
 
 namespace Ecommerce.Web.Services;
 
@@ -10,4 +11,5 @@ public interface ICustomerAuthService
     Task<Customer?> GetByIdAsync(Guid id);
     Task<Customer?> FindOrCreateExternalLoginAsync(string provider, string providerKey, string email, string? fullName = null);
     Task UpdateLastLoginAsync(Guid customerId);
+    Task<bool> UpdateProfileAsync(Guid customerId, UpdateProfileViewModel model);
 }

@@ -69,10 +69,45 @@
                 <span>Ưu đãi</span>
                 <span class="pill small-pill">Miễn phí ship &gt; 1.000.000đ</span>
             </div>
+            
+            @* Coupon Input Section *@
+            <div class="coupon-section" style="margin: 16px 0; padding: 16px; background: #f9fafb; border-radius: 8px;">
+                @if (string.IsNullOrEmpty(Model.AppliedCouponCode))
+                {
+                    <div class="coupon-input-group" style="display: flex; gap: 8px;">
+                        <input type="text" id="couponCodeInput" placeholder="Nhập mã giảm giá" 
+                               style="flex: 1; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px;" />
+                        <button onclick="applyCoupon()" class="btn btn-outline" style="padding: 10px 16px; white-space: nowrap;">
+                            Áp dụng
+                        </button>
+                    </div>
+                }
+                else
+                {
+                    <div class="applied-coupon" style="display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; background: #ecfdf5; border: 1px solid #10b981; border-radius: 6px;">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <i class="bi bi-check-circle-fill" style="color: #10b981;"></i>
+                            <span style="font-weight: 600; color: #065f46;">@Model.AppliedCouponCode</span>
+                            <span style="color: #059669;">- Giảm @Model.Discount.ToString("N0")đ</span>
+                        </div>
+                        <button onclick="removeCoupon()" class="btn-icon" style="background: none; border: none; color: #6b7280; cursor: pointer; padding: 4px;">
+                            <i class="bi bi-x-lg"></i>
+                        </button>
+                    </div>
+                }
+            </div>
+
             <div class="summary-row">
                 <span>Tạm tính</span>
                 <strong id="subtotal">@Model.Subtotal.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))</strong>
             </div>
+            @if (Model.Discount > 0)
+            {
+                <div class="summary-row" id="discountRow" style="color: #10b981;">
+                    <span>Giảm giá</span>
+                    <strong id="discount">-@Model.Discount.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))</strong>
+                </div>
+            }
             @if (Model.Tax > 0)
             {
                 <div class="summary-row">

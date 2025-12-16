@@ -38,4 +38,19 @@ public interface ICartService
     /// Get cart item count for badge display
     /// </summary>
     Task<int> GetCartItemCountAsync(Guid cartId);
+
+    /// <summary>
+    /// Merge session cart with user cart upon login
+    /// </summary>
+    Task MergeCartAsync(string sessionId, Guid customerId);
+
+    /// <summary>
+    /// Apply coupon code to cart
+    /// </summary>
+    Task<(bool success, string message, decimal discount)> ApplyCouponAsync(Guid cartId, string couponCode);
+
+    /// <summary>
+    /// Remove applied coupon from cart
+    /// </summary>
+    Task<bool> RemoveCouponAsync(Guid cartId);
 }

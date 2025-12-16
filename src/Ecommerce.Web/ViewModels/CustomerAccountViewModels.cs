@@ -53,6 +53,9 @@ public class CustomerProfileViewModel
     public string? FullName { get; set; }
     public string? Phone { get; set; }
     public DateTime? LastLoginAt { get; set; }
+    public string? ShippingAddress1 { get; set; }
+    public string? ShippingAddress2 { get; set; }
+    public string? ShippingAddress3 { get; set; }
     public int TotalOrders { get; set; }
     public List<OrderSummaryViewModel> RecentOrders { get; set; } = new();
 }

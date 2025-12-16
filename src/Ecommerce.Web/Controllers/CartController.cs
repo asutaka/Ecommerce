@@ -31,15 +31,23 @@ public class CartController(ICartService cartService, ILogger<CartController> lo
     [HttpPost]
     public async Task<IActionResult> AddToCart(Guid productId, int quantity = 1, Guid? variantId = null)
     {
+        logger.LogInformation("AddToCart called: ProductId={ProductId}, Quantity={Quantity}, VariantId={VariantId}", 
+            productId, quantity, variantId);
+            
         var cartId = await GetOrCreateCartIdAsync();
+        logger.LogInformation("Cart ID: {CartId}", cartId);
+        
         var success = await cartService.AddItemAsync(cartId, productId, quantity, variantId);
 
         if (!success)
         {
+            logger.LogWarning("Failed to add product {ProductId} to cart {CartId}", productId, cartId);
             return Json(new { success = false, message = "Không thể thêm sản phẩm vào giỏ hàng" });
         }
 
         var itemCount = await cartService.GetCartItemCountAsync(cartId);
+        logger.LogInformation("Successfully added product {ProductId} to cart {CartId}. Item count: {ItemCount}", 
+            productId, cartId, itemCount);
         return Json(new { success = true, message = "Đã thêm vào giỏ hàng", itemCount });
     }
 
@@ -124,6 +132,61 @@ public class CartController(ICartService cartService, ILogger<CartController> lo
         var cartId = await GetOrCreateCartIdAsync();
         var itemCount = await cartService.GetCartItemCountAsync(cartId);
         return Json(new { itemCount });
+    }
+
+    /// <summary>
+    /// Apply coupon code to cart (AJAX)
+    /// </summary>
+    [HttpPost]
+    public async Task<IActionResult> ApplyCoupon(string couponCode)
+    {
+        if (string.IsNullOrWhiteSpace(couponCode))
+        {
+            return Json(new { success = false, message = "Vui lòng nhập mã giảm giá" });
+        }
+
+        var cartId = await GetOrCreateCartIdAsync();
+        var (success, message, discount) = await cartService.ApplyCouponAsync(cartId, couponCode);
+
+        if (!success)
+        {
+            return Json(new { success = false, message });
+        }
+
+        var cartViewModel = await cartService.GetCartSummaryAsync(cartId);
+        return Json(new
+        {
+            success = true,
+            message,
+            discount,
+            couponCode = couponCode.ToUpper(),
+            subtotal = cartViewModel?.Subtotal ?? 0,
+            total = cartViewModel?.Total ?? 0
+        });
+    }
+
+    /// <summary>
+    /// Remove coupon from cart (AJAX)
+    /// </summary>
+    [HttpPost]
+    public async Task<IActionResult> RemoveCoupon()
+    {
+        var cartId = await GetOrCreateCartIdAsync();
+        var success = await cartService.RemoveCouponAsync(cartId);
+
+        if (!success)
+        {
+            return Json(new { success = false, message = "Không thể xóa mã giảm giá" });
+        }
+
+        var cartViewModel = await cartService.GetCartSummaryAsync(cartId);
+        return Json(new
+        {
+            success = true,
+            message = "Đã xóa mã giảm giá",
+            subtotal = cartViewModel?.Subtotal ?? 0,
+            total = cartViewModel?.Total ?? 0
+        });
     }
 
     /// <summary>

@@ -13,6 +13,7 @@ namespace Ecommerce.Web.Controllers;
 [AllowAnonymous]
 public class AccountController(
     ICustomerAuthService customerAuthService,
+    ICartService cartService,
     EcommerceDbContext dbContext,
     ILogger<AccountController> logger) : Controller
 {
@@ -79,6 +80,14 @@ public class AccountController(
             authProperties);
 
         await customerAuthService.UpdateLastLoginAsync(customer.Id);
+        
+        // Merge cart
+        var sessionId = HttpContext.Session.GetString("_CartId");
+        if (!string.IsNullOrEmpty(sessionId))
+        {
+            await cartService.MergeCartAsync(sessionId, customer.Id);
+        }
+
         logger.LogInformation("Customer {Email} logged in", customer.Email);
 
         return RedirectToLocal(returnUrl);
@@ -139,6 +148,13 @@ public class AccountController(
             new ClaimsPrincipal(claimsIdentity),
             authProperties);
 
+        // Merge cart
+        var sessionId = HttpContext.Session.GetString("_CartId");
+        if (!string.IsNullOrEmpty(sessionId))
+        {
+            await cartService.MergeCartAsync(sessionId, customer.Id);
+        }
+
         logger.LogInformation("New customer registered: {Email}", customer.Email);
 
         TempData["Success"] = "Đăng ký thành công! Chào mừng bạn đến với Moderno.";
@@ -190,11 +206,44 @@ public class AccountController(
             FullName = customer.FullName,
             Phone = customer.Phone,
             LastLoginAt = customer.LastLoginAt,
+            ShippingAddress1 = customer.ShippingAddress1,
+            ShippingAddress2 = customer.ShippingAddress2,
+            ShippingAddress3 = customer.ShippingAddress3,
             TotalOrders = await dbContext.Orders.CountAsync(x => x.CustomerId == customerId),
             RecentOrders = recentOrders
         };
 
         return View(model);
+    }
+
+    [Authorize(AuthenticationSchemes = CustomerAuthScheme)]
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> UpdateProfile(UpdateProfileViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            TempData["Error"] = "Thông tin không hợp lệ";
+            return RedirectToAction(nameof(Profile));
+        }
+
+        var customerIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (customerIdClaim == null || !Guid.TryParse(customerIdClaim, out var customerId))
+        {
+            return RedirectToAction(nameof(Login));
+        }
+
+        var success = await customerAuthService.UpdateProfileAsync(customerId, model);
+        if (success)
+        {
+            TempData["Success"] = "Cập nhật thông tin thành công";
+        }
+        else
+        {
+            TempData["Error"] = "Không thể cập nhật thông tin";
+        }
+
+        return RedirectToAction(nameof(Profile));
     }
 
     [HttpPost]
@@ -272,6 +321,14 @@ public class AccountController(
             authProperties);
 
         await customerAuthService.UpdateLastLoginAsync(customer.Id);
+        
+        // Merge cart
+        var sessionId = HttpContext.Session.GetString("_CartId");
+        if (!string.IsNullOrEmpty(sessionId))
+        {
+            await cartService.MergeCartAsync(sessionId, customer.Id);
+        }
+
         logger.LogInformation("Customer {Email} logged in via {Provider}", customer.Email, provider);
 
         return RedirectToLocal(returnUrl);
@@ -357,6 +414,14 @@ public class AccountController(
             authProperties);
 
         await customerAuthService.UpdateLastLoginAsync(customer.Id);
+
+        // Merge cart
+        var sessionId = HttpContext.Session.GetString("_CartId");
+        if (!string.IsNullOrEmpty(sessionId))
+        {
+            await cartService.MergeCartAsync(sessionId, customer.Id);
+        }
+
         logger.LogInformation("Customer {Email} changed password and logged in", customer.Email);
 
         TempData["Success"] = "Đổi mật khẩu thành công!";
