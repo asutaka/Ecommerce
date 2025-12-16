@@ -19,6 +19,7 @@ public class HomeController(
         // - Removed Include(Category) as it's not used in projection
         // - Added Take(12) to prevent loading entire database
         var products = await dbContext.Products
+            .Where(x => x.IsActive)
             .AsNoTracking()
             .OrderByDescending(x => x.IsFeatured)
             .ThenBy(x => x.Name)
@@ -50,6 +51,7 @@ public class HomeController(
 
         // 3. New Arrivals - Optimized
         var newArrivals = await dbContext.Products
+            .Where(x => x.IsActive)
             .AsNoTracking()
             .OrderByDescending(x => x.CreatedAt)
             .Take(4)
@@ -98,7 +100,7 @@ public class HomeController(
             if (cat != null)
             {
                 var catProducts = await dbContext.Products
-                    .Where(p => p.ProductCategories.Any(pc => pc.CategoryId == cat.Id))
+                    .Where(p => p.IsActive && p.ProductCategories.Any(pc => pc.CategoryId == cat.Id))
                     .OrderByDescending(p => p.CreatedAt)
                     .Take(8)
                     .Select(x => new ProductViewModel

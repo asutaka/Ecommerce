@@ -157,17 +157,6 @@
                             </li>
                         }
 
-                        <!-- Products - Check permission -->
-                        @if (await PermissionService.HasPermissionAsync("products.view"))
-                        {
-                            <li class="nav-item">
-                                <a asp-area="Admin" asp-controller="Products" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Products" ? "active" : "")">
-                                    <i class="nav-icon fas fa-box"></i>
-                                    <p>Sản phẩm</p>
-                                </a>
-                            </li>
-                        }
-
                         <!-- Categories - Check permission -->
                         @if (await PermissionService.HasPermissionAsync("categories.view"))
                         {
@@ -175,6 +164,17 @@
                                 <a asp-area="Admin" asp-controller="Categories" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Categories" ? "active" : "")">
                                     <i class="nav-icon fas fa-tags"></i>
                                     <p>Danh mục</p>
+                                </a>
+                            </li>
+                        }
+
+                        <!-- Products - Check permission -->
+                        @if (await PermissionService.HasPermissionAsync("products.view"))
+                        {
+                            <li class="nav-item">
+                                <a asp-area="Admin" asp-controller="Products" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Products" ? "active" : "")">
+                                    <i class="nav-icon fas fa-box"></i>
+                                    <p>Sản phẩm</p>
                                 </a>
                             </li>
                         }
@@ -190,17 +190,6 @@
                             </li>
                         }
 
-                        <!-- Reports - Check permission -->
-                        @if (await PermissionService.HasPermissionAsync("reports.view"))
-                        {
-                            <li class="nav-item">
-                                <a asp-area="Admin" asp-controller="Reports" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Reports" ? "active" : "")">
-                                    <i class="nav-icon fas fa-chart-bar"></i>
-                                    <p>Báo cáo</p>
-                                </a>
-                            </li>
-                        }
-
                         <!-- Carts - Check permission -->
                         @if (await PermissionService.HasPermissionAsync("carts.view"))
                         {
@@ -208,6 +197,17 @@
                                 <a asp-area="Admin" asp-controller="Carts" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Carts" ? "active" : "")">
                                     <i class="nav-icon fas fa-shopping-basket"></i>
                                     <p>Giỏ hàng</p>
+                                </a>
+                            </li>
+                        }
+
+                        <!-- Reports - Check permission -->
+                        @if (await PermissionService.HasPermissionAsync("reports.view"))
+                        {
+                            <li class="nav-item">
+                                <a asp-area="Admin" asp-controller="Reports" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Reports" ? "active" : "")">
+                                    <i class="nav-icon fas fa-chart-bar"></i>
+                                    <p>Báo cáo</p>
                                 </a>
                             </li>
                         }

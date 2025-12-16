@@ -4,52 +4,89 @@
     ViewData["Title"] = "Thêm danh mục mới";
 }
 
-<div class="container-fluid px-0">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3 mb-0">Thêm danh mục mới</h1>
-        <a asp-action="Index" class="btn btn-outline-light rounded-pill">
-            <i class="bi bi-arrow-left me-2"></i>Quay lại danh sách
-        </a>
-    </div>
-
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card bg-transparent border-secondary">
-                <div class="card-body">
-                    <form asp-action="Create" method="post">
-                        <div class="mb-3">
-                            <label asp-for="Name" class="form-label"></label>
-                            <input asp-for="Name" class="form-control bg-transparent border-secondary text-light" />
-                            <span asp-validation-for="Name" class="text-danger"></span>
-                        </div>
-
-                        <div class="mb-3">
-                            <label asp-for="Description" class="form-label"></label>
-                            <textarea asp-for="Description" class="form-control bg-transparent border-secondary text-light" rows="4"></textarea>
-                            <span asp-validation-for="Description" class="text-danger"></span>
-                        </div>
-
-                        <div class="mb-3">
-                            <label asp-for="ParentId" class="form-label"></label>
-                            <select asp-for="ParentId" asp-items="Model.Categories" class="form-select bg-transparent border-secondary text-light">
-                                <option value="">-- Không có (Danh mục gốc) --</option>
-                            </select>
-                            <span asp-validation-for="ParentId" class="text-danger"></span>
-                            <div class="form-text text-muted">Chọn danh mục cha nếu đây là danh mục con</div>
-                        </div>
-
-                        <div class="d-flex justify-content-end gap-2 mt-4">
-                            <a asp-action="Index" class="btn btn-secondary">Hủy</a>
-                            <button type="submit" class="btn btn-primary">
-                                <i class="bi bi-save me-2"></i>Lưu lại
-                            </button>
-                        </div>
-                    </form>
-                </div>
+<!-- Content Header -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-12">
+                <h1 class="m-0">
+                    <i class="fas fa-layer-group text-primary"></i> Thêm danh mục mới
+                </h1>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Thông tin danh mục</h3>
+                    </div>
+                    
+                    <form asp-action="Create" method="post">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label asp-for="Name" class="required"></label>
+                                <input asp-for="Name" class="form-control" placeholder="Ví dụ: Áo thun, Quần jean...">
+                                <span asp-validation-for="Name" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="Description"></label>
+                                <textarea asp-for="Description" class="form-control" rows="4" placeholder="Mô tả về danh mục này"></textarea>
+                                <span asp-validation-for="Description" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="ParentId"></label>
+                                <select asp-for="ParentId" asp-items="Model.Categories" class="form-control">
+                                    <option value="">-- Không có (Danh mục gốc) --</option>
+                                </select>
+                                <span asp-validation-for="ParentId" class="text-danger"></span>
+                                <small class="form-text text-muted">Chọn danh mục cha nếu đây là danh mục con</small>
+                            </div>
+                        </div>
+
+                        <div class="card-footer">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Lưu danh mục
+                            </button>
+                            <a asp-action="Index" class="btn btn-default">
+                                <i class="fas fa-times"></i> Hủy
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card card-info">
+                    <div class="card-header">
+                        <h3 class="card-title">Hướng dẫn</h3>
+                    </div>
+                    <div class="card-body">
+                        <h6><i class="fas fa-info-circle"></i> Về danh mục sản phẩm</h6>
+                        <p class="text-sm">Danh mục được sử dụng để phân loại và tổ chức sản phẩm trong hệ thống.</p>
+                        
+                        <h6><i class="fas fa-lightbulb"></i> Lưu ý</h6>
+                        <ul class="text-sm pl-3">
+                            <li>Tên danh mục nên ngắn gọn, dễ hiểu</li>
+                            <li>Có thể tạo danh mục con bằng cách chọn danh mục cha</li>
+                            <li>Danh mục có thể chứa nhiều sản phẩm</li>
+                        </ul>
+
+                        <h6><i class="fas fa-exclamation-triangle text-warning"></i> Quan trọng</h6>
+                        <p class="text-sm">Không thể xóa danh mục đang có sản phẩm. Hãy chuyển sản phẩm sang danh mục khác trước khi xóa.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

@@ -2,48 +2,115 @@
     ViewData["Title"] = "Import Sản phẩm";
 }
 
-<div class="container-fluid px-0">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3 mb-0">Import Sản phẩm từ Excel</h1>
-        <a asp-action="Index" class="btn btn-outline-light rounded-pill">
-            <i class="bi bi-arrow-left me-2"></i>Quay lại danh sách
-        </a>
-    </div>
-
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card bg-transparent border-secondary">
-                <div class="card-body">
-                    <div class="alert alert-info border-info bg-transparent text-info mb-4">
-                        <h5 class="alert-heading"><i class="bi bi-info-circle me-2"></i>Lưu ý định dạng file</h5>
-                        <p class="mb-0">File Excel (.xlsx) cần có các cột theo thứ tự:</p>
-                        <ol class="mb-0 mt-2">
-                            <li>Tên sản phẩm (Bắt buộc)</li>
-                            <li>Mô tả</li>
-                            <li>Giá (Bắt buộc, số)</li>
-                            <li>Link ảnh (Phân cách bằng dấu phẩy)</li>
-                            <li>Nổi bật (TRUE/FALSE)</li>
-                        </ol>
-                    </div>
-
-                    <form asp-action="Import" method="post" enctype="multipart/form-data">
-                        <div class="mb-4">
-                            <label for="file" class="form-label text-muted">Chọn file Excel</label>
-                            <input type="file" name="file" id="file" class="form-control bg-dark text-light border-secondary" accept=".xlsx" required>
-                            @if (!ViewData.ModelState.IsValid && ViewData.ModelState["File"]?.Errors.Count > 0)
-                            {
-                                <div class="text-danger small mt-1">@ViewData.ModelState["File"]?.Errors[0].ErrorMessage</div>
-                            }
-                        </div>
-
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-primary btn-lg">
-                                <i class="bi bi-cloud-upload me-2"></i>Tiến hành Import
-                            </button>
-                        </div>
-                    </form>
-                </div>
+<!-- Content Header -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-12">
+                <h1 class="m-0">
+                    <i class="fas fa-file-upload text-success"></i> Import Sản phẩm từ Excel
+                </h1>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card card-success">
+                    <div class="card-header">
+                        <h3 class="card-title">Upload File Excel</h3>
+                        <div class="card-tools">
+                            <a asp-action="Index" class="btn btn-tool text-white">
+                                <i class="fas fa-arrow-left"></i> Quay lại
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="card-body">
+                        <div class="alert alert-info">
+                            <h5><i class="fas fa-info-circle"></i> Hướng dẫn import</h5>
+                            <p><strong>Bước 1:</strong> Download file template Excel mẫu</p>
+                            <a asp-action="DownloadTemplate" class="btn btn-success">
+                                <i class="fas fa-file-download"></i> Download Template
+                            </a>
+                            
+                            <p class="mt-3"><strong>Bước 2:</strong> Điền thông tin sản phẩm theo format:</p>
+                            <ol class="mb-0">
+                                <li><strong>Tên sản phẩm</strong> (Bắt buộc)</li>
+                                <li><strong>Mô tả</strong> (Không bắt buộc)</li>
+                                <li><strong>Danh mục</strong> (Bắt buộc - nhập tên danh mục đã tồn tại)</li>
+                                <li><strong>Giá (VNĐ)</strong> (Bắt buộc - chỉ nhập số)</li>
+                                <li><strong>Nổi bật</strong> (Nhập "Có" hoặc "Không", mặc định "Không")</li>
+                                <li><strong>Hoạt động</strong> (Nhập "Có" hoặc "Không", mặc định "Có")</li>
+                                <li><strong>Links ảnh</strong> (Bắt buộc - mỗi link 1 dòng, dùng Alt+Enter trong Excel)</li>
+                            </ol>
+                            
+                            <p class="mt-3 mb-0"><strong>Bước 3:</strong> Upload file đã điền thông tin</p>
+                        </div>
+
+                        <form asp-action="Import" method="post" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label for="file">
+                                    <i class="fas fa-file-excel text-success"></i> Chọn file Excel
+                                </label>
+                                <div class="input-group">
+                                    <div class="custom-file">
+                                        <input type="file" name="file" id="file" class="custom-file-input" accept=".xlsx" required>
+                                        <label class="custom-file-label" for="file">Chọn file...</label>
+                                    </div>
+                                </div>
+                                @if (!ViewData.ModelState.IsValid && ViewData.ModelState["File"]?.Errors.Count > 0)
+                                {
+                                    <div class="text-danger small mt-1">@ViewData.ModelState["File"]?.Errors[0].ErrorMessage</div>
+                                }
+                                <small class="form-text text-muted">
+                                    Chỉ chấp nhận file .xlsx (Excel)
+                                </small>
+                            </div>
+
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-success btn-lg">
+                                    <i class="fas fa-cloud-upload-alt"></i> Tiến hành Import
+                                </button>
+                                <a asp-action="Index" class="btn btn-default btn-lg">
+                                    <i class="fas fa-times"></i> Hủy
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card card-warning">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-exclamation-triangle"></i> Lưu ý quan trọng
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <ul class="mb-0">
+                            <li>Dữ liệu trong file phải đúng định dạng</li>
+                            <li>Giá sản phẩm phải là số nguyên dương</li>
+                            <li>Link ảnh phải là URL hợp lệ</li>
+                            <li>Nếu có lỗi, hệ thống sẽ báo chi tiết</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        // Update file input label with selected filename
+        document.querySelector('.custom-file-input').addEventListener('change', function(e) {
+            var fileName = e.target.files[0]?.name || 'Chọn file...';
+            var label = document.querySelector('.custom-file-label');
+            label.textContent = fileName;
+        });
+    </script>
+}

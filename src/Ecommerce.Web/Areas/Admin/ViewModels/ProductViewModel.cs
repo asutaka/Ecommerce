@@ -20,6 +20,8 @@ public class ProductFormViewModel
 
     public bool IsFeatured { get; set; }
 
+    public bool IsActive { get; set; } = true;
+
     [Required(ErrorMessage = "Vui lòng chọn danh mục")]
     [Display(Name = "Danh mục")]
     public Guid PrimaryCategoryId { get; set; }

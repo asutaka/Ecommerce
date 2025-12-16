@@ -7,6 +7,7 @@ public class Product : BaseEntity
     public List<string> Images { get; set; } = new();
     public decimal Price { get; set; }
     public bool IsFeatured { get; set; }
+    public bool IsActive { get; set; } = true;
 
     public Guid? PrimaryCategoryId { get; set; }
     public Category? PrimaryCategory { get; set; }

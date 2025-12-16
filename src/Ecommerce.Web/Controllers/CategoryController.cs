@@ -18,7 +18,7 @@ public class CategoryController(EcommerceDbContext dbContext) : Controller
         }
 
         var query = dbContext.Products
-            .Where(x => x.ProductCategories.Any(pc => pc.CategoryId == id));
+            .Where(x => x.IsActive && x.ProductCategories.Any(pc => pc.CategoryId == id));
 
         if (!string.IsNullOrWhiteSpace(search))
         {

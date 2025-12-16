@@ -4,129 +4,241 @@
     ViewData["Title"] = "Quản lý danh mục";
 }
 
-<div class="container-fluid px-0">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3 mb-0">Danh mục sản phẩm</h1>
-        <a asp-action="Create" class="btn btn-primary">
-            <i class="bi bi-plus-lg me-2"></i>Thêm mới
-        </a>
-    </div>
-
-    <div class="card bg-transparent border-secondary mb-4">
-        <div class="card-body">
-            <form method="get" class="row g-3">
-                <div class="col-md-4">
-                    <div class="input-group">
-                        <span class="input-group-text bg-transparent border-secondary text-light">
-                            <i class="bi bi-search"></i>
-                        </span>
-                        <input type="text" name="searchTerm" class="form-control bg-transparent border-secondary text-light" 
-                               placeholder="Tìm kiếm danh mục..." value="@ViewBag.SearchTerm">
-                    </div>
+<!-- Content Header -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">
+                    <i class="fas fa-layer-group text-primary"></i> Quản lý danh mục
+                </h1>
+            </div>
+            <div class="col-sm-6">
+                <div class="float-right">
+                    <a asp-controller="Settings" asp-action="Index" class="btn btn-secondary mr-2">
+                        <i class="fas fa-arrow-left"></i> Quay lại
+                    </a>
+                    <a asp-action="Create" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Thêm danh mục
+                    </a>
                 </div>
-                <div class="col-md-2">
-                    <button type="submit" class="btn btn-outline-light w-100">Tìm kiếm</button>
-                </div>
-            </form>
+            </div>
         </div>
     </div>
+</div>
 
-    @if (TempData["Success"] != null)
-    {
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <i class="bi bi-check-circle me-2"></i>@TempData["Success"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    }
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <i class="fas fa-check-circle"></i> @TempData["Success"]
+            </div>
+        }
 
-    @if (TempData["Error"] != null)
-    {
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <i class="bi bi-exclamation-triangle me-2"></i>@TempData["Error"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <i class="fas fa-exclamation-triangle"></i> @TempData["Error"]
+            </div>
+        }
 
-    <div class="card bg-transparent border-secondary">
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-dark table-hover mb-0">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Danh sách danh mục</h3>
+                <div class="card-tools">
+                    <form asp-action="Index" method="get" class="form-inline">
+                        <div class="input-group input-group-sm" style="width: 300px;">
+                            <input type="text" name="searchTerm" class="form-control" placeholder="Tìm kiếm..." value="@ViewBag.SearchTerm">
+                            <div class="input-group-append">
+                                <button type="submit" class="btn btn-default">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                                @if (!string.IsNullOrEmpty(ViewBag.SearchTerm as string))
+                                {
+                                    <a asp-action="Index" class="btn btn-default">
+                                        <i class="fas fa-times"></i>
+                                    </a>
+                                }
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="card-body table-responsive p-0">
+                <table class="table table-hover text-nowrap">
                     <thead>
                         <tr>
                             <th>Tên danh mục</th>
                             <th>Mô tả</th>
+                            <th>Danh mục cha</th>
                             <th>Ngày tạo</th>
-                            <th class="text-end">Thao tác</th>
+                            <th class="text-right">Thao tác</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var item in Model)
+                        @if (Model.Any())
                         {
-                            <tr>
-                                <td class="fw-bold">@item.Name</td>
-                                <td>@item.Description</td>
-                                <td>@item.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</td>
-                                <td class="text-end">
-                                    <div class="btn-group">
-                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-info" title="Sửa">
-                                            <i class="bi bi-pencil"></i>
-                                        </a>
-                                        <button type="button" class="btn btn-sm btn-outline-danger" title="Xóa" 
-                                                data-bs-toggle="modal" data-bs-target="#deleteModal-@item.Id">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </div>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        <strong>@item.Name</strong>
+                                    </td>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(item.Description))
+                                        {
+                                            <small class="text-muted">@item.Description</small>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">-</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (item.ParentId.HasValue)
+                                        {
+                                            var parent = Model.FirstOrDefault(c => c.Id == item.ParentId.Value);
+                                            if (parent != null)
+                                            {
+                                                <span class="badge badge-info">
+                                                    <i class="fas fa-sitemap"></i> @parent.Name
+                                                </span>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <span class="badge badge-secondary">
+                                                <i class="fas fa-folder"></i> Gốc
+                                            </span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <small>@item.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</small>
+                                    </td>
+                                    <td class="text-right">
+                                        <div class="btn-group">
+                                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-info" title="Chỉnh sửa">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <button type="button" class="btn btn-sm btn-danger" title="Xóa" 
+                                                    data-toggle="modal" data-target="#deleteModal-@item.Id">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
 
-                                    <!-- Delete Modal -->
-                                    <div class="modal fade" id="deleteModal-@item.Id" tabindex="-1" aria-hidden="true">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content bg-dark border-secondary">
-                                                <div class="modal-header border-secondary">
-                                                    <h5 class="modal-title">Xác nhận xóa</h5>
-                                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body text-start">
-                                                    Bạn có chắc chắn muốn xóa danh mục <strong>@item.Name</strong>?<br>
-                                                    <small class="text-danger">Lưu ý: Không thể xóa danh mục đang có sản phẩm.</small>
-                                                </div>
-                                                <div class="modal-footer border-secondary">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                                                    <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline">
-                                                        <button type="submit" class="btn btn-danger">Xóa</button>
-                                                    </form>
+                                        <!-- Delete Modal -->
+                                        <div class="modal fade" id="deleteModal-@item.Id" tabindex="-1">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header bg-danger">
+                                                        <h5 class="modal-title">
+                                                            <i class="fas fa-exclamation-triangle"></i> Xác nhận xóa
+                                                        </h5>
+                                                        <button type="button" class="close text-white" data-dismiss="modal">
+                                                            <span>&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        Bạn có chắc chắn muốn xóa danh mục <strong>@item.Name</strong>?<br>
+                                                        <small class="text-danger">Lưu ý: Không thể xóa danh mục đang có sản phẩm.</small>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                                                            <i class="fas fa-times"></i> Hủy
+                                                        </button>
+                                                        <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline">
+                                                            <button type="submit" class="btn btn-danger">
+                                                                <i class="fas fa-trash"></i> Xóa
+                                                            </button>
+                                                        </form>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="5" class="text-center text-muted py-4">
+                                    <i class="fas fa-inbox fa-3x mb-3 d-block"></i>
+                                    <p class="mb-0">Không có danh mục nào</p>
+                                    @if (!string.IsNullOrEmpty(ViewBag.SearchTerm as string))
+                                    {
+                                        <small>Không tìm thấy kết quả cho "<strong>@ViewBag.SearchTerm</strong>"</small>
+                                    }
                                 </td>
                             </tr>
                         }
                     </tbody>
                 </table>
             </div>
-        </div>
-        <div class="card-footer bg-transparent border-secondary">
-            <nav aria-label="Page navigation">
-                <ul class="pagination justify-content-center mb-0">
-                    <li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
-                        <a class="page-link bg-transparent border-secondary text-light" 
-                           asp-action="Index" asp-route-pageNumber="@(Model.PageIndex - 1)" asp-route-searchTerm="@ViewBag.SearchTerm">
-                            <i class="bi bi-chevron-left"></i>
-                        </a>
-                    </li>
-                    <li class="page-item disabled">
-                        <span class="page-link bg-transparent border-secondary text-light">
+            
+            @if (Model.TotalPages > 1)
+            {
+                <div class="card-footer clearfix">
+                    <div class="float-left">
+                        <small class="text-muted">
                             Trang @Model.PageIndex / @Model.TotalPages
-                        </span>
-                    </li>
-                    <li class="page-item @(Model.HasNextPage ? "" : "disabled")">
-                        <a class="page-link bg-transparent border-secondary text-light" 
-                           asp-action="Index" asp-route-pageNumber="@(Model.PageIndex + 1)" asp-route-searchTerm="@ViewBag.SearchTerm">
-                            <i class="bi bi-chevron-right"></i>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
+                            (Tổng: <strong>@Model.TotalCount</strong> danh mục)
+                        </small>
+                    </div>
+                    <ul class="pagination pagination-sm m-0 float-right">
+                        @if (Model.HasPreviousPage)
+                        {
+                            <li class="page-item">
+                                <a asp-action="Index" 
+                                   asp-route-pageNumber="@(Model.PageIndex - 1)"
+                                   asp-route-searchTerm="@ViewBag.SearchTerm"
+                                   class="page-link">
+                                    <i class="fas fa-chevron-left"></i>
+                                </a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="page-item disabled">
+                                <span class="page-link"><i class="fas fa-chevron-left"></i></span>
+                            </li>
+                        }
+                        
+                        @for (int i = Math.Max(1, Model.PageIndex - 2); i <= Math.Min(Model.TotalPages, Model.PageIndex + 2); i++)
+                        {
+                            <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+                                <a asp-action="Index" 
+                                   asp-route-pageNumber="@i"
+                                   asp-route-searchTerm="@ViewBag.SearchTerm"
+                                   class="page-link">@i</a>
+                            </li>
+                        }
+                        
+                        @if (Model.HasNextPage)
+                        {
+                            <li class="page-item">
+                                <a asp-action="Index" 
+                                   asp-route-pageNumber="@(Model.PageIndex + 1)"
+                                   asp-route-searchTerm="@ViewBag.SearchTerm"
+                                   class="page-link">
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="page-item disabled">
+                                <span class="page-link"><i class="fas fa-chevron-right"></i></span>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            }
         </div>
     </div>
-</div>
+</section>
