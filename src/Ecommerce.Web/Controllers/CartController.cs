@@ -1,9 +1,14 @@
 using Ecommerce.Web.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Ecommerce.Web.Controllers;
 
-public class CartController(ICartService cartService, ILogger<CartController> logger) : Controller
+public class CartController(
+    ICartService cartService, 
+    ICustomerAuthService customerAuthService,
+    IOrderService orderService,
+    ILogger<CartController> logger) : Controller
 {
     private const string SessionKeyCartId = "_CartId";
 
@@ -20,6 +25,28 @@ public class CartController(ICartService cartService, ILogger<CartController> lo
         {
             logger.LogWarning("Cart {CartId} not found", cartId);
             return View(new ViewModels.CartViewModel());
+        }
+
+        // Auto-fill customer info if logged in
+        var customerIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (customerIdClaim != null && Guid.TryParse(customerIdClaim, out var customerId))
+        {
+            var customer = await customerAuthService.GetByIdAsync(customerId);
+            if (customer != null)
+            {
+                cartViewModel.CustomerName = customer.FullName;
+                cartViewModel.CustomerPhone = customer.Phone;
+                cartViewModel.CustomerEmail = customer.Email;
+                cartViewModel.ShippingAddress = customer.ShippingAddress1; // Default to address 1
+                
+                // Load available addresses
+                if (!string.IsNullOrEmpty(customer.ShippingAddress1))
+                    cartViewModel.AvailableAddresses.Add(customer.ShippingAddress1);
+                if (!string.IsNullOrEmpty(customer.ShippingAddress2))
+                    cartViewModel.AvailableAddresses.Add(customer.ShippingAddress2);
+                if (!string.IsNullOrEmpty(customer.ShippingAddress3))
+                    cartViewModel.AvailableAddresses.Add(customer.ShippingAddress3);
+            }
         }
 
         return View(cartViewModel);
@@ -204,5 +231,63 @@ public class CartController(ICartService cartService, ILogger<CartController> lo
         }
 
         return await cartService.GetOrCreateCartAsync(sessionId);
+    }
+
+    /// <summary>
+    /// Process checkout and create order
+    /// </summary>
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Checkout(ViewModels.CartViewModel model)
+    {
+        try
+        {
+            var cartId = await GetOrCreateCartIdAsync();
+            var cart = await cartService.GetCartSummaryAsync(cartId);
+
+            if (cart == null || !cart.Items.Any())
+            {
+                TempData["Error"] = "Giỏ hàng trống";
+                return RedirectToAction(nameof(Index));
+            }
+
+            // Update cart with checkout info
+            cart.CustomerName = model.CustomerName;
+            cart.CustomerEmail = model.CustomerEmail;
+            cart.CustomerPhone = model.CustomerPhone;
+            cart.ShippingAddress = model.ShippingAddress;
+            cart.Note = model.Note;
+            cart.PaymentMethod = model.PaymentMethod;
+
+            // Create order
+            var order = await orderService.CreateOrderFromCartAsync(cartId, cart);
+
+            logger.LogInformation("Order {OrderId} created successfully", order.Id);
+
+            // Redirect to confirmation page
+            return RedirectToAction("Confirmation", new { orderId = order.Id });
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error creating order");
+            TempData["Error"] = "Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại.";
+            return RedirectToAction(nameof(Index));
+        }
+    }
+
+    /// <summary>
+    /// Order confirmation page
+    /// </summary>
+    [HttpGet]
+    public async Task<IActionResult> Confirmation(Guid orderId)
+    {
+        var order = await orderService.GetOrderByIdAsync(orderId);
+
+        if (order == null)
+        {
+            return NotFound();
+        }
+
+        return View(order);
     }
 }

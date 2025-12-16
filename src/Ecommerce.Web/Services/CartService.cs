@@ -195,6 +195,8 @@ public class CartService(EcommerceDbContext dbContext, ILogger<CartService> logg
                 ProductId = item.ProductId,
                 ProductName = item.ProductName,
                 ProductImageUrl = item.ProductImageUrl,
+                VariantColor = item.VariantColor,
+                VariantSize = item.VariantSize,
                 UnitPrice = item.UnitPrice,
                 Quantity = item.Quantity
             }).ToList()

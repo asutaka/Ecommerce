@@ -18,6 +18,9 @@ builder.Services.AddSession(options =>
 // Register cart service
 builder.Services.AddScoped<Ecommerce.Web.Services.ICartService, Ecommerce.Web.Services.CartService>();
 
+// Register order service
+builder.Services.AddScoped<Ecommerce.Web.Services.IOrderService, Ecommerce.Web.Services.OrderService>();
+
 // Register admin authentication service
 builder.Services.AddScoped<Ecommerce.Web.Services.IAdminAuthService, Ecommerce.Web.Services.AdminAuthService>();
 

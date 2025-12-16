@@ -1,144 +1,502 @@
-@model CartViewModel
+@model Ecommerce.Web.ViewModels.CartViewModel
+
 @{
     ViewData["Title"] = "Giỏ hàng";
 }
 
-<section class="cart-hero-card">
-    <div>
-        <p class="pill">Giỏ hàng</p>
-        <h1>Giỏ hàng của bạn</h1>
-        <p class="muted">Xem lại sản phẩm và tiến hành thanh toán.</p>
-    </div>
-    <a class="btn btn-ghost" asp-controller="Home" asp-action="Index">← Tiếp tục mua sắm</a>
-</section>
+<style>
+    .checkout-container {
+        max-width: 900px;
+        margin: 40px auto;
+        padding: 0 20px;
+    }
+    
+    .checkout-section {
+        background: white;
+        border-radius: 12px;
+        padding: 24px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .section-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 20px;
+        color: #1f2937;
+    }
+    
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-bottom: 16px;
+    }
+    
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .form-group label {
+        font-size: 14px;
+        font-weight: 500;
+        margin-bottom: 6px;
+        color: #374151;
+    }
+    
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        padding: 10px 12px;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        font-size: 14px;
+    }
+    
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    
+    .cart-items-container {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+    
+    .cart-item-new {
+        display: grid;
+        grid-template-columns: auto 80px 1fr auto;
+        gap: 16px;
+        padding: 16px;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        margin-bottom: 12px;
+        align-items: center;
+    }
+    
+    .cart-item-new:hover {
+        background: #f9fafb;
+    }
+    
+    .item-checkbox {
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+    }
+    
+    .item-image {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 8px;
+    }
+    
+    .item-info {
+        flex: 1;
+    }
+    
+    .item-name {
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: #1f2937;
+    }
+    
+    .item-variants {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 8px;
+    }
+    
+    .variant-select {
+        padding: 6px 10px;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        font-size: 13px;
+        background: white;
+    }
+    
+    .item-controls {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    
+    .qty-controls {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        padding: 4px;
+    }
+    
+    .qty-btn {
+        width: 28px;
+        height: 28px;
+        border: none;
+        background: #f3f4f6;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .qty-btn:hover {
+        background: #e5e7eb;
+    }
+    
+    .qty-value {
+        min-width: 30px;
+        text-align: center;
+        font-weight: 500;
+    }
+    
+    .item-price {
+        text-align: right;
+    }
+    
+    .price-current {
+        font-size: 16px;
+        font-weight: 600;
+        color: #1f2937;
+    }
+    
+    .price-original {
+        font-size: 13px;
+        color: #9ca3af;
+        text-decoration: line-through;
+    }
+    
+    .item-remove {
+        background: none;
+        border: none;
+        color: #ef4444;
+        cursor: pointer;
+        padding: 8px;
+        font-size: 18px;
+    }
+    
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 12px 0;
+        border-bottom: 1px solid #e5e7eb;
+    }
+    
+    .summary-row:last-child {
+        border-bottom: none;
+    }
+    
+    .summary-row.total {
+        font-size: 18px;
+        font-weight: 600;
+        padding-top: 16px;
+        border-top: 2px solid #1f2937;
+    }
+    
+    .payment-option {
+        display: flex;
+        align-items: center;
+        padding: 12px;
+        border: 2px solid #e5e7eb;
+        border-radius: 8px;
+        margin-bottom: 12px;
+        cursor: pointer;
+    }
+    
+    .payment-option:hover {
+        border-color: #3b82f6;
+        background: #eff6ff;
+    }
+    
+    .payment-option input[type="radio"] {
+        width: 20px;
+        height: 20px;
+        margin-right: 12px;
+    }
+    
+    .btn-checkout {
+        width: 100%;
+        padding: 16px;
+        background: #3b82f6;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+    
+    .btn-checkout:hover {
+        background: #2563eb;
+    }
+    
+    .select-all-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px;
+        background: #f9fafb;
+        border-radius: 8px;
+        margin-bottom: 16px;
+    }
+    
+    .select-all-label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 500;
+    }
+    
+    .btn-clear-all {
+        color: #ef4444;
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 14px;
+    }
+</style>
 
-<section class="benefits-bar">
-    <div class="benefit">
-        <i class="bi bi-truck"></i>
-        <div>
-            <strong>Miễn phí giao hàng</strong>
-            <p>Đơn từ 1.000.000đ trên toàn quốc.</p>
-        </div>
-    </div>
-    <div class="benefit">
-        <i class="bi bi-arrow-counterclockwise"></i>
-        <div>
-            <strong>Đổi trả 30 ngày</strong>
-            <p>Đổi size/màu dễ dàng, hỗ trợ nhanh.</p>
-        </div>
-    </div>
-    <div class="benefit">
-        <i class="bi bi-shield-check"></i>
-        <div>
-            <strong>Thanh toán an toàn</strong>
-            <p>Mã hóa và xác thực nhiều lớp.</p>
-        </div>
-    </div>
-</section>
-
-@if (Model.Items.Any())
-{
-    <section class="cart-content">
-        <div class="cart-items">
-            @foreach (var item in Model.Items)
-            {
-                <article class="cart-item" data-item-id="@item.Id">
-                    <img src="@item.ProductImageUrl" alt="@item.ProductName" />
-                    <div class="item-details">
-                        <h3>@item.ProductName</h3>
-                        <p class="item-price">@item.UnitPrice.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))</p>
+<div class="checkout-container">
+    <h1 style="margin-bottom: 30px;">Giỏ hàng</h1>
+    
+    @if (Model.Items.Any())
+    {
+        <form method="post" asp-action="Checkout">
+            <!-- 1. THÔNG TIN VẬN CHUYỂN -->
+            <div class="checkout-section">
+                <h2 class="section-title">Thông tin vận chuyển</h2>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Họ tên *</label>
+                        <input type="text" name="CustomerName" value="@Model.CustomerName" placeholder="Nhập họ tên của bạn" required />
                     </div>
-                    <div class="item-quantity">
-                        <button class="qty-btn" onclick="updateQuantity('@item.Id', @(item.Quantity - 1))">−</button>
-                        <span class="quantity">@item.Quantity</span>
-                        <button class="qty-btn" onclick="updateQuantity('@item.Id', @(item.Quantity + 1))">+</button>
+                    <div class="form-group">
+                        <label>Số điện thoại *</label>
+                        <input type="tel" name="CustomerPhone" value="@Model.CustomerPhone" placeholder="Nhập số điện thoại" required />
                     </div>
-                    <div class="item-total">
-                        <strong>@item.LineTotal.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))</strong>
-                    </div>
-                    <button class="remove-btn" onclick="removeItem('@item.Id')" aria-label="Xóa sản phẩm">
-                        <i class="bi bi-x-lg"></i>
-                    </button>
-                </article>
-            }
-        </div>
-
-        <aside class="cart-summary">
-            <h2>Tóm tắt đơn hàng</h2>
-            <div class="summary-row">
-                <span>Ưu đãi</span>
-                <span class="pill small-pill">Miễn phí ship &gt; 1.000.000đ</span>
+                </div>
+                
+                <div class="form-group" style="margin-bottom: 16px;">
+                    <label>Email *</label>
+                    <input type="email" name="CustomerEmail" value="@Model.CustomerEmail" placeholder="Nhập email của bạn" required />
+                </div>
+                
+                <div class="form-group" style="margin-bottom: 16px;">
+                    <label>Địa chỉ giao hàng *</label>
+                    @if (Model.AvailableAddresses.Any())
+                    {
+                        <select name="ShippingAddress" class="form-control" required style="padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px;">
+                            @foreach (var address in Model.AvailableAddresses)
+                            {
+                                <option value="@address" selected="@(address == Model.ShippingAddress)">@address</option>
+                            }
+                            <option value="">Nhập địa chỉ khác...</option>
+                        </select>
+                        <input type="text" id="customAddress" placeholder="Nhập địa chỉ mới" style="margin-top: 8px; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; width: 100%; display: none;" />
+                    }
+                    else
+                    {
+                        <input type="text" name="ShippingAddress" value="@Model.ShippingAddress" placeholder="Nhập địa chỉ giao hàng" required />
+                    }
+                </div>
+                
+                <div class="form-group">
+                    <label>Ghi chú</label>
+                    <textarea name="Note" rows="3" placeholder="Ghi chú cho đơn hàng (tùy chọn)"></textarea>
+                </div>
             </div>
             
-            @* Coupon Input Section *@
-            <div class="coupon-section" style="margin: 16px 0; padding: 16px; background: #f9fafb; border-radius: 8px;">
+            <!-- 2. GIỎ HÀNG -->
+            <div class="checkout-section">
+                <h2 class="section-title">Giỏ hàng</h2>
+                
+                <div class="select-all-row">
+                    <label class="select-all-label">
+                        <input type="checkbox" id="selectAll" onclick="toggleSelectAll(this)" />
+                        <span>Tất cả sản phẩm (@Model.Items.Count)</span>
+                    </label>
+                    <button type="button" class="btn-clear-all" onclick="clearAll()">Xóa tất cả</button>
+                </div>
+                
+                <div class="cart-items-container">
+                    @foreach (var item in Model.Items)
+                    {
+                        <div class="cart-item-new" data-item-id="@item.Id">
+                            <input type="checkbox" class="item-checkbox" checked />
+                            
+                            <img src="@item.ProductImageUrl" alt="@item.ProductName" class="item-image" />
+                            
+                            <div class="item-info">
+                                <div class="item-name">@item.ProductName</div>
+                                
+                                @if (!string.IsNullOrEmpty(item.VariantColor) || !string.IsNullOrEmpty(item.VariantSize))
+                                {
+                                    <div class="item-variants">
+                                        @if (!string.IsNullOrEmpty(item.VariantColor))
+                                        {
+                                            <select class="variant-select">
+                                                <option selected>@item.VariantColor</option>
+                                            </select>
+                                        }
+                                        @if (!string.IsNullOrEmpty(item.VariantSize))
+                                        {
+                                            <select class="variant-select">
+                                                <option selected>@item.VariantSize</option>
+                                            </select>
+                                        }
+                                    </div>
+                                }
+                                
+                                <div class="item-controls">
+                                    <div class="qty-controls">
+                                        <button type="button" class="qty-btn" onclick="updateQuantity('@item.Id', @(item.Quantity - 1))">−</button>
+                                        <span class="qty-value">@item.Quantity</span>
+                                        <button type="button" class="qty-btn" onclick="updateQuantity('@item.Id', @(item.Quantity + 1))">+</button>
+                                    </div>
+                                    <button type="button" class="item-remove" onclick="removeItem('@item.Id')" title="Xóa">
+                                        🗑️
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="item-price">
+                                <div class="price-current">@item.LineTotal.ToString("N0")đ</div>
+                                @* <div class="price-original">2.495.000đ</div> *@
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+            
+            <!-- 3. CHỌN COUPON -->
+            <div class="checkout-section">
+                <h2 class="section-title">Mã giảm giá</h2>
+                
                 @if (string.IsNullOrEmpty(Model.AppliedCouponCode))
                 {
-                    <div class="coupon-input-group" style="display: flex; gap: 8px;">
+                    <div style="display: flex; gap: 8px;">
                         <input type="text" id="couponCodeInput" placeholder="Nhập mã giảm giá" 
-                               style="flex: 1; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px;" />
-                        <button onclick="applyCoupon()" class="btn btn-outline" style="padding: 10px 16px; white-space: nowrap;">
+                               style="flex: 1; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 8px;" />
+                        <button type="button" onclick="applyCoupon()" 
+                                style="padding: 10px 20px; background: #3b82f6; color: white; border: none; border-radius: 8px; cursor: pointer;">
                             Áp dụng
                         </button>
                     </div>
                 }
                 else
                 {
-                    <div class="applied-coupon" style="display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; background: #ecfdf5; border: 1px solid #10b981; border-radius: 6px;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px; background: #ecfdf5; border: 1px solid #10b981; border-radius: 8px;">
                         <div style="display: flex; align-items: center; gap: 8px;">
-                            <i class="bi bi-check-circle-fill" style="color: #10b981;"></i>
+                            <span style="color: #10b981;">✓</span>
                             <span style="font-weight: 600; color: #065f46;">@Model.AppliedCouponCode</span>
                             <span style="color: #059669;">- Giảm @Model.Discount.ToString("N0")đ</span>
                         </div>
-                        <button onclick="removeCoupon()" class="btn-icon" style="background: none; border: none; color: #6b7280; cursor: pointer; padding: 4px;">
-                            <i class="bi bi-x-lg"></i>
+                        <button type="button" onclick="removeCoupon()" style="background: none; border: none; color: #6b7280; cursor: pointer;">
+                            ✕
                         </button>
                     </div>
                 }
             </div>
-
-            <div class="summary-row">
-                <span>Tạm tính</span>
-                <strong id="subtotal">@Model.Subtotal.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))</strong>
-            </div>
-            @if (Model.Discount > 0)
-            {
-                <div class="summary-row" id="discountRow" style="color: #10b981;">
-                    <span>Giảm giá</span>
-                    <strong id="discount">-@Model.Discount.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))</strong>
-                </div>
-            }
-            @if (Model.Tax > 0)
-            {
+            
+            <!-- 4. CHI TIẾT THANH TOÁN -->
+            <div class="checkout-section">
+                <h2 class="section-title">Chi tiết thanh toán</h2>
+                
                 <div class="summary-row">
-                    <span>Thuế</span>
-                    <strong id="tax">@Model.Tax.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))</strong>
+                    <span>Tạm tính</span>
+                    <strong id="subtotal">@Model.Subtotal.ToString("N0")đ</strong>
                 </div>
-            }
-            <hr />
-            <div class="summary-row total">
-                <span>Tổng cộng</span>
-                <strong id="total">@Model.Total.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))</strong>
+                
+                @if (Model.Discount > 0)
+                {
+                    <div class="summary-row" style="color: #10b981;">
+                        <span>Giảm giá</span>
+                        <strong id="discount">-@Model.Discount.ToString("N0")đ</strong>
+                    </div>
+                }
+                
+                <div class="summary-row">
+                    <span>Phí vận chuyển</span>
+                    <strong id="shippingFee">@Model.ShippingFee.ToString("N0")đ</strong>
+                </div>
+                
+                <div class="summary-row total">
+                    <span>Tổng cộng</span>
+                    <strong id="total">@Model.Total.ToString("N0")đ</strong>
+                </div>
             </div>
-            <a class="btn btn-primary w-100" href="@Url.Action("Index","Home")#checkout">Thanh toán</a>
-            <form asp-action="Clear" method="post" onsubmit="return confirm('Bạn có chắc muốn xóa toàn bộ giỏ hàng?')">
-                <button type="submit" class="btn btn-ghost w-100 mt-2">Xóa giỏ hàng</button>
-            </form>
-        </aside>
-    </section>
-}
-else
-{
-    <section class="cart-empty">
-        <svg width="120" height="120" viewBox="0 0 120 120" fill="none">
-            <circle cx="60" cy="60" r="50" stroke="#E5E7EB" stroke-width="4"/>
-            <path d="M40 50L50 60L70 40" stroke="#E5E7EB" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        <h2>Giỏ hàng trống</h2>
-        <p>Bạn chưa thêm sản phẩm nào vào giỏ hàng</p>
-        <a class="btn btn-primary" asp-controller="Home" asp-action="Index">Khám phá sản phẩm</a>
-    </section>
-}
+            
+            <!-- 5. HÌNH THỨC THANH TOÁN -->
+            <div class="checkout-section">
+                <h2 class="section-title">Hình thức thanh toán</h2>
+                
+                <label class="payment-option">
+                    <input type="radio" name="PaymentMethod" value="COD" checked />
+                    <div>
+                        <div style="font-weight: 600;">Thanh toán khi nhận hàng (COD)</div>
+                        <div style="font-size: 13px; color: #6b7280;">Thanh toán bằng tiền mặt khi nhận hàng</div>
+                    </div>
+                </label>
+                
+                <label class="payment-option">
+                    <input type="radio" name="PaymentMethod" value="Banking" />
+                    <div>
+                        <div style="font-weight: 600;">Chuyển khoản ngân hàng</div>
+                        <div style="font-size: 13px; color: #6b7280;">Chuyển khoản qua Internet Banking</div>
+                    </div>
+                </label>
+                
+                <label class="payment-option">
+                    <input type="radio" name="PaymentMethod" value="EWallet" />
+                    <div>
+                        <div style="font-weight: 600;">Ví điện tử</div>
+                        <div style="font-size: 13px; color: #6b7280;">MoMo, ZaloPay, VNPay</div>
+                    </div>
+                </label>
+            </div>
+            
+            <!-- 6. ĐẶT HÀNG -->
+            <div class="checkout-section">
+                <button type="submit" class="btn-checkout">
+                    ĐẶT HÀNG NGAY
+                </button>
+            </div>
+        </form>
+    }
+    else
+    {
+        <div class="checkout-section" style="text-align: center; padding: 60px 20px;">
+            <div style="font-size: 48px; margin-bottom: 16px;">🛒</div>
+            <h3>Giỏ hàng trống</h3>
+            <p style="color: #6b7280; margin-bottom: 24px;">Bạn chưa có sản phẩm nào trong giỏ hàng</p>
+            <a href="@Url.Action("Index", "Home")" class="btn-checkout" style="display: inline-block; width: auto; padding: 12px 32px; text-decoration: none;">
+                Tiếp tục mua sắm
+            </a>
+        </div>
+    }
+</div>
+
+<script>
+    function toggleSelectAll(checkbox) {
+        const itemCheckboxes = document.querySelectorAll('.item-checkbox');
+        itemCheckboxes.forEach(cb => cb.checked = checkbox.checked);
+    }
+    
+    function clearAll() {
+        if (confirm('Bạn có chắc muốn xóa tất cả sản phẩm?')) {
+            window.location.href = '@Url.Action("Clear", "Cart")';
+        }
+    }
+</script>
 
 @section Scripts {
     <script src="~/js/cart.js"></script>

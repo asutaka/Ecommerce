@@ -4,7 +4,15 @@ public class Order : BaseEntity
 {
     public required string CustomerName { get; set; }
     public required string CustomerEmail { get; set; }
+    public string? CustomerPhone { get; set; }
+    public string? ShippingAddress { get; set; }
+    public string? Note { get; set; }
+    public string PaymentMethod { get; set; } = "COD";
+    public decimal ShippingFee { get; set; }
+    public decimal Discount { get; set; }
+    public string? CouponCode { get; set; }
     public OrderStatus Status { get; set; } = OrderStatus.PendingInvoice;
+    public decimal Subtotal { get; set; }
     public decimal Total { get; set; }
     
     // Optional: Link to registered customer
