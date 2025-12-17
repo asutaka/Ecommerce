@@ -239,6 +239,9 @@ async function applyCoupon() {
         const result = await response.json();
 
         if (result.success) {
+            // Save form data before reload
+            saveFormData();
+
             showNotification(result.message, 'success');
             // Reload page to show applied coupon
             setTimeout(() => location.reload(), 1000);
@@ -250,6 +253,89 @@ async function applyCoupon() {
         showNotification('Có lỗi xảy ra', 'error');
     }
 }
+
+// Save form data to sessionStorage
+function saveFormData() {
+    const formData = {
+        customerName: document.querySelector('input[name="CustomerName"]')?.value || '',
+        customerPhone: document.querySelector('input[name="CustomerPhone"]')?.value || '',
+        customerEmail: document.querySelector('input[name="CustomerEmail"]')?.value || '',
+        shippingAddress: document.querySelector('select[name="ShippingAddress"]')?.value ||
+            document.querySelector('input[name="ShippingAddress"]')?.value || '',
+        customAddress: document.getElementById('customAddress')?.value || '',
+        note: document.querySelector('input[name="Note"]')?.value || '',
+        paymentMethod: document.querySelector('input[name="PaymentMethod"]:checked')?.value || 'COD'
+    };
+    sessionStorage.setItem('cartFormData', JSON.stringify(formData));
+}
+
+// Restore form data from sessionStorage
+function restoreFormData() {
+    const savedData = sessionStorage.getItem('cartFormData');
+    if (!savedData) return;
+
+    try {
+        const formData = JSON.parse(savedData);
+
+        // Restore customer info
+        if (formData.customerName) {
+            const nameInput = document.querySelector('input[name="CustomerName"]');
+            if (nameInput) nameInput.value = formData.customerName;
+        }
+
+        if (formData.customerPhone) {
+            const phoneInput = document.querySelector('input[name="CustomerPhone"]');
+            if (phoneInput) phoneInput.value = formData.customerPhone;
+        }
+
+        if (formData.customerEmail) {
+            const emailInput = document.querySelector('input[name="CustomerEmail"]');
+            if (emailInput) emailInput.value = formData.customerEmail;
+        }
+
+        // Restore shipping address
+        if (formData.shippingAddress) {
+            const addressSelect = document.querySelector('select[name="ShippingAddress"]');
+            const addressInput = document.querySelector('input[name="ShippingAddress"]');
+
+            if (addressSelect) {
+                addressSelect.value = formData.shippingAddress;
+                // Trigger change event to show custom address if needed
+                addressSelect.dispatchEvent(new Event('change'));
+            } else if (addressInput) {
+                addressInput.value = formData.shippingAddress;
+            }
+        }
+
+        if (formData.customAddress) {
+            const customInput = document.getElementById('customAddress');
+            if (customInput) customInput.value = formData.customAddress;
+        }
+
+        // Restore note
+        if (formData.note) {
+            const noteInput = document.querySelector('input[name="Note"]');
+            if (noteInput) noteInput.value = formData.note;
+        }
+
+        // Restore payment method
+        if (formData.paymentMethod) {
+            const paymentRadio = document.querySelector(`input[name="PaymentMethod"][value="${formData.paymentMethod}"]`);
+            if (paymentRadio) paymentRadio.checked = true;
+        }
+
+        // Clear saved data after restore
+        sessionStorage.removeItem('cartFormData');
+    } catch (error) {
+        console.error('Error restoring form data:', error);
+    }
+}
+
+// Restore form data on page load
+document.addEventListener('DOMContentLoaded', function () {
+    restoreFormData();
+});
+
 
 // Remove applied coupon
 async function removeCoupon() {
@@ -268,6 +354,9 @@ async function removeCoupon() {
         const result = await response.json();
 
         if (result.success) {
+            // Save form data before reload
+            saveFormData();
+
             showNotification(result.message, 'success');
             // Reload page to update UI
             setTimeout(() => location.reload(), 1000);

@@ -296,6 +296,15 @@ public class CartService(EcommerceDbContext dbContext, ILogger<CartService> logg
             sessionCart.Id, userCart.Id, customerId);
     }
 
+    public async Task<Guid?> GetCartByCustomerIdAsync(Guid customerId)
+    {
+        var cart = await dbContext.ShoppingCarts
+            .AsNoTracking()
+            .FirstOrDefaultAsync(x => x.CustomerId == customerId);
+
+        return cart?.Id;
+    }
+
     public async Task<(bool success, string message, decimal discount)> ApplyCouponAsync(Guid cartId, string couponCode)
     {
         try
@@ -424,5 +433,30 @@ public class CartService(EcommerceDbContext dbContext, ILogger<CartService> logg
             logger.LogError(ex, "Error removing coupon from cart {CartId}", cartId);
             return false;
         }
+    }
+    
+    public async Task<List<ViewModels.CouponViewModel>> GetAvailableCouponsAsync()
+    {
+        var now = DateTime.UtcNow;
+        
+        var coupons = await dbContext.Coupons
+            .Where(x => x.IsActive 
+                && x.StartDate <= now 
+                && x.EndDate >= now
+                && (x.UsageLimit == 0 || x.UsedCount < x.UsageLimit))
+            .OrderBy(x => x.EndDate)
+            .Take(10) // Limit to 10 coupons
+            .ToListAsync();
+        
+        return coupons.Select(c => new ViewModels.CouponViewModel
+        {
+            Code = c.Code,
+            Description = c.Description,
+            DiscountAmount = c.DiscountAmount,
+            DiscountPercentage = c.DiscountPercentage,
+            MinimumOrderAmount = c.MinimumOrderAmount,
+            EndDate = c.EndDate,
+            RemainingUsage = c.UsageLimit > 0 ? c.UsageLimit - c.UsedCount : 999
+        }).ToList();
     }
 }

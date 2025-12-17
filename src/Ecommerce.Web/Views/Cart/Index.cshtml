@@ -6,21 +6,21 @@
 
 <style>
     .checkout-container {
-        max-width: 900px;
-        margin: 40px auto;
-        padding: 0 20px;
+        max-width: 1400px;
+        margin: 20px auto;
+        padding: 0 15px;
     }
     
     .checkout-section {
         background: white;
-        border-radius: 12px;
-        padding: 24px;
+        border-top: 1px solid #E5E7EB;
+        padding: 10px;
         margin-bottom: 20px;
         box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
     
     .section-title {
-        font-size: 18px;
+        font-size: 22px;
         font-weight: 600;
         margin-bottom: 20px;
         color: #1f2937;
@@ -40,42 +40,46 @@
     
     .form-group label {
         font-size: 14px;
-        font-weight: 500;
-        margin-bottom: 6px;
+        font-weight: 400;
+        margin-bottom: 8px;
         color: #374151;
     }
     
+    .form-group label .required {
+        color: #ef4444;
+    }
+    
     .form-group input,
-    .form-group select,
-    .form-group textarea {
-        padding: 10px 12px;
+    .form-group select {
+        padding: 14px 18px;
         border: 1px solid #d1d5db;
-        border-radius: 8px;
+        border-radius: 24px;
         font-size: 14px;
+        width: 100%;
+        transition: all 0.2s;
     }
     
     .form-group input:focus,
-    .form-group select:focus,
-    .form-group textarea:focus {
+    .form-group select:focus {
         outline: none;
-        border-color: #3b82f6;
-        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        border-color: #9ca3af;
+        box-shadow: none;
     }
     
     .cart-items-container {
         max-height: 400px;
         overflow-y: auto;
+        border-top: 1px solid #e5e7eb;
+        border-bottom: 1px solid #e5e7eb;
     }
     
     .cart-item-new {
-        display: grid;
-        grid-template-columns: auto 80px 1fr auto;
+        display: flex;
+        align-items: flex-start;
         gap: 16px;
         padding: 16px;
-        border: 1px solid #e5e7eb;
-        border-radius: 8px;
-        margin-bottom: 12px;
-        align-items: center;
+        border-bottom: 1px solid #e5e7eb;
+        margin-bottom: 0;
     }
     
     .cart-item-new:hover {
@@ -83,46 +87,104 @@
     }
     
     .item-checkbox {
-        width: 20px;
-        height: 20px;
+        appearance: none !important;
+        -webkit-appearance: none !important;
+        -moz-appearance: none !important;
+        width: 20px !important;
+        height: 20px !important;
+        border: 2px solid #d1d5db !important;
+        border-radius: 4px !important;
         cursor: pointer;
+        margin-top: 60px;
+        position: relative;
+        background: white !important;
+        transition: all 0.2s;
+        flex-shrink: 0;
+    }
+    
+    .item-checkbox:hover {
+        border-color: #273BCE !important;
+    }
+    
+    .item-checkbox:checked {
+        background: #273BCE !important;
+        border-color: #273BCE !important;
+    }
+    
+    .item-checkbox:checked::after {
+        content: '';
+        position: absolute;
+        left: 5px;
+        top: 2px;
+        width: 5px;
+        height: 10px;
+        border: solid white;
+        border-width: 0 2px 2px 0;
+        transform: rotate(45deg);
     }
     
     .item-image {
-        width: 80px;
-        height: 80px;
+        width: 100px;
+        height: 160px;
         object-fit: cover;
         border-radius: 8px;
+        background: #f3f4f6;
     }
     
     .item-info {
         flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
     }
     
     .item-name {
         font-weight: 600;
-        margin-bottom: 8px;
+        font-size: 16px;
         color: #1f2937;
+        margin: 0;
+    }
+    
+    .item-variant-info {
+        font-size: 14px;
+        color: #6b7280;
     }
     
     .item-variants {
         display: flex;
         gap: 8px;
-        margin-bottom: 8px;
+        margin-top: 4px;
     }
     
     .variant-select {
-        padding: 6px 10px;
-        border: 1px solid #d1d5db;
+        padding: 8px 12px;
+        border: 1px solid #e5e7eb;
         border-radius: 6px;
-        font-size: 13px;
-        background: white;
+        font-size: 14px;
+        background: #f9fafb;
+        cursor: pointer;
+        min-width: 80px;
+    }
+    
+    .variant-select:hover {
+        background: #f3f4f6;
     }
     
     .item-controls {
         display: flex;
         align-items: center;
         gap: 12px;
+        margin-top: auto;
+    }
+    
+    .gift-badge {
+        display: inline-block;
+        background: #ff6b35;
+        color: white;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 600;
     }
     
     .qty-controls {
@@ -157,29 +219,43 @@
         font-weight: 500;
     }
     
+    .item-price-section {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 8px;
+        min-width: 150px;
+    }
+    
     .item-price {
         text-align: right;
     }
     
     .price-current {
-        font-size: 16px;
-        font-weight: 600;
+        font-size: 18px;
+        font-weight: 700;
         color: #1f2937;
     }
     
     .price-original {
-        font-size: 13px;
+        font-size: 14px;
         color: #9ca3af;
         text-decoration: line-through;
+        margin-bottom: 4px;
     }
     
     .item-remove {
         background: none;
         border: none;
-        color: #ef4444;
+        color: #6b7280;
         cursor: pointer;
-        padding: 8px;
-        font-size: 18px;
+        padding: 4px;
+        font-size: 14px;
+        text-decoration: underline;
+    }
+    
+    .item-remove:hover {
+        color: #ef4444;
     }
     
     .summary-row {
@@ -191,6 +267,76 @@
     
     .summary-row:last-child {
         border-bottom: none;
+    }
+    
+    /* Payment Summary Styles */
+    .payment-summary {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+    
+    .payment-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        padding-bottom: 16px;
+        border-bottom: 1px solid #f3f4f6;
+    }
+    
+    .payment-row:last-child {
+        border-bottom: none;
+    }
+    
+    .payment-label {
+        font-size: 14px;
+        color: #6b7280;
+    }
+    
+    .payment-value {
+        text-align: right;
+        font-size: 14px;
+        font-weight: 600;
+        color: #111827;
+    }
+    
+    .original-subtotal {
+        display: block;
+        font-size: 12px;
+        font-weight: 400;
+        color: #9ca3af;
+        margin-top: 4px;
+    }
+    
+    .payment-free {
+        color: #10b981;
+    }
+    
+    .payment-discount {
+        color: #111827;
+    }
+    
+    .payment-total {
+        padding-top: 16px;
+        border-top: 1px solid #e5e7eb;
+        border-bottom: none !important;
+    }
+    
+    .payment-total .payment-label {
+        font-size: 16px;
+        font-weight: 600;
+        color: #111827;
+    }
+    
+    .payment-value-total {
+        text-align: right;
+    }
+    
+    .payment-value-total strong {
+        font-size: 18px;
+        font-weight: 700;
+        color: #111827;
+        display: block;
     }
     
     .summary-row.total {
@@ -262,6 +408,138 @@
         cursor: pointer;
         font-size: 14px;
     }
+    
+    /* Coupon Styles */
+    .coupon-list {
+        display: flex;
+        gap: 12px;
+        overflow-x: auto;
+        padding-bottom: 12px;
+        margin-bottom: 16px;
+    }
+    
+    .coupon-card {
+        min-width: 300px;
+        background: white;
+        border: 2px dashed #ff6b35;
+        border-radius: 8px;
+        padding: 12px 16px;
+        position: relative;
+        transition: all 0.2s;
+        cursor: pointer;
+    }
+    
+    .coupon-card:hover {
+        border-color: #ff4500;
+        background: #fff5f0;
+    }
+    
+    .coupon-radio:checked + .coupon-label .coupon-card,
+    .coupon-card:has(.coupon-radio:checked) {
+        background: #fff5f0;
+        border-color: #ff4500;
+        border-width: 2px;
+        box-shadow: 0 2px 8px rgba(255, 107, 53, 0.2);
+    }
+    
+    .coupon-radio {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+    }
+    
+    .coupon-label {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        cursor: pointer;
+    }
+    
+    .coupon-info {
+        padding-right: 30px;
+    }
+    
+    .coupon-code {
+        font-size: 16px;
+        font-weight: 700;
+        color: #111827;
+        margin-bottom: 6px;
+    }
+    
+    .coupon-condition {
+        font-size: 13px;
+        font-weight: 400;
+        color: #6b7280;
+    }
+    
+    .coupon-desc {
+        font-size: 13px;
+        color: #374151;
+        line-height: 1.4;
+        margin-bottom: 6px;
+    }
+    
+    .coupon-expiry {
+        font-size: 12px;
+        color: #2563eb;
+    }
+    
+    .btn-condition {
+        align-self: flex-end;
+        padding: 6px 16px;
+        background: white;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        font-size: 13px;
+        color: #2563eb;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    
+    .btn-condition:hover {
+        background: #eff6ff;
+        border-color: #2563eb;
+    }
+    
+    .coupon-input-wrapper {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+    }
+    
+    .coupon-input {
+        flex: 1;
+        padding: 14px 18px;
+        border: 1px solid #d1d5db;
+        border-radius: 24px;
+        font-size: 14px;
+        transition: all 0.2s;
+    }
+    
+    .coupon-input:focus {
+        outline: none;
+        border-color: #9ca3af;
+    }
+    
+    .btn-apply-coupon {
+        padding: 14px 32px;
+        background: #111827;
+        color: white;
+        border: none;
+        border-radius: 24px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        white-space: nowrap;
+    }
+    
+    .btn-apply-coupon:hover {
+        background: #1f2937;
+    }
 </style>
 
 <div class="checkout-container">
@@ -274,34 +552,33 @@
             <div class="checkout-section">
                 <h2 class="section-title">Thông tin vận chuyển</h2>
                 
-                <div class="form-row">
+                <div class="form-row" style="grid-template-columns: 1fr 1fr 1fr;">
                     <div class="form-group">
-                        <label>Họ tên *</label>
+                        <label>Họ tên <span class="required">*</span></label>
                         <input type="text" name="CustomerName" value="@Model.CustomerName" placeholder="Nhập họ tên của bạn" required />
                     </div>
                     <div class="form-group">
-                        <label>Số điện thoại *</label>
+                        <label>Số điện thoại <span class="required">*</span></label>
                         <input type="tel" name="CustomerPhone" value="@Model.CustomerPhone" placeholder="Nhập số điện thoại" required />
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" name="CustomerEmail" value="@Model.CustomerEmail" placeholder="Nhập email của bạn" />
                     </div>
                 </div>
                 
                 <div class="form-group" style="margin-bottom: 16px;">
-                    <label>Email *</label>
-                    <input type="email" name="CustomerEmail" value="@Model.CustomerEmail" placeholder="Nhập email của bạn" required />
-                </div>
-                
-                <div class="form-group" style="margin-bottom: 16px;">
-                    <label>Địa chỉ giao hàng *</label>
+                    <label>Địa chỉ giao hàng <span class="required">*</span></label>
                     @if (Model.AvailableAddresses.Any())
                     {
-                        <select name="ShippingAddress" class="form-control" required style="padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px;">
+                        <select name="ShippingAddress" required>
                             @foreach (var address in Model.AvailableAddresses)
                             {
                                 <option value="@address" selected="@(address == Model.ShippingAddress)">@address</option>
                             }
                             <option value="">Nhập địa chỉ khác...</option>
                         </select>
-                        <input type="text" id="customAddress" placeholder="Nhập địa chỉ mới" style="margin-top: 8px; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; width: 100%; display: none;" />
+                        <input type="text" id="customAddress" placeholder="Nhập địa chỉ mới" style="margin-top: 8px; display: none;" />
                     }
                     else
                     {
@@ -311,7 +588,7 @@
                 
                 <div class="form-group">
                     <label>Ghi chú</label>
-                    <textarea name="Note" rows="3" placeholder="Ghi chú cho đơn hàng (tùy chọn)"></textarea>
+                    <input type="text" name="Note" placeholder="Ghi chú cho đơn hàng (tùy chọn)" />
                 </div>
             </div>
             
@@ -321,7 +598,7 @@
                 
                 <div class="select-all-row">
                     <label class="select-all-label">
-                        <input type="checkbox" id="selectAll" onclick="toggleSelectAll(this)" />
+                        <input type="checkbox" class="item-checkbox" id="selectAll" onclick="toggleSelectAll(this)" />
                         <span>Tất cả sản phẩm (@Model.Items.Count)</span>
                     </label>
                     <button type="button" class="btn-clear-all" onclick="clearAll()">Xóa tất cả</button>
@@ -340,6 +617,21 @@
                                 
                                 @if (!string.IsNullOrEmpty(item.VariantColor) || !string.IsNullOrEmpty(item.VariantSize))
                                 {
+                                    <div class="item-variant-info">
+                                        @if (!string.IsNullOrEmpty(item.VariantColor))
+                                        {
+                                            <span>@item.VariantColor</span>
+                                        }
+                                        @if (!string.IsNullOrEmpty(item.VariantColor) && !string.IsNullOrEmpty(item.VariantSize))
+                                        {
+                                            <span> / </span>
+                                        }
+                                        @if (!string.IsNullOrEmpty(item.VariantSize))
+                                        {
+                                            <span>@item.VariantSize</span>
+                                        }
+                                    </div>
+                                    
                                     <div class="item-variants">
                                         @if (!string.IsNullOrEmpty(item.VariantColor))
                                         {
@@ -357,42 +649,61 @@
                                 }
                                 
                                 <div class="item-controls">
-                                    <div class="qty-controls">
-                                        <button type="button" class="qty-btn" onclick="updateQuantity('@item.Id', @(item.Quantity - 1))">−</button>
-                                        <span class="qty-value">@item.Quantity</span>
-                                        <button type="button" class="qty-btn" onclick="updateQuantity('@item.Id', @(item.Quantity + 1))">+</button>
-                                    </div>
-                                    <button type="button" class="item-remove" onclick="removeItem('@item.Id')" title="Xóa">
-                                        🗑️
+                                    <button type="button" class="item-remove" onclick="removeItem('@item.Id')">
+                                        Xóa
                                     </button>
                                 </div>
                             </div>
                             
-                            <div class="item-price">
-                                @if (item.OriginalPrice.HasValue && item.OriginalPrice.Value > 0 && item.OriginalPrice.Value > item.UnitPrice)
-                                {
-                                    <div class="price-original">@((item.OriginalPrice.Value * item.Quantity).ToString("N0"))đ</div>
-                                }
-                                <div class="price-current">@item.LineTotal.ToString("N0")đ</div>
+                            <div class="qty-controls">
+                                <button type="button" class="qty-btn" onclick="updateQuantity('@item.Id', @(item.Quantity - 1))">−</button>
+                                <span class="qty-value">@item.Quantity</span>
+                                <button type="button" class="qty-btn" onclick="updateQuantity('@item.Id', @(item.Quantity + 1))">+</button>
+                            </div>
+                            
+                            <div class="item-price-section">
+                                <div class="item-price">
+                                    @if (item.OriginalPrice.HasValue && item.OriginalPrice.Value > 0 && item.OriginalPrice.Value > item.UnitPrice)
+                                    {
+                                        <div class="price-original">@((item.OriginalPrice.Value * item.Quantity).ToString("N0"))đ</div>
+                                    }
+                                    <div class="price-current">@item.LineTotal.ToString("N0")đ</div>
+                                </div>
                             </div>
                         </div>
                     }
                 </div>
             </div>
             
-            <!-- 3. CHỌN COUPON -->
             <div class="checkout-section">
                 <h2 class="section-title">Mã giảm giá</h2>
                 
                 @if (string.IsNullOrEmpty(Model.AppliedCouponCode))
                 {
-                    <div style="display: flex; gap: 8px;">
-                        <input type="text" id="couponCodeInput" placeholder="Nhập mã giảm giá" 
-                               style="flex: 1; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 8px;" />
-                        <button type="button" onclick="applyCoupon()" 
-                                style="padding: 10px 20px; background: #3b82f6; color: white; border: none; border-radius: 8px; cursor: pointer;">
-                            Áp dụng
-                        </button>
+                    <!-- Danh sách mã giảm giá có sẵn -->
+                    @if (Model.AvailableCoupons.Any())
+                    {
+                        <div class="coupon-list">
+                            @foreach (var coupon in Model.AvailableCoupons)
+                            {
+                                <div class="coupon-card">
+                                    <input type="radio" name="selectedCoupon" value="@coupon.Code" id="coupon_@coupon.Code" class="coupon-radio">
+                                    <label for="coupon_@coupon.Code" class="coupon-label">
+                                        <div class="coupon-info">
+                                            <div class="coupon-code">@coupon.Code <span class="coupon-condition">(Còn @coupon.RemainingUsage)</span></div>
+                                            <div class="coupon-desc">@coupon.FormattedDiscount @coupon.FormattedMinOrder</div>
+                                            <div class="coupon-expiry">HSD: @coupon.EndDate.ToString("dd/MM/yyyy")</div>
+                                        </div>
+                                    </label>
+                                </div>
+                            }
+                        </div>
+                    }
+                    
+                    <!-- Ô nhập mã giảm giá -->
+                    <div class="coupon-input-wrapper">
+                        <input type="text" id="couponCodeInput" placeholder="Nhập mã giảm giá" class="coupon-input" />
+                        <button type="button" onclick="applyCoupon()" class="btn-apply-coupon">ÁP DỤNG</button>
                     </div>
                 }
                 else
@@ -414,27 +725,40 @@
             <div class="checkout-section">
                 <h2 class="section-title">Chi tiết thanh toán</h2>
                 
-                <div class="summary-row">
-                    <span>Tạm tính</span>
-                    <strong id="subtotal">@Model.Subtotal.ToString("N0")đ</strong>
-                </div>
-                
-                @if (Model.Discount > 0)
-                {
-                    <div class="summary-row" style="color: #10b981;">
-                        <span>Giảm giá</span>
-                        <strong id="discount">-@Model.Discount.ToString("N0")đ</strong>
+                <div class="payment-summary">
+                    <div class="payment-row">
+                        <span class="payment-label">Tạm tính</span>
+                        <div class="payment-value">
+                            <span id="subtotal">@Model.Subtotal.ToString("N0")đ</span>
+                            @{
+                                var productDiscount = Model.OriginalSubtotal - Model.Subtotal;
+                            }
+                            @if (productDiscount > 0)
+                            {
+                                <span class="original-subtotal">(tiết kiệm @productDiscount.ToString("N0")đ)</span>
+                            }
+                        </div>
                     </div>
-                }
-                
-                <div class="summary-row">
-                    <span>Phí vận chuyển</span>
-                    <strong id="shippingFee">@Model.ShippingFee.ToString("N0")đ</strong>
-                </div>
-                
-                <div class="summary-row total">
-                    <span>Tổng cộng</span>
-                    <strong id="total">@Model.Total.ToString("N0")đ</strong>
+                    
+                    <div class="payment-row">
+                        <span class="payment-label">Phí giao hàng</span>
+                        <span class="payment-value">@Model.ShippingFee.ToString("N0")đ</span>
+                    </div>
+                    
+                    @if (Model.Discount > 0)
+                    {
+                        <div class="payment-row">
+                            <span class="payment-label">Voucher giảm giá</span>
+                            <span class="payment-value payment-discount">- @Model.Discount.ToString("N0")đ</span>
+                        </div>
+                    }
+                    
+                    <div class="payment-row payment-total">
+                        <span class="payment-label">Thành tiền</span>
+                        <div class="payment-value-total">
+                            <strong id="total">@Model.Total.ToString("N0")đ</strong>
+                        </div>
+                    </div>
                 </div>
             </div>
             
@@ -499,8 +823,48 @@
             window.location.href = '@Url.Action("Clear", "Cart")';
         }
     }
+    
+    // Handle custom address input
+    document.addEventListener('DOMContentLoaded', function() {
+        const addressSelect = document.querySelector('select[name="ShippingAddress"]');
+        const customAddressInput = document.getElementById('customAddress');
+        
+        if (addressSelect && customAddressInput) {
+            addressSelect.addEventListener('change', function() {
+                if (this.value === '') {
+                    customAddressInput.style.display = 'block';
+                    customAddressInput.name = 'ShippingAddress';
+                    customAddressInput.required = true;
+                    this.name = '';
+                } else {
+                    customAddressInput.style.display = 'none';
+                    customAddressInput.name = '';
+                    customAddressInput.required = false;
+                    this.name = 'ShippingAddress';
+                }
+            });
+        }
+        
+        // Handle coupon radio selection
+        const couponRadios = document.querySelectorAll('.coupon-radio');
+        const couponInput = document.getElementById('couponCodeInput');
+        
+        if (couponRadios && couponInput) {
+            couponRadios.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    if (this.checked) {
+                        couponInput.value = this.value;
+                    }
+                });
+            });
+        }
+    });
+    
+    function showCouponCondition(button) {
+        const minAmount = parseFloat(button.getAttribute('data-min-amount'));
+        const formatted = minAmount.toLocaleString('vi-VN');
+        alert(`Điều kiện: Đơn hàng tối thiểu ${formatted}đ`);
+    }
 </script>
 
-@section Scripts {
-    <script src="~/js/cart.js"></script>
-}
+

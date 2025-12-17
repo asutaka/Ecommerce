@@ -45,6 +45,11 @@ public interface ICartService
     Task MergeCartAsync(string sessionId, Guid customerId);
 
     /// <summary>
+    /// Get cart ID by customer ID (for logged-in users)
+    /// </summary>
+    Task<Guid?> GetCartByCustomerIdAsync(Guid customerId);
+
+    /// <summary>
     /// Apply coupon code to cart
     /// </summary>
     Task<(bool success, string message, decimal discount)> ApplyCouponAsync(Guid cartId, string couponCode);
@@ -53,4 +58,9 @@ public interface ICartService
     /// Remove applied coupon from cart
     /// </summary>
     Task<bool> RemoveCouponAsync(Guid cartId);
+    
+    /// <summary>
+    /// Get available coupons for display
+    /// </summary>
+    Task<List<CouponViewModel>> GetAvailableCouponsAsync();
 }

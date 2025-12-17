@@ -7,6 +7,9 @@ public class CartViewModel
     public string? AppliedCouponCode { get; set; }
     public decimal Discount { get; set; }
     
+    // Available coupons to display
+    public List<CouponViewModel> AvailableCoupons { get; set; } = new();
+    
     // Shipping info
     public string? CustomerName { get; set; }
     public string? CustomerPhone { get; set; }
@@ -21,6 +24,7 @@ public class CartViewModel
     
     // Calculations
     public decimal Subtotal => Items.Sum(x => x.LineTotal);
+    public decimal OriginalSubtotal => Items.Sum(x => (x.OriginalPrice ?? x.UnitPrice) * x.Quantity);
     public decimal Tax => 0; // Can be calculated based on business rules
     public decimal Total => Subtotal + Tax + ShippingFee - Discount;
     public int ItemCount => Items.Sum(x => x.Quantity);

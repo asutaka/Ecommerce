@@ -10,7 +10,6 @@ public class CartController(
     IOrderService orderService,
     ILogger<CartController> logger) : Controller
 {
-    private const string SessionKeyCartId = "_CartId";
 
     /// <summary>
     /// Display cart page
@@ -48,6 +47,9 @@ public class CartController(
                     cartViewModel.AvailableAddresses.Add(customer.ShippingAddress3);
             }
         }
+        
+        // Load available coupons
+        cartViewModel.AvailableCoupons = await cartService.GetAvailableCouponsAsync();
 
         return View(cartViewModel);
     }
@@ -217,17 +219,43 @@ public class CartController(
     }
 
     /// <summary>
-    /// Helper method to get or create cart ID from session
+    /// Helper method to get or create cart ID
+    /// Priority: 1. User's cart (by CustomerId), 2. Guest cart (by cookie session ID)
     /// </summary>
     private async Task<Guid> GetOrCreateCartIdAsync()
     {
-        var sessionId = HttpContext.Session.GetString(SessionKeyCartId);
+        const string CookieKeySessionId = "_CartSessionId";
+        
+        // Priority 1: If user is logged in, find cart by CustomerId
+        var customerIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (customerIdClaim != null && Guid.TryParse(customerIdClaim, out var customerId))
+        {
+            var userCart = await cartService.GetCartByCustomerIdAsync(customerId);
+            if (userCart != null)
+            {
+                logger.LogInformation("Found cart {CartId} for customer {CustomerId}", userCart.Value, customerId);
+                return userCart.Value;
+            }
+        }
+        
+        // Priority 2: Try to get session ID from cookie (for guest users)
+        var sessionId = HttpContext.Request.Cookies[CookieKeySessionId];
 
         if (string.IsNullOrEmpty(sessionId))
         {
             // Generate new session ID
             sessionId = Guid.NewGuid().ToString();
-            HttpContext.Session.SetString(SessionKeyCartId, sessionId);
+            
+            // Save to cookie (expires in 30 days)
+            var cookieOptions = new CookieOptions
+            {
+                Expires = DateTimeOffset.UtcNow.AddDays(30),
+                HttpOnly = true,
+                IsEssential = true,
+                SameSite = SameSiteMode.Lax
+            };
+            HttpContext.Response.Cookies.Append(CookieKeySessionId, sessionId, cookieOptions);
+            logger.LogInformation("Created new session ID {SessionId} and saved to cookie", sessionId);
         }
 
         return await cartService.GetOrCreateCartAsync(sessionId);
