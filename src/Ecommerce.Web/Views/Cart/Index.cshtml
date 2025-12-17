@@ -9,21 +9,30 @@
         max-width: 1400px;
         margin: 20px auto;
         padding: 0 15px;
+        background: #f9fafb;
     }
     
     .checkout-section {
         background: white;
-        border-top: 1px solid #E5E7EB;
-        padding: 10px;
-        margin-bottom: 20px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 24px;
+        margin-bottom: 24px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        transition: box-shadow 0.2s;
+    }
+    
+    .checkout-section:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     }
     
     .section-title {
-        font-size: 22px;
-        font-weight: 600;
+        font-size: 20px;
+        font-weight: 700;
         margin-bottom: 20px;
-        color: #1f2937;
+        color: #111827;
+        padding-bottom: 12px;
+        border-bottom: 2px solid #f3f4f6;
     }
     
     .form-row {
@@ -367,6 +376,56 @@
         margin-right: 12px;
     }
     
+    /* E-Wallet Selection Styles */
+    .ewallet-item {
+        cursor: pointer;
+        display: block;
+    }
+    
+    .ewallet-radio {
+        display: none;
+    }
+    
+    .ewallet-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        padding: 10px;
+        border: 2px solid #e5e7eb;
+        border-radius: 8px;
+        background: white;
+        transition: all 0.2s;
+    }
+    
+    .ewallet-item:hover .ewallet-card {
+        border-color: #3b82f6;
+        box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
+        transform: translateY(-2px);
+    }
+    
+    .ewallet-radio:checked + .ewallet-card {
+        border-color: #3b82f6;
+        background: #eff6ff;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    
+    .ewallet-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .ewallet-name {
+        font-size: 12px;
+        font-weight: 600;
+        color: #374151;
+    }
+    
     .btn-checkout {
         width: 100%;
         padding: 16px;
@@ -656,9 +715,9 @@
                             </div>
                             
                             <div class="qty-controls">
-                                <button type="button" class="qty-btn" onclick="updateQuantity('@item.Id', @(item.Quantity - 1))">−</button>
+                                <button type="button" class="qty-btn" onclick="adjustQuantity('@item.Id', -1)">−</button>
                                 <span class="qty-value">@item.Quantity</span>
-                                <button type="button" class="qty-btn" onclick="updateQuantity('@item.Id', @(item.Quantity + 1))">+</button>
+                                <button type="button" class="qty-btn" onclick="adjustQuantity('@item.Id', 1)">+</button>
                             </div>
                             
                             <div class="item-price-section">
@@ -774,21 +833,207 @@
                     </div>
                 </label>
                 
-                <label class="payment-option">
-                    <input type="radio" name="PaymentMethod" value="Banking" />
+                <label class="payment-option" id="banking-option">
+                    <input type="radio" name="PaymentMethod" value="Banking" id="banking-radio" />
                     <div>
                         <div style="font-weight: 600;">Chuyển khoản ngân hàng</div>
                         <div style="font-size: 13px; color: #6b7280;">Chuyển khoản qua Internet Banking</div>
                     </div>
                 </label>
                 
-                <label class="payment-option">
-                    <input type="radio" name="PaymentMethod" value="EWallet" />
+                <!-- Bank Selection (hidden by default) -->
+                <div id="bank-selection" style="display: none; margin-left: 40px; margin-top: 8px;">
+                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;">
+                        <!-- Vietcombank -->
+                        <label class="ewallet-item">
+                            <input type="radio" name="BankProvider" value="Vietcombank" class="ewallet-radio" />
+                            <div class="ewallet-card">
+                                <div class="ewallet-icon" style="background: white; padding: 4px;">
+                                    <img src="~/images/payment-icons/vietcombank.png" alt="Vietcombank" style="width: 100%; height: 100%; object-fit: contain;" />
+                                </div>
+                                <span class="ewallet-name">VCB</span>
+                            </div>
+                        </label>
+                        
+                        <!-- BIDV -->
+                        <label class="ewallet-item">
+                            <input type="radio" name="BankProvider" value="BIDV" class="ewallet-radio" />
+                            <div class="ewallet-card">
+                                <div class="ewallet-icon" style="background: white; padding: 4px;">
+                                    <img src="~/images/payment-icons/bidv.png" alt="BIDV" style="width: 100%; height: 100%; object-fit: contain;" />
+                                </div>
+                                <span class="ewallet-name">BIDV</span>
+                            </div>
+                        </label>
+                        
+                        <!-- Vietinbank -->
+                        <label class="ewallet-item">
+                            <input type="radio" name="BankProvider" value="Vietinbank" class="ewallet-radio" />
+                            <div class="ewallet-card">
+                                <div class="ewallet-icon" style="background: white; padding: 4px;">
+                                    <img src="~/images/payment-icons/vietinbank.png" alt="Vietinbank" style="width: 100%; height: 100%; object-fit: contain;" />
+                                </div>
+                                <span class="ewallet-name">VTB</span>
+                            </div>
+                        </label>
+                        
+                        <!-- ACB -->
+                        <label class="ewallet-item">
+                            <input type="radio" name="BankProvider" value="ACB" class="ewallet-radio" />
+                            <div class="ewallet-card">
+                                <div class="ewallet-icon" style="background: white; padding: 4px;">
+                                    <img src="~/images/payment-icons/acb.png" alt="ACB" style="width: 100%; height: 100%; object-fit: contain;" />
+                                </div>
+                                <span class="ewallet-name">ACB</span>
+                            </div>
+                        </label>
+                        
+                        <!-- Techcombank -->
+                        <label class="ewallet-item">
+                            <input type="radio" name="BankProvider" value="Techcombank" class="ewallet-radio" />
+                            <div class="ewallet-card">
+                                <div class="ewallet-icon" style="background: white; padding: 4px;">
+                                    <img src="~/images/payment-icons/techcombank.png" alt="Techcombank" style="width: 100%; height: 100%; object-fit: contain;" />
+                                </div>
+                                <span class="ewallet-name">TCB</span>
+                            </div>
+                        </label>
+                        
+                        <!-- VPBank -->
+                        <label class="ewallet-item">
+                            <input type="radio" name="BankProvider" value="VPBank" class="ewallet-radio" />
+                            <div class="ewallet-card">
+                                <div class="ewallet-icon" style="background: white; padding: 4px;">
+                                    <img src="~/images/payment-icons/vpbank.png" alt="VPBank" style="width: 100%; height: 100%; object-fit: contain;" />
+                                </div>
+                                <span class="ewallet-name">VPB</span>
+                            </div>
+                        </label>
+                        
+                        <!-- Agribank -->
+                        <label class="ewallet-item">
+                            <input type="radio" name="BankProvider" value="Agribank" class="ewallet-radio" />
+                            <div class="ewallet-card">
+                                <div class="ewallet-icon" style="background: white; padding: 4px;">
+                                    <img src="~/images/payment-icons/agribank.png" alt="Agribank" style="width: 100%; height: 100%; object-fit: contain;" />
+                                </div>
+                                <span class="ewallet-name">AGB</span>
+                            </div>
+                        </label>
+                        
+                        <!-- SHB -->
+                        <label class="ewallet-item">
+                            <input type="radio" name="BankProvider" value="SHB" class="ewallet-radio" />
+                            <div class="ewallet-card">
+                                <div class="ewallet-icon" style="background: white; padding: 4px;">
+                                    <img src="~/images/payment-icons/shb.png" alt="SHB" style="width: 100%; height: 100%; object-fit: contain;" />
+                                </div>
+                                <span class="ewallet-name">SHB</span>
+                            </div>
+                        </label>
+                        
+                        <!-- MBBank -->
+                        <label class="ewallet-item">
+                            <input type="radio" name="BankProvider" value="MBBank" class="ewallet-radio" />
+                            <div class="ewallet-card">
+                                <div class="ewallet-icon" style="background: white; padding: 4px;">
+                                    <img src="~/images/payment-icons/mbbank.png" alt="MBBank" style="width: 100%; height: 100%; object-fit: contain;" />
+                                </div>
+                                <span class="ewallet-name">MBB</span>
+                            </div>
+                        </label>
+                        
+                        <!-- OceanBank -->
+                        <label class="ewallet-item">
+                            <input type="radio" name="BankProvider" value="OceanBank" class="ewallet-radio" />
+                            <div class="ewallet-card">
+                                <div class="ewallet-icon" style="background: white; padding: 4px;">
+                                    <img src="~/images/payment-icons/oceanbank.png" alt="OceanBank" style="width: 100%; height: 100%; object-fit: contain;" />
+                                </div>
+                                <span class="ewallet-name">OCB</span>
+                            </div>
+                        </label>
+                        
+                        <!-- ShinhanBank -->
+                        <label class="ewallet-item">
+                            <input type="radio" name="BankProvider" value="ShinhanBank" class="ewallet-radio" />
+                            <div class="ewallet-card">
+                                <div class="ewallet-icon" style="background: white; padding: 4px;">
+                                    <img src="~/images/payment-icons/shinhanbank.png" alt="ShinhanBank" style="width: 100%; height: 100%; object-fit: contain;" />
+                                </div>
+                                <span class="ewallet-name">Shinhan</span>
+                            </div>
+                        </label>
+                        
+                        <!-- Sacombank -->
+                        <label class="ewallet-item">
+                            <input type="radio" name="BankProvider" value="Sacombank" class="ewallet-radio" />
+                            <div class="ewallet-card">
+                                <div class="ewallet-icon" style="background: white; padding: 4px;">
+                                    <img src="~/images/payment-icons/sacombank.png" alt="Sacombank" style="width: 100%; height: 100%; object-fit: contain;" />
+                                </div>
+                                <span class="ewallet-name">SCB</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+                
+                <label class="payment-option" id="ewallet-option">
+                    <input type="radio" name="PaymentMethod" value="EWallet" id="ewallet-radio" />
                     <div>
                         <div style="font-weight: 600;">Ví điện tử</div>
-                        <div style="font-size: 13px; color: #6b7280;">MoMo, ZaloPay, VNPay</div>
+                        <div style="font-size: 13px; color: #6b7280;">MoMo, ZaloPay, VNPay, Apple Pay</div>
                     </div>
                 </label>
+                
+                <!-- E-Wallet Selection (hidden by default) -->
+                <div id="ewallet-selection" style="display: none; margin-left: 40px; margin-top: 8px;">
+                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;">
+                        <!-- MoMo -->
+                        <label class="ewallet-item">
+                            <input type="radio" name="EWalletProvider" value="MoMo" class="ewallet-radio" />
+                            <div class="ewallet-card">
+                                <div class="ewallet-icon" style="background: white; padding: 4px;">
+                                    <img src="~/images/payment-icons/momo.png" alt="MoMo" style="width: 100%; height: 100%; object-fit: contain;" />
+                                </div>
+                                <span class="ewallet-name">MoMo</span>
+                            </div>
+                        </label>
+                        
+                        <!-- ZaloPay -->
+                        <label class="ewallet-item">
+                            <input type="radio" name="EWalletProvider" value="ZaloPay" class="ewallet-radio" />
+                            <div class="ewallet-card">
+                                <div class="ewallet-icon" style="background: white; padding: 4px;">
+                                    <img src="~/images/payment-icons/zalopay.png" alt="ZaloPay" style="width: 100%; height: 100%; object-fit: contain;" />
+                                </div>
+                                <span class="ewallet-name">ZaloPay</span>
+                            </div>
+                        </label>
+                        
+                        <!-- VNPay -->
+                        <label class="ewallet-item">
+                            <input type="radio" name="EWalletProvider" value="VNPay" class="ewallet-radio" />
+                            <div class="ewallet-card">
+                                <div class="ewallet-icon" style="background: white; padding: 4px;">
+                                    <img src="~/images/payment-icons/vnpay.png" alt="VNPay" style="width: 100%; height: 100%; object-fit: contain;" />
+                                </div>
+                                <span class="ewallet-name">VNPay</span>
+                            </div>
+                        </label>
+                        
+                        <!-- Apple Pay -->
+                        <label class="ewallet-item">
+                            <input type="radio" name="EWalletProvider" value="ApplePay" class="ewallet-radio" />
+                            <div class="ewallet-card">
+                                <div class="ewallet-icon" style="background: white; padding: 4px;">
+                                    <img src="~/images/payment-icons/applepay.png" alt="Apple Pay" style="width: 100%; height: 100%; object-fit: contain;" />
+                                </div>
+                                <span class="ewallet-name">Apple Pay</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
             </div>
             
             <!-- 6. ĐẶT HÀNG -->
@@ -814,12 +1059,59 @@
 
 <script>
     function toggleSelectAll(checkbox) {
-        const itemCheckboxes = document.querySelectorAll('.item-checkbox');
-        itemCheckboxes.forEach(cb => cb.checked = checkbox.checked);
+        // Check if coupon is applied
+        const hasCoupon = checkIfCouponApplied();
+        
+        if (hasCoupon) {
+            // Remove coupon first, then reload
+            removeAppliedCouponAndReload();
+        } else {
+            const itemCheckboxes = document.querySelectorAll('.cart-item-new .item-checkbox');
+            itemCheckboxes.forEach(cb => cb.checked = checkbox.checked);
+            recalculateCheckedTotals();
+        }
     }
     
     function clearAll() {
-        if (confirm('Bạn có chắc muốn xóa tất cả sản phẩm?')) {
+        if (!confirm('Bạn có chắc muốn xóa tất cả sản phẩm?')) {
+            return;
+        }
+        
+        // Check if coupon is applied
+        const hasCoupon = checkIfCouponApplied();
+        
+        if (hasCoupon) {
+            // Remove coupon first, then clear all
+            removeAppliedCouponThenClear();
+        } else {
+            window.location.href = '@Url.Action("Clear", "Cart")';
+        }
+    }
+    
+    async function removeAppliedCouponThenClear() {
+        try {
+            const response = await fetch('/Cart/RemoveCoupon', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                }
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                showNotification('Đã hủy mã giảm giá', 'info');
+                // Wait a bit then clear all
+                setTimeout(() => {
+                    window.location.href = '@Url.Action("Clear", "Cart")';
+                }, 500);
+            } else {
+                // If failed to remove coupon, still clear all
+                window.location.href = '@Url.Action("Clear", "Cart")';
+            }
+        } catch (error) {
+            console.error('Error removing coupon:', error);
+            // If error, still clear all
             window.location.href = '@Url.Action("Clear", "Cart")';
         }
     }
@@ -858,7 +1150,178 @@
                 });
             });
         }
+        
+        // Handle item checkbox changes to recalculate totals
+        const itemCheckboxes = document.querySelectorAll('.cart-item-new .item-checkbox');
+        itemCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', handleCheckboxChange);
+        });
+        
+        // Handle payment method selection to show/hide e-wallet options
+        const paymentRadios = document.querySelectorAll('input[name="PaymentMethod"]');
+        const ewalletSelection = document.getElementById('ewallet-selection');
+        const bankSelection = document.getElementById('bank-selection');
+        
+        paymentRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                // Hide both selections first
+                ewalletSelection.style.display = 'none';
+                bankSelection.style.display = 'none';
+                
+                // Show relevant selection
+                if (this.value === 'EWallet' && this.checked) {
+                    ewalletSelection.style.display = 'block';
+                } else if (this.value === 'Banking' && this.checked) {
+                    bankSelection.style.display = 'block';
+                }
+            });
+        });
+        
+        // Initial calculation
+        recalculateCheckedTotals();
     });
+    
+    function handleCheckboxChange() {
+        // Check if coupon is applied
+        const hasCoupon = checkIfCouponApplied();
+        
+        if (hasCoupon) {
+            // Remove coupon first, then recalculate
+            removeAppliedCouponAndReload();
+        } else {
+            recalculateCheckedTotals();
+        }
+    }
+    
+    function checkIfCouponApplied() {
+        const paymentRows = document.querySelectorAll('.payment-row');
+        for (const row of paymentRows) {
+            const label = row.querySelector('.payment-label');
+            if (label && label.textContent.includes('Voucher')) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    async function removeAppliedCouponAndReload() {
+        try {
+            const response = await fetch('/Cart/RemoveCoupon', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                }
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                // Save form data before reload
+                saveFormData();
+                
+                showNotification('Đã hủy mã giảm giá do thay đổi giỏ hàng', 'info');
+                // Reload page to update UI
+                setTimeout(() => location.reload(), 1000);
+            } else {
+                recalculateCheckedTotals();
+            }
+        } catch (error) {
+            console.error('Error removing coupon:', error);
+            recalculateCheckedTotals();
+        }
+    }
+    
+    function recalculateCheckedTotals() {
+        let checkedSubtotal = 0;
+        let checkedOriginalSubtotal = 0;
+        
+        // Get all checked items
+        const checkedItems = document.querySelectorAll('.cart-item-new .item-checkbox:checked');
+        
+        checkedItems.forEach(checkbox => {
+            const itemElement = checkbox.closest('.cart-item-new');
+            if (!itemElement) return;
+            
+            // Get current price
+            const priceCurrentElement = itemElement.querySelector('.price-current');
+            if (priceCurrentElement) {
+                const priceText = priceCurrentElement.textContent.replace(/[^\d]/g, '');
+                const price = parseInt(priceText) || 0;
+                checkedSubtotal += price;
+            }
+            
+            // Get original price if exists
+            const priceOriginalElement = itemElement.querySelector('.price-original');
+            if (priceOriginalElement) {
+                const originalPriceText = priceOriginalElement.textContent.replace(/[^\d]/g, '');
+                const originalPrice = parseInt(originalPriceText) || 0;
+                checkedOriginalSubtotal += originalPrice;
+            } else {
+                // If no original price, use current price
+                const priceText = priceCurrentElement?.textContent.replace(/[^\d]/g, '');
+                const price = parseInt(priceText) || 0;
+                checkedOriginalSubtotal += price;
+            }
+        });
+        
+        // Get shipping fee and discount
+        let shippingFee = 30000; // Default
+        let discount = 0;
+        
+        // Find shipping fee row
+        const paymentRows = document.querySelectorAll('.payment-row');
+        paymentRows.forEach(row => {
+            const label = row.querySelector('.payment-label');
+            if (label && label.textContent.includes('Phí giao hàng')) {
+                const valueElement = row.querySelector('.payment-value');
+                if (valueElement) {
+                    const feeText = valueElement.textContent.replace(/[^\d]/g, '');
+                    shippingFee = parseInt(feeText) || 30000;
+                }
+            }
+            if (label && label.textContent.includes('Voucher')) {
+                const valueElement = row.querySelector('.payment-value');
+                if (valueElement) {
+                    const discountText = valueElement.textContent.replace(/[^\d]/g, '');
+                    discount = parseInt(discountText) || 0;
+                }
+            }
+        });
+        
+        // Calculate total
+        const total = checkedSubtotal + shippingFee - discount;
+        
+        // Update UI
+        const subtotalElement = document.getElementById('subtotal');
+        if (subtotalElement) {
+            subtotalElement.textContent = formatCurrency(checkedSubtotal);
+        }
+        
+        // Update product discount (tiết kiệm) under subtotal
+        const productDiscount = checkedOriginalSubtotal - checkedSubtotal;
+        const subtotalParent = subtotalElement?.parentElement;
+        
+        if (subtotalParent) {
+            // Remove existing discount text
+            const existingDiscount = subtotalParent.querySelector('.original-subtotal');
+            if (existingDiscount) {
+                existingDiscount.remove();
+            }
+            
+            // Add new discount text if > 0
+            if (productDiscount > 0) {
+                const discountSpan = document.createElement('span');
+                discountSpan.className = 'original-subtotal';
+                discountSpan.textContent = `(tiết kiệm ${formatCurrency(productDiscount)})`;
+                subtotalParent.appendChild(discountSpan);
+            }
+        }
+        
+        const totalElement = document.getElementById('total');
+        if (totalElement) {
+            totalElement.textContent = formatCurrency(total);
+        }
+    }
     
     function showCouponCondition(button) {
         const minAmount = parseFloat(button.getAttribute('data-min-amount'));

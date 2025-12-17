@@ -68,6 +68,58 @@ async function buyNow(productId, quantity = 1, variantId = null) {
     }
 }
 
+// Adjust quantity by delta (cart page)
+function adjustQuantity(cartItemId, delta) {
+    const itemElement = document.querySelector(`[data-item-id="${cartItemId}"]`);
+    if (!itemElement) return;
+
+    const quantitySpan = itemElement.querySelector('.qty-value');
+    if (!quantitySpan) return;
+
+    const currentQuantity = parseInt(quantitySpan.textContent) || 0;
+    const newQuantity = currentQuantity + delta;
+
+    // Check if coupon is applied
+    const hasCoupon = document.querySelector('.payment-row .payment-label')?.textContent.includes('Voucher');
+
+    if (hasCoupon) {
+        // Remove coupon first, then update quantity
+        removeAppliedCouponAndUpdate(() => updateQuantity(cartItemId, newQuantity));
+    } else {
+        updateQuantity(cartItemId, newQuantity);
+    }
+}
+
+// Helper function to remove coupon and execute callback
+async function removeAppliedCouponAndUpdate(callback) {
+    try {
+        const response = await fetch('/Cart/RemoveCoupon', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            }
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            // Save form data before reload
+            saveFormData();
+
+            showNotification('Đã hủy mã giảm giá do thay đổi giỏ hàng', 'info');
+            // Reload page to update UI
+            setTimeout(() => location.reload(), 1000);
+        } else {
+            // If failed to remove coupon, still execute callback
+            if (callback) callback();
+        }
+    } catch (error) {
+        console.error('Error removing coupon:', error);
+        // If error, still execute callback
+        if (callback) callback();
+    }
+}
+
 // Update quantity (cart page)
 async function updateQuantity(cartItemId, quantity) {
     if (quantity < 0) return;
@@ -94,15 +146,38 @@ async function updateQuantity(cartItemId, quantity) {
                 // Update quantity display
                 const itemElement = document.querySelector(`[data-item-id="${cartItemId}"]`);
                 if (itemElement) {
-                    const quantitySpan = itemElement.querySelector('.quantity');
+                    // Update quantity value
+                    const quantitySpan = itemElement.querySelector('.qty-value');
                     if (quantitySpan) {
                         quantitySpan.textContent = quantity;
+                    }
+
+                    // Update line total price if provided
+                    if (result.lineTotal !== undefined) {
+                        const priceCurrentElement = itemElement.querySelector('.price-current');
+                        if (priceCurrentElement) {
+                            priceCurrentElement.textContent = formatCurrency(result.lineTotal);
+                        }
+
+                        // Update original price if exists
+                        if (result.originalLineTotal !== undefined) {
+                            const priceOriginalElement = itemElement.querySelector('.price-original');
+                            if (priceOriginalElement) {
+                                priceOriginalElement.textContent = formatCurrency(result.originalLineTotal);
+                            }
+                        }
                     }
                 }
             }
 
-            // Update totals
-            updateCartTotals(result.subtotal, result.total);
+            // Recalculate totals based on checked items
+            // Use recalculateCheckedTotals if available (from View), otherwise use updateCartTotals
+            if (typeof recalculateCheckedTotals === 'function') {
+                recalculateCheckedTotals();
+            } else {
+                updateCartTotals(result.subtotal, result.total, result.originalSubtotal, result.discount);
+            }
+
             updateCartBadge(result.itemCount);
 
             // Check if cart is empty
@@ -124,6 +199,32 @@ async function removeItem(cartItemId) {
         return;
     }
 
+    // Check if coupon is applied
+    const hasCoupon = checkIfCouponApplied();
+
+    if (hasCoupon) {
+        // Remove coupon first, then remove item
+        await removeAppliedCouponAndUpdate(() => actuallyRemoveItem(cartItemId));
+    } else {
+        await actuallyRemoveItem(cartItemId);
+    }
+}
+
+// Helper function to check if coupon is applied
+function checkIfCouponApplied() {
+    const paymentRows = document.querySelectorAll('.payment-row');
+    for (const row of paymentRows) {
+        const label = row.querySelector('.payment-label');
+        if (label && label.textContent.includes('Voucher')) {
+            return true;
+        }
+    }
+    return false;
+}
+
+// Actually remove the item
+async function actuallyRemoveItem(cartItemId) {
+
     try {
         const response = await fetch('/Cart/RemoveItem', {
             method: 'POST',
@@ -142,8 +243,13 @@ async function removeItem(cartItemId) {
                 itemElement.remove();
             }
 
-            // Update totals
-            updateCartTotals(result.subtotal, result.total);
+            // Recalculate totals based on checked items
+            if (typeof recalculateCheckedTotals === 'function') {
+                recalculateCheckedTotals();
+            } else {
+                updateCartTotals(result.subtotal, result.total, result.originalSubtotal, result.discount);
+            }
+
             updateCartBadge(result.itemCount);
             showNotification(result.message, 'success');
 
@@ -161,13 +267,37 @@ async function removeItem(cartItemId) {
 }
 
 // Update cart totals display
-function updateCartTotals(subtotal, total) {
+function updateCartTotals(subtotal, total, originalSubtotal, discount) {
+    // Update subtotal
     const subtotalElement = document.getElementById('subtotal');
-    const totalElement = document.getElementById('total');
-
     if (subtotalElement) {
         subtotalElement.textContent = formatCurrency(subtotal);
     }
+
+    // Update product discount (tiết kiệm) under subtotal
+    if (originalSubtotal !== undefined) {
+        const productDiscount = originalSubtotal - subtotal;
+        const subtotalParent = subtotalElement?.parentElement;
+
+        if (subtotalParent) {
+            // Remove existing discount text
+            const existingDiscount = subtotalParent.querySelector('.original-subtotal');
+            if (existingDiscount) {
+                existingDiscount.remove();
+            }
+
+            // Add new discount text if > 0
+            if (productDiscount > 0) {
+                const discountSpan = document.createElement('span');
+                discountSpan.className = 'original-subtotal';
+                discountSpan.textContent = `(tiết kiệm ${formatCurrency(productDiscount)})`;
+                subtotalParent.appendChild(discountSpan);
+            }
+        }
+    }
+
+    // Update total
+    const totalElement = document.getElementById('total');
     if (totalElement) {
         totalElement.textContent = formatCurrency(total);
     }

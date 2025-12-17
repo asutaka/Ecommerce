@@ -95,13 +95,22 @@ public class CartController(
 
         var cartId = await GetOrCreateCartIdAsync();
         var cartViewModel = await cartService.GetCartSummaryAsync(cartId);
+        
+        // Get updated item details
+        var updatedItem = cartViewModel?.Items.FirstOrDefault(i => i.Id == cartItemId);
 
         return Json(new
         {
             success = true,
             itemCount = cartViewModel?.ItemCount ?? 0,
             subtotal = cartViewModel?.Subtotal ?? 0,
-            total = cartViewModel?.Total ?? 0
+            originalSubtotal = cartViewModel?.OriginalSubtotal ?? 0,
+            discount = cartViewModel?.Discount ?? 0,
+            total = cartViewModel?.Total ?? 0,
+            lineTotal = updatedItem?.LineTotal ?? 0,
+            originalLineTotal = updatedItem != null && updatedItem.OriginalPrice.HasValue 
+                ? (updatedItem.OriginalPrice.Value * updatedItem.Quantity) 
+                : (decimal?)null
         });
     }
 
@@ -127,6 +136,8 @@ public class CartController(
             message = "Đã xóa sản phẩm khỏi giỏ hàng",
             itemCount = cartViewModel?.ItemCount ?? 0,
             subtotal = cartViewModel?.Subtotal ?? 0,
+            originalSubtotal = cartViewModel?.OriginalSubtotal ?? 0,
+            discount = cartViewModel?.Discount ?? 0,
             total = cartViewModel?.Total ?? 0
         });
     }
