@@ -59,7 +59,29 @@
                         <h3>@product.Name</h3>
                         <p>@product.Description</p>
                         <div class="card-footer">
-                            <span>@product.Price.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))</span>
+                            <div class="price-section">
+                                @if (product.OriginalPrice.HasValue && product.OriginalPrice.Value > 0 && product.OriginalPrice.Value > product.Price)
+                                {
+                                    <div class="product-price-original" style="text-decoration: line-through; color: #999; font-size: 0.9em;">
+                                        @product.OriginalPrice.Value.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <span style="font-weight: bold; color: #e74c3c;">
+                                            @product.Price.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))
+                                        </span>
+                                        @{
+                                            var discount = Math.Round(100 * (-1 + (double)product.Price / (double)product.OriginalPrice.Value));
+                                        }
+                                        <span style="background: #e74c3c; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.85em; font-weight: bold;">
+                                            @discount%
+                                        </span>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <span style="font-weight: bold;">@product.Price.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))</span>
+                                }
+                            </div>
                             <div class="add-to-cart-group">
                                 <input type="number" id="qty-@product.Id" value="1" min="1" max="10" class="qty-input" onclick="event.stopPropagation();" />
                                 <button class="btn-add-cart" onclick="event.preventDefault(); event.stopPropagation(); addToCart('@product.Id', document.getElementById('qty-@product.Id').value)">

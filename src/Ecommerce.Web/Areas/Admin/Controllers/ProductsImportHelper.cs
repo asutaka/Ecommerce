@@ -31,9 +31,10 @@ public static class ProductsControllerImportExtension
                 var description = worksheet.Cell(row, 2).GetString().Trim();
                 var categoryName = worksheet.Cell(row, 3).GetString().Trim();
                 var priceStr = worksheet.Cell(row, 4).GetString().Trim();
-                var isFeaturedStr = worksheet.Cell(row, 5).GetString().Trim();
-                var isActiveStr = worksheet.Cell(row, 6).GetString().Trim();
-                var imagesStr = worksheet.Cell(row, 7).GetString().Trim();
+                var originalPriceStr = worksheet.Cell(row, 5).GetString().Trim();
+                var isFeaturedStr = worksheet.Cell(row, 6).GetString().Trim();
+                var isActiveStr = worksheet.Cell(row, 7).GetString().Trim();
+                var imagesStr = worksheet.Cell(row, 8).GetString().Trim();
 
                 // Validation
                 if (string.IsNullOrWhiteSpace(name))
@@ -76,11 +77,21 @@ public static class ProductsControllerImportExtension
                               isActiveStr.Equals("Có", StringComparison.OrdinalIgnoreCase) ||
                               isActiveStr.Equals("TRUE", StringComparison.OrdinalIgnoreCase);
 
+                // Parse OriginalPrice (optional)
+                decimal? originalPrice = null;
+                if (!string.IsNullOrWhiteSpace(originalPriceStr) && 
+                    decimal.TryParse(originalPriceStr, out var parsedOriginalPrice) && 
+                    parsedOriginalPrice > 0)
+                {
+                    originalPrice = parsedOriginalPrice;
+                }
+
                 var product = new Product
                 {
                     Name = name,
                     Description = description,
                     Price = price,
+                    OriginalPrice = originalPrice,
                     IsFeatured = isFeatured,
                     IsActive = isActive,
                     Images = images,

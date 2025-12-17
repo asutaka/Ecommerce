@@ -100,11 +100,16 @@
         
         console.log('Variants loaded:', variantsData);
         
-        // Save original product price
+        // Save original product price and original price
         let originalProductPrice = '';
+        let originalProductOriginalPrice = '';
         const priceEl = document.querySelector('.product-price');
+        const originalPriceEl = document.querySelector('.product-price-original');
         if (priceEl) {
             originalProductPrice = priceEl.textContent;
+        }
+        if (originalPriceEl) {
+            originalProductOriginalPrice = originalPriceEl.textContent;
         }
         
         // Save original product images
@@ -265,11 +270,58 @@
                     restoreProductImages();
                 }
                 
-                // Update price if variant has custom price
-                if (variant.Price) {
-                    const priceEl = document.querySelector('.product-price');
+                // Update price - use variant price if available, otherwise keep product price
+                const priceEl = document.querySelector('.product-price');
+                const originalPriceEl = document.querySelector('.product-price-original');
+                const discountEl = document.querySelector('.product-price-discount');
+                
+                // Determine which price to use
+                const displayPrice = variant.Price || null; // null means use product price (already displayed)
+                const displayOriginalPrice = variant.OriginalPrice || null; // null means check product original price
+                
+                if (displayPrice) {
+                    // Variant has custom price
                     if (priceEl) {
-                        priceEl.textContent = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(variant.Price);
+                        priceEl.textContent = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(displayPrice);
+                    }
+                    
+                    // Check if variant has original price
+                    if (displayOriginalPrice && displayOriginalPrice > displayPrice) {
+                        // Variant has original price and it's higher than current price
+                        if (originalPriceEl) {
+                            originalPriceEl.textContent = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(displayOriginalPrice);
+                            originalPriceEl.style.display = 'block';
+                        }
+                        
+                        if (discountEl) {
+                            const savings = Math.round(100 * (-1 + displayPrice / displayOriginalPrice));
+                            discountEl.textContent = savings + '%';
+                            discountEl.style.display = 'inline-block';
+                        }
+                    } else {
+                        // Variant has no original price, hide it
+                        if (originalPriceEl) originalPriceEl.style.display = 'none';
+                        if (discountEl) discountEl.style.display = 'none';
+                    }
+                } else {
+                    // Variant has no custom price, restore product price and original price
+                    if (priceEl && originalProductPrice) {
+                        priceEl.textContent = originalProductPrice;
+                    }
+                    
+                    // Restore product's original price if exists
+                    if (originalPriceEl) {
+                        if (originalProductOriginalPrice) {
+                            originalPriceEl.textContent = originalProductOriginalPrice;
+                            originalPriceEl.style.display = 'block';
+                        } else {
+                            originalPriceEl.style.display = 'none';
+                        }
+                    }
+                    
+                    // Show/hide discount based on product's original price
+                    if (discountEl) {
+                        discountEl.style.display = originalProductOriginalPrice ? 'inline-block' : 'none';
                     }
                 }
                 
@@ -306,10 +358,28 @@
                     stockStatus.innerHTML = '<i class="bi bi-x-circle text-danger"></i> <strong>0 sản phẩm</strong> - Không có sẵn';
                 }
                 
-                // Restore original product price
+                // Restore original product price and original price
                 const priceEl = document.querySelector('.product-price');
+                const originalPriceEl = document.querySelector('.product-price-original');
+                const discountEl = document.querySelector('.product-price-discount');
+                
                 if (priceEl && originalProductPrice) {
                     priceEl.textContent = originalProductPrice;
+                }
+                
+                // Restore original price or hide if not exists
+                if (originalPriceEl) {
+                    if (originalProductOriginalPrice) {
+                        originalPriceEl.textContent = originalProductOriginalPrice;
+                        originalPriceEl.style.display = 'block';
+                    } else {
+                        originalPriceEl.style.display = 'none';
+                    }
+                }
+                
+                // Hide discount badge if no original price
+                if (discountEl) {
+                    discountEl.style.display = originalProductOriginalPrice ? 'inline-block' : 'none';
                 }
                 
                 // Reset quantity to 0

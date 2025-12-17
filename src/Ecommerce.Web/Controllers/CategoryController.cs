@@ -57,6 +57,7 @@ public class CategoryController(EcommerceDbContext dbContext) : Controller
                 Description = p.Description,
                 Images = p.Images,
                 Price = p.Price,
+                OriginalPrice = p.OriginalPrice,
                 IsFeatured = p.IsFeatured
             }).ToList(),
             PageIndex = products.PageIndex,

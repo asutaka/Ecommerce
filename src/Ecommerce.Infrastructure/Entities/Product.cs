@@ -6,6 +6,7 @@ public class Product : BaseEntity
     public required string Description { get; set; }
     public List<string> Images { get; set; } = new();
     public decimal Price { get; set; }
+    public decimal? OriginalPrice { get; set; }
     public bool IsFeatured { get; set; }
     public bool IsActive { get; set; } = true;
 

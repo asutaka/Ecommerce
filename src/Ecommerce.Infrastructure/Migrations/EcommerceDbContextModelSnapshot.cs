@@ -76,12 +76,12 @@ namespace Ecommerce.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2025, 12, 16, 17, 6, 1, 35, DateTimeKind.Utc).AddTicks(6116),
+                            CreatedAt = new DateTime(2025, 12, 17, 3, 30, 57, 76, DateTimeKind.Utc).AddTicks(1353),
                             Email = "admin@ecommerce.com",
                             FullName = "Administrator",
                             IsActive = true,
-                            PasswordHash = "$2a$11$qB.2HafZTBYT6FbNxi/Di.kPimIz1x016wvUO30NfK.xMjKOHy5fy",
-                            UpdatedAt = new DateTime(2025, 12, 16, 17, 6, 1, 35, DateTimeKind.Utc).AddTicks(6122),
+                            PasswordHash = "$2a$11$rAeJS/j.lTNWrsBoJMCes.j5tTtLQnHUgZlQmBvIpHl.F5EuNV4HK",
+                            UpdatedAt = new DateTime(2025, 12, 17, 3, 30, 57, 76, DateTimeKind.Utc).AddTicks(1361),
                             Username = "admin"
                         });
                 });
@@ -97,6 +97,9 @@ namespace Ecommerce.Infrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<decimal?>("OriginalPrice")
+                        .HasColumnType("numeric");
 
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uuid");
@@ -239,61 +242,61 @@ namespace Ecommerce.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("b3056dc2-7b3e-4fdb-bb69-cf7d23a44437"),
+                            Id = new Guid("7a22b73f-412a-49b1-b649-ed4f9a2f3599"),
                             Code = "GIAM40K",
-                            CreatedAt = new DateTime(2025, 12, 16, 17, 6, 0, 911, DateTimeKind.Utc).AddTicks(4575),
+                            CreatedAt = new DateTime(2025, 12, 17, 3, 30, 56, 944, DateTimeKind.Utc).AddTicks(1858),
                             Description = "Giảm 40.000đ cho đơn hàng từ 500.000đ",
                             DiscountAmount = 40000m,
-                            EndDate = new DateTime(2026, 1, 15, 17, 6, 0, 911, DateTimeKind.Utc).AddTicks(4575),
+                            EndDate = new DateTime(2026, 1, 16, 3, 30, 56, 944, DateTimeKind.Utc).AddTicks(1858),
                             IsActive = true,
                             MinimumOrderAmount = 500000m,
-                            StartDate = new DateTime(2025, 12, 9, 17, 6, 0, 911, DateTimeKind.Utc).AddTicks(4575),
-                            UpdatedAt = new DateTime(2025, 12, 16, 17, 6, 0, 911, DateTimeKind.Utc).AddTicks(4575),
+                            StartDate = new DateTime(2025, 12, 10, 3, 30, 56, 944, DateTimeKind.Utc).AddTicks(1858),
+                            UpdatedAt = new DateTime(2025, 12, 17, 3, 30, 56, 944, DateTimeKind.Utc).AddTicks(1858),
                             UsageLimit = 100,
                             UsedCount = 0
                         },
                         new
                         {
-                            Id = new Guid("049380e6-ca5e-4541-8807-fba311e86238"),
+                            Id = new Guid("fc8cf9cc-eb0d-4f39-bfa2-aba98e95fdb7"),
                             Code = "GIAM50K",
-                            CreatedAt = new DateTime(2025, 12, 16, 17, 6, 0, 911, DateTimeKind.Utc).AddTicks(4575),
+                            CreatedAt = new DateTime(2025, 12, 17, 3, 30, 56, 944, DateTimeKind.Utc).AddTicks(1858),
                             Description = "Giảm 50.000đ cho đơn hàng từ 800.000đ",
                             DiscountAmount = 50000m,
-                            EndDate = new DateTime(2026, 1, 30, 17, 6, 0, 911, DateTimeKind.Utc).AddTicks(4575),
+                            EndDate = new DateTime(2026, 1, 31, 3, 30, 56, 944, DateTimeKind.Utc).AddTicks(1858),
                             IsActive = true,
                             MinimumOrderAmount = 800000m,
-                            StartDate = new DateTime(2025, 12, 11, 17, 6, 0, 911, DateTimeKind.Utc).AddTicks(4575),
-                            UpdatedAt = new DateTime(2025, 12, 16, 17, 6, 0, 911, DateTimeKind.Utc).AddTicks(4575),
+                            StartDate = new DateTime(2025, 12, 12, 3, 30, 56, 944, DateTimeKind.Utc).AddTicks(1858),
+                            UpdatedAt = new DateTime(2025, 12, 17, 3, 30, 56, 944, DateTimeKind.Utc).AddTicks(1858),
                             UsageLimit = 50,
                             UsedCount = 0
                         },
                         new
                         {
-                            Id = new Guid("679f44de-7d11-48b2-b5fe-c55c6a707e16"),
+                            Id = new Guid("afae97d0-da9f-437d-bc3c-f16d9129b5e6"),
                             Code = "GIAM100K",
-                            CreatedAt = new DateTime(2025, 12, 16, 17, 6, 0, 911, DateTimeKind.Utc).AddTicks(4575),
+                            CreatedAt = new DateTime(2025, 12, 17, 3, 30, 56, 944, DateTimeKind.Utc).AddTicks(1858),
                             Description = "Giảm 100.000đ cho đơn hàng từ 1.500.000đ",
                             DiscountAmount = 100000m,
-                            EndDate = new DateTime(2026, 2, 14, 17, 6, 0, 911, DateTimeKind.Utc).AddTicks(4575),
+                            EndDate = new DateTime(2026, 2, 15, 3, 30, 56, 944, DateTimeKind.Utc).AddTicks(1858),
                             IsActive = true,
                             MinimumOrderAmount = 1500000m,
-                            StartDate = new DateTime(2025, 12, 13, 17, 6, 0, 911, DateTimeKind.Utc).AddTicks(4575),
-                            UpdatedAt = new DateTime(2025, 12, 16, 17, 6, 0, 911, DateTimeKind.Utc).AddTicks(4575),
+                            StartDate = new DateTime(2025, 12, 14, 3, 30, 56, 944, DateTimeKind.Utc).AddTicks(1858),
+                            UpdatedAt = new DateTime(2025, 12, 17, 3, 30, 56, 944, DateTimeKind.Utc).AddTicks(1858),
                             UsageLimit = 30,
                             UsedCount = 0
                         },
                         new
                         {
-                            Id = new Guid("115c3164-77c3-41f7-94d6-6c7d72c31746"),
+                            Id = new Guid("8ed7a350-cad3-4ebe-a996-60031a139392"),
                             Code = "FREESHIP",
-                            CreatedAt = new DateTime(2025, 12, 16, 17, 6, 0, 911, DateTimeKind.Utc).AddTicks(4575),
+                            CreatedAt = new DateTime(2025, 12, 17, 3, 30, 56, 944, DateTimeKind.Utc).AddTicks(1858),
                             Description = "Miễn phí vận chuyển cho đơn hàng từ 300.000đ",
                             DiscountAmount = 30000m,
-                            EndDate = new DateTime(2026, 3, 16, 17, 6, 0, 911, DateTimeKind.Utc).AddTicks(4575),
+                            EndDate = new DateTime(2026, 3, 17, 3, 30, 56, 944, DateTimeKind.Utc).AddTicks(1858),
                             IsActive = true,
                             MinimumOrderAmount = 300000m,
-                            StartDate = new DateTime(2025, 12, 6, 17, 6, 0, 911, DateTimeKind.Utc).AddTicks(4575),
-                            UpdatedAt = new DateTime(2025, 12, 16, 17, 6, 0, 911, DateTimeKind.Utc).AddTicks(4575),
+                            StartDate = new DateTime(2025, 12, 7, 3, 30, 56, 944, DateTimeKind.Utc).AddTicks(1858),
+                            UpdatedAt = new DateTime(2025, 12, 17, 3, 30, 56, 944, DateTimeKind.Utc).AddTicks(1858),
                             UsageLimit = 200,
                             UsedCount = 0
                         });
@@ -657,6 +660,9 @@ namespace Ecommerce.Infrastructure.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("character varying(250)");
 
+                    b.Property<decimal?>("OriginalPrice")
+                        .HasColumnType("numeric");
+
                     b.Property<decimal>("Price")
                         .HasPrecision(18, 2)
                         .HasColumnType("numeric(18,2)");
@@ -743,6 +749,9 @@ namespace Ecommerce.Infrastructure.Migrations
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
+
+                    b.Property<decimal?>("OriginalPrice")
+                        .HasColumnType("numeric");
 
                     b.Property<decimal?>("Price")
                         .HasPrecision(18, 2)

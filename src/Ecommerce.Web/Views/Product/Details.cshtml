@@ -77,22 +77,19 @@
                 <br>
                 <p class="product-sku" id="product-sku" style="display: none;">SKU: <span id="variant-sku"></span></p>
                 <div class="product-price-section">
-                    @if (Model.OriginalPrice.HasValue && Model.OriginalPrice > Model.Price)
+                    @if (Model.OriginalPrice.HasValue && Model.OriginalPrice.Value > 0)
                     {
                         <div class="product-price-original">@Model.OriginalPrice.Value.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))</div>
                     }
                     <div class="product-price-details">
                         <p class="product-price">@Model.Price.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))</p>
-                        @if (Model.OriginalPrice.HasValue && Model.OriginalPrice > Model.Price)
+                        @if (Model.OriginalPrice.HasValue && Model.OriginalPrice.Value > 0 && Model.OriginalPrice.Value > Model.Price)
                         {
                             var savings = Math.Round(100 * (-1 + Model.Price / Model.OriginalPrice.Value));
                             <span class="product-price-discount"> @savings%</span>
                         }
                     </div>
                 </div>
-                @if (Model.OriginalPrice.HasValue && Model.OriginalPrice > Model.Price){
-                    <div class="product-savings">Miễn phí vận chuyển</div>
-                }
 
                 <!-- Discount Coupons -->
                 @if (Model.AvailableCoupons.Any())

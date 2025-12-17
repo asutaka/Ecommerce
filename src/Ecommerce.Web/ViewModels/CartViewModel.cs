@@ -35,6 +35,7 @@ public class CartItemViewModel
     public string? VariantColor { get; set; }
     public string? VariantSize { get; set; }
     public decimal UnitPrice { get; set; }
+    public decimal? OriginalPrice { get; set; }
     public int Quantity { get; set; }
     public decimal LineTotal => UnitPrice * Quantity;
 }

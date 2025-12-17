@@ -89,6 +89,12 @@
                     </div>
                     
                     <div class="form-group">
+                        <label for="variantOriginalPrice">Giá gốc (tùy chọn)</label>
+                        <input type="number" class="form-control" id="variantOriginalPrice" min="0" placeholder="Để trống nếu không có giảm giá">
+                        <small class="form-text text-muted">Nhập giá gốc để hiển thị % giảm giá</small>
+                    </div>
+                    
+                    <div class="form-group">
                         <label>Danh sách ảnh (tùy chọn)</label>
                         <div id="variantImageUrlsList"></div>
                         <button type="button" class="btn btn-sm btn-secondary mt-2" onclick="addImageUrlInput()">
@@ -150,7 +156,29 @@ function renderVariants(variants) {
     
     let html = '';
     variants.forEach(v => {
-        const priceDisplay = v.price ? formatCurrency(v.price) : '<em class="text-muted">Giá SP</em>';
+        let priceDisplay = '';
+        if (v.price) {
+            if (v.originalPrice && v.originalPrice > v.price) {
+                // Có giá gốc và đang giảm giá
+                const discount = Math.round(100 * (-1 + v.price / v.originalPrice));
+                priceDisplay = `
+                    <div>
+                        <small class="text-muted" style="text-decoration: line-through;">
+                            ${formatCurrency(v.originalPrice)}
+                        </small>
+                    </div>
+                    <strong class="text-danger">${formatCurrency(v.price)}</strong>
+                    <span class="badge badge-danger ml-1">${discount}%</span>
+                `;
+            } else {
+                // Có giá nhưng không giảm
+                priceDisplay = formatCurrency(v.price);
+            }
+        } else {
+            // Không có giá riêng, dùng giá sản phẩm
+            priceDisplay = '<em class="text-muted">Giá SP</em>';
+        }
+        
         const statusBadge = v.isActive 
             ? '<span class="badge badge-success">Active</span>' 
             : '<span class="badge badge-secondary">Inactive</span>';
@@ -204,6 +232,7 @@ window.editVariant = function(variant) {
     $('#variantSize').val(variant.size || '');
     $('#variantStock').val(variant.stock);
     $('#variantPrice').val(variant.price || '');
+    $('#variantOriginalPrice').val(variant.originalPrice || '');
     $('#variantIsActive').prop('checked', variant.isActive);
     
     // Load existing images
@@ -235,6 +264,7 @@ window.saveVariant = function() {
         size: $('#variantSize').val() || null,
         stock: parseInt($('#variantStock').val()) || 0,
         price: $('#variantPrice').val() ? parseFloat($('#variantPrice').val()) : null,
+        originalPrice: $('#variantOriginalPrice').val() ? parseFloat($('#variantOriginalPrice').val()) : null,
         imageUrls: imageUrls,
         isActive: $('#variantIsActive').is(':checked')
     };

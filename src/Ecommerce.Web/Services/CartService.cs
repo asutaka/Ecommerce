@@ -91,6 +91,7 @@ public class CartService(EcommerceDbContext dbContext, ILogger<CartService> logg
                     ProductName = product.Name,
                     ProductImageUrl = product.HeroImageUrl ?? "https://placehold.co/600x400?text=No+Image",
                     UnitPrice = variant?.Price ?? product.Price,
+                    OriginalPrice = variant?.OriginalPrice ?? product.OriginalPrice,
                     Quantity = quantity,
                     VariantSKU = variant?.SKU,
                     VariantColor = variant?.Color,
@@ -198,6 +199,7 @@ public class CartService(EcommerceDbContext dbContext, ILogger<CartService> logg
                 VariantColor = item.VariantColor,
                 VariantSize = item.VariantSize,
                 UnitPrice = item.UnitPrice,
+                OriginalPrice = item.OriginalPrice,
                 Quantity = item.Quantity
             }).ToList()
         };
@@ -272,6 +274,7 @@ public class CartService(EcommerceDbContext dbContext, ILogger<CartService> logg
                     ProductName = sessionItem.ProductName,
                     ProductImageUrl = sessionItem.ProductImageUrl,
                     UnitPrice = sessionItem.UnitPrice,
+                    OriginalPrice = sessionItem.OriginalPrice,
                     Quantity = sessionItem.Quantity,
                     VariantSKU = sessionItem.VariantSKU,
                     VariantColor = sessionItem.VariantColor,

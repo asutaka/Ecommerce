@@ -33,6 +33,7 @@ public class ProductVariantViewModel
     public string? Size { get; set; }
     public int Stock { get; set; }
     public decimal? Price { get; set; }
+    public decimal? OriginalPrice { get; set; }
     public List<string> ImageUrls { get; set; } = new();
     public bool IsActive { get; set; }
 }

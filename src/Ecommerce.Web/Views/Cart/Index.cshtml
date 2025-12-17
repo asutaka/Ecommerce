@@ -369,8 +369,11 @@
                             </div>
                             
                             <div class="item-price">
+                                @if (item.OriginalPrice.HasValue && item.OriginalPrice.Value > 0 && item.OriginalPrice.Value > item.UnitPrice)
+                                {
+                                    <div class="price-original">@((item.OriginalPrice.Value * item.Quantity).ToString("N0"))đ</div>
+                                }
                                 <div class="price-current">@item.LineTotal.ToString("N0")đ</div>
-                                @* <div class="price-original">2.495.000đ</div> *@
                             </div>
                         </div>
                     }

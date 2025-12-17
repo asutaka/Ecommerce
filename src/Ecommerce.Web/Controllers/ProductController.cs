@@ -175,6 +175,7 @@ public class ProductController(EcommerceDbContext dbContext) : Controller
                 Size = v.Size,
                 Stock = v.Stock,
                 Price = v.Price,
+                OriginalPrice = v.OriginalPrice,
                 ImageUrls = v.ImageUrls,
                 IsActive= v.IsActive
             })
@@ -188,6 +189,7 @@ public class ProductController(EcommerceDbContext dbContext) : Controller
             SKU = "MOD-" + product.Id.ToString().Substring(0, 8).ToUpper(),
             Images = product.Images,
             Price = product.Price,
+            OriginalPrice = product.OriginalPrice,
             IsFeatured = product.IsFeatured,
             PrimaryCategoryId = product.PrimaryCategoryId ?? Guid.Empty,
             CategoryName = product.PrimaryCategory?.Name ?? "N/A",

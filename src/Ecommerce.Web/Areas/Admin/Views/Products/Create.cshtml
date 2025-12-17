@@ -58,6 +58,13 @@
                             </div>
 
                             <div class="form-group">
+                                <label asp-for="OriginalPrice">Giá gốc (VNĐ) - Tùy chọn</label>
+                                <input asp-for="OriginalPrice" type="number" class="form-control" placeholder="Để trống nếu không có giảm giá">
+                                <span asp-validation-for="OriginalPrice" class="text-danger"></span>
+                                <small class="form-text text-muted">Nhập giá gốc để hiển thị % giảm giá. Giá gốc phải lớn hơn giá bán.</small>
+                            </div>
+
+                            <div class="form-group">
                                 <div class="custom-control custom-checkbox">
                                     <input asp-for="IsFeatured" type="checkbox" class="custom-control-input" id="isFeaturedCheck">
                                     <label class="custom-control-label" for="isFeaturedCheck">

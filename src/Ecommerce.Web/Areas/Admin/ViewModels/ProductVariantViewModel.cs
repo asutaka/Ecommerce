@@ -28,6 +28,9 @@ public class ProductVariantFormViewModel
     [Display(Name = "Giá riêng (tùy chọn)")]
     public decimal? Price { get; set; }
     
+    [Display(Name = "Giá gốc (tùy chọn)")]
+    public decimal? OriginalPrice { get; set; }
+    
     [Display(Name = "Danh sách ảnh")]
     public List<string> ImageUrls { get; set; } = new();
     
@@ -43,6 +46,7 @@ public class ProductVariantListViewModel
     public string? Size { get; set; }
     public int Stock { get; set; }
     public decimal? Price { get; set; }
+    public decimal? OriginalPrice { get; set; }
     public List<string> ImageUrls { get; set; } = new();
     public bool IsActive { get; set; }
 }

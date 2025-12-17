@@ -65,6 +65,7 @@ public class ProductsController(EcommerceDbContext dbContext) : Controller
             Name = model.Name,
             Description = model.Description,
             Price = model.Price,
+            OriginalPrice = model.OriginalPrice,
             IsFeatured = model.IsFeatured,
             IsActive = model.IsActive,
             Images = validImages,
@@ -98,6 +99,7 @@ public class ProductsController(EcommerceDbContext dbContext) : Controller
             Name = product.Name,
             Description = product.Description,
             Price = product.Price,
+            OriginalPrice = product.OriginalPrice,
             IsFeatured = product.IsFeatured,
             IsActive = product.IsActive,
             ImageUrls = new List<string>(product.Images),
@@ -147,6 +149,7 @@ public class ProductsController(EcommerceDbContext dbContext) : Controller
         product.Name = model.Name;
         product.Description = model.Description;
         product.Price = model.Price;
+        product.OriginalPrice = model.OriginalPrice;
         product.IsFeatured = model.IsFeatured;
         product.IsActive = model.IsActive;
         product.Images = validImages;
@@ -228,13 +231,14 @@ public class ProductsController(EcommerceDbContext dbContext) : Controller
         worksheet.Cell(1, 3).Value = "Mô tả";
         worksheet.Cell(1, 4).Value = "Danh mục";
         worksheet.Cell(1, 5).Value = "Giá (VNĐ)";
-        worksheet.Cell(1, 6).Value = "Trạng thái";
-        worksheet.Cell(1, 7).Value = "Hoạt động";
-        worksheet.Cell(1, 8).Value = "Ngày tạo";
-        worksheet.Cell(1, 9).Value = "Links ảnh";
+        worksheet.Cell(1, 6).Value = "Giá gốc (VNĐ)";
+        worksheet.Cell(1, 7).Value = "Trạng thái";
+        worksheet.Cell(1, 8).Value = "Hoạt động";
+        worksheet.Cell(1, 9).Value = "Ngày tạo";
+        worksheet.Cell(1, 10).Value = "Links ảnh";
 
         // Style header
-        var headerRange = worksheet.Range(1, 1, 1, 9);
+        var headerRange = worksheet.Range(1, 1, 1, 10);
         headerRange.Style.Font.Bold = true;
         headerRange.Style.Fill.BackgroundColor = ClosedXML.Excel.XLColor.LightBlue;
         headerRange.Style.Alignment.Horizontal = ClosedXML.Excel.XLAlignmentHorizontalValues.Center;
@@ -248,10 +252,11 @@ public class ProductsController(EcommerceDbContext dbContext) : Controller
             worksheet.Cell(row, 3).Value = product.Description;
             worksheet.Cell(row, 4).Value = product.PrimaryCategory?.Name ?? "";
             worksheet.Cell(row, 5).Value = product.Price;
-            worksheet.Cell(row, 6).Value = product.IsFeatured ? "Nổi bật" : "Thường";
-            worksheet.Cell(row, 7).Value = product.IsActive ? "Hoạt động" : "Không hoạt động";
-            worksheet.Cell(row, 8).Value = product.CreatedAt.ToString("dd/MM/yyyy HH:mm");
-            worksheet.Cell(row, 9).Value = string.Join("\n", product.Images);
+            worksheet.Cell(row, 6).Value = product.OriginalPrice ?? 0;
+            worksheet.Cell(row, 7).Value = product.IsFeatured ? "Nổi bật" : "Thường";
+            worksheet.Cell(row, 8).Value = product.IsActive ? "Hoạt động" : "Không hoạt động";
+            worksheet.Cell(row, 9).Value = product.CreatedAt.ToString("dd/MM/yyyy HH:mm");
+            worksheet.Cell(row, 10).Value = string.Join("\n", product.Images);
             row++;
         }
 
@@ -278,12 +283,13 @@ public class ProductsController(EcommerceDbContext dbContext) : Controller
         worksheet.Cell(1, 2).Value = "Mô tả";
         worksheet.Cell(1, 3).Value = "Danh mục *";
         worksheet.Cell(1, 4).Value = "Giá (VNĐ) *";
-        worksheet.Cell(1, 5).Value = "Nổi bật (Có/Không)";
-        worksheet.Cell(1, 6).Value = "Hoạt động (Có/Không)";
-        worksheet.Cell(1, 7).Value = "Links ảnh (mỗi link 1 dòng)";
+        worksheet.Cell(1, 5).Value = "Giá gốc (VNĐ)";
+        worksheet.Cell(1, 6).Value = "Nổi bật (Có/Không)";
+        worksheet.Cell(1, 7).Value = "Hoạt động (Có/Không)";
+        worksheet.Cell(1, 8).Value = "Links ảnh (mỗi link 1 dòng)";
 
         // Style header
-        var headerRange = worksheet.Range(1, 1, 1, 7);
+        var headerRange = worksheet.Range(1, 1, 1, 8);
         headerRange.Style.Font.Bold = true;
         headerRange.Style.Fill.BackgroundColor = ClosedXML.Excel.XLColor.LightGreen;
         headerRange.Style.Alignment.Horizontal = ClosedXML.Excel.XLAlignmentHorizontalValues.Center;
@@ -293,9 +299,10 @@ public class ProductsController(EcommerceDbContext dbContext) : Controller
         worksheet.Cell(2, 2).Value = "Áo thun cotton 100% chất lượng cao";
         worksheet.Cell(2, 3).Value = "Nam";
         worksheet.Cell(2, 4).Value = 250000;
-        worksheet.Cell(2, 5).Value = "Không";
-        worksheet.Cell(2, 6).Value = "Có";
-        worksheet.Cell(2, 7).Value = "https://example.com/image1.jpg\nhttps://example.com/image2.jpg";
+        worksheet.Cell(2, 5).Value = 350000;
+        worksheet.Cell(2, 6).Value = "Không";
+        worksheet.Cell(2, 7).Value = "Có";
+        worksheet.Cell(2, 8).Value = "https://example.com/image1.jpg\nhttps://example.com/image2.jpg";
 
         // Instructions
         worksheet.Cell(4, 1).Value = "Hướng dẫn:";
@@ -303,9 +310,10 @@ public class ProductsController(EcommerceDbContext dbContext) : Controller
         worksheet.Cell(5, 1).Value = "- Các cột có dấu * là bắt buộc";
         worksheet.Cell(6, 1).Value = "- Danh mục phải tồn tại trong hệ thống (nhập tên danh mục)";
         worksheet.Cell(7, 1).Value = "- Giá nhập số, không có dấu phẩy hoặc chấm";
-        worksheet.Cell(8, 1).Value = "- Nổi bật/Hoạt động: nhập 'Có' hoặc 'Không'";
-        worksheet.Cell(9, 1).Value = "- Links ảnh: mỗi link trên 1 dòng (Alt+Enter trong Excel)";
-        worksheet.Cell(10, 1).Value = "- Xóa dòng ví dụ và hướng dẫn này trước khi import";
+        worksheet.Cell(8, 1).Value = "- Giá gốc (tùy chọn): để trống nếu không có giảm giá";
+        worksheet.Cell(9, 1).Value = "- Nổi bật/Hoạt động: nhập 'Có' hoặc 'Không'";
+        worksheet.Cell(10, 1).Value = "- Links ảnh: mỗi link trên 1 dòng (Alt+Enter trong Excel)";
+        worksheet.Cell(11, 1).Value = "- Xóa dòng ví dụ và hướng dẫn này trước khi import";
 
         // Auto-fit columns
         worksheet.Columns().AdjustToContents();

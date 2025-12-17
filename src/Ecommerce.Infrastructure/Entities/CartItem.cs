@@ -56,6 +56,11 @@ public class CartItem : BaseEntity
     public decimal UnitPrice { get; set; }
 
     /// <summary>
+    /// Snapshot of original price (before discount) at time of adding to cart
+    /// </summary>
+    public decimal? OriginalPrice { get; set; }
+
+    /// <summary>
     /// Quantity of this product in the cart
     /// </summary>
     public int Quantity { get; set; }
