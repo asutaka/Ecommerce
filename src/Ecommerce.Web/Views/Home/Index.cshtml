@@ -275,37 +275,6 @@
     </script>
 }
 
-<section class="checkout-panel" id="checkout">
-    <div class="checkout-copy">
-        <p class="pill">Đặt hàng nhanh</p>
-        <h2>Tạo hóa đơn & kích hoạt Saga thanh toán</h2>
-        <p>Form này publish message <code>CreateInvoice</code> lên RabbitMQ để khởi chạy chuỗi Saga (invoice → payment → notify).</p>
-        <div class="pill pill-dark">MassTransit · RabbitMQ demo</div>
-    </div>
-    <form asp-controller="Orders" asp-action="Checkout" method="post" class="checkout-form">
-        @Html.AntiForgeryToken()
-        <div class="form-group">
-            <label asp-for="Checkout.CustomerName"></label>
-            <input asp-for="Checkout.CustomerName" placeholder="Họ và tên" />
-            <span asp-validation-for="Checkout.CustomerName"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="Checkout.CustomerEmail"></label>
-            <input asp-for="Checkout.CustomerEmail" placeholder="you@example.com" />
-            <span asp-validation-for="Checkout.CustomerEmail"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="Checkout.ProductId">Chọn sản phẩm</label>
-            <select asp-for="Checkout.ProductId" asp-items="@(new SelectList(Model.FeaturedProducts, nameof(ProductViewModel.Id), nameof(ProductViewModel.Name)))"></select>
-        </div>
-        <div class="form-group">
-            <label asp-for="Checkout.Quantity"></label>
-            <input asp-for="Checkout.Quantity" type="number" min="1" max="10" />
-        </div>
-        <button type="submit">Khởi tạo hóa đơn</button>
-    </form>
-</section>
-
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
