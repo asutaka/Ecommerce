@@ -1,0 +1,15 @@
+{
+  "RabbitMq": {
+    // Option 1: Use CloudAMQP or other cloud RabbitMQ (recommended for production)
+    "ConnectionUri": "amqps://username:password@host.cloudamqp.com/vhost"
+    
+    // Option 2: Use localhost (for development)
+    // Comment out ConnectionUri and uncomment below:
+    // "Host": "localhost",
+    // "Username": "guest",
+    // "Password": "guest"
+  },
+  "MoMoPayment": {
+    "UseMockService": true
+  }
+}

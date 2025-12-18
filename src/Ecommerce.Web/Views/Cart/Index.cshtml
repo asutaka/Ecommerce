@@ -1218,6 +1218,86 @@
         const formatted = minAmount.toLocaleString('vi-VN');
         alert(`Điều kiện: Đơn hàng tối thiểu ${formatted}đ`);
     }
+    
+    // ============================================
+    // Payment Method Selection Handlers
+    // ============================================
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        const bankingRadio = document.getElementById('banking-radio');
+        const ewalletRadio = document.getElementById('ewallet-radio');
+        const bankSelection = document.getElementById('bank-selection');
+        const ewalletSelection = document.getElementById('ewallet-selection');
+        const checkoutForm = document.querySelector('form[action*="Checkout"]');
+        
+        // Show/hide bank selection
+        if (bankingRadio) {
+            bankingRadio.addEventListener('change', function() {
+                if (this.checked) {
+                    bankSelection.style.display = 'block';
+                    ewalletSelection.style.display = 'none';
+                }
+            });
+        }
+        
+        // Show/hide e-wallet selection
+        if (ewalletRadio) {
+            ewalletRadio.addEventListener('change', function() {
+                if (this.checked) {
+                    ewalletSelection.style.display = 'block';
+                    bankSelection.style.display = 'none';
+                }
+            });
+        }
+        
+        // Hide selections when COD is selected
+        const codRadio = document.querySelector('input[name="PaymentMethod"][value="COD"]');
+        if (codRadio) {
+            codRadio.addEventListener('change', function() {
+                if (this.checked) {
+                    bankSelection.style.display = 'none';
+                    ewalletSelection.style.display = 'none';
+                }
+            });
+        }
+        
+        // Form validation before submit
+        if (checkoutForm) {
+            checkoutForm.addEventListener('submit', function(e) {
+                const paymentMethod = document.querySelector('input[name="PaymentMethod"]:checked');
+                
+                if (!paymentMethod) {
+                    e.preventDefault();
+                    alert('Vui lòng chọn phương thức thanh toán');
+                    return false;
+                }
+                
+                // If Banking is selected, check if a bank is selected
+                if (paymentMethod.value === 'Banking') {
+                    const bankProvider = document.querySelector('input[name="BankProvider"]:checked');
+                    if (!bankProvider) {
+                        e.preventDefault();
+                        alert('Vui lòng chọn ngân hàng');
+                        return false;
+                    }
+                }
+                
+                // If EWallet is selected, check if an e-wallet is selected
+                if (paymentMethod.value === 'EWallet') {
+                    const ewalletProvider = document.querySelector('input[name="EWalletProvider"]:checked');
+                    if (!ewalletProvider) {
+                        e.preventDefault();
+                        alert('Vui lòng chọn ví điện tử');
+                        return false;
+                    }
+                }
+                
+                // All validations passed
+                return true;
+            });
+        }
+    });
+
 </script>
 
 

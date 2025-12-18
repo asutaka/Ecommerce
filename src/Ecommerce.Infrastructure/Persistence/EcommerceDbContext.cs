@@ -264,8 +264,8 @@ public class EcommerceDbContext(DbContextOptions<EcommerceDbContext> options) : 
             entity.HasIndex(x => x.IsActive);
         });
 
-        modelBuilder.SeedInitialData();
-        modelBuilder.SeedCouponData();
+        //modelBuilder.SeedInitialData();
+        // modelBuilder.SeedCouponData(); // Commented out to prevent duplicate key errors in migrations
         modelBuilder.SeedAdminUser();
     }
 }

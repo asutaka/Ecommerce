@@ -1,0 +1,271 @@
+@{
+    ViewData["Title"] = "Thanh toán MoMo";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .payment-container {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 480px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .payment-header {
+            background: linear-gradient(135deg, #a0164b 0%, #d91f7a 100%);
+            padding: 32px 24px;
+            text-align: center;
+            color: white;
+        }
+
+        .momo-logo {
+            width: 80px;
+            height: 80px;
+            background: white;
+            border-radius: 50%;
+            margin: 0 auto 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            font-weight: bold;
+            color: #a0164b;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .payment-header h1 {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .payment-header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .payment-body {
+            padding: 32px 24px;
+        }
+
+        .order-info {
+            background: #f7f7f7;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+
+        .info-row:last-child {
+            margin-bottom: 0;
+            padding-top: 12px;
+            border-top: 2px solid #e0e0e0;
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        .info-label {
+            color: #666;
+        }
+
+        .info-value {
+            color: #333;
+            font-weight: 500;
+        }
+
+        .amount {
+            color: #a0164b;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .mock-notice {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .mock-notice strong {
+            color: #856404;
+            display: block;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+
+        .mock-notice p {
+            color: #856404;
+            font-size: 14px;
+            margin: 0;
+        }
+
+        .payment-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(17, 153, 142, 0.3);
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(17, 153, 142, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(235, 51, 73, 0.3);
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(235, 51, 73, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #a0164b;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 12px;
+        }
+
+        @@keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="payment-container">
+        <div class="payment-header">
+            <div class="momo-logo">M</div>
+            <h1>Ví MoMo</h1>
+            <p>Trang thanh toán giả lập (Mock)</p>
+        </div>
+
+        <div class="payment-body">
+            <div class="mock-notice">
+                <strong>⚠️ Chế độ Test</strong>
+                <p>Đây là trang thanh toán giả lập để test. Không có giao dịch thật nào được thực hiện.</p>
+            </div>
+
+            <div class="order-info">
+                <div class="info-row">
+                    <span class="info-label">Mã đơn hàng:</span>
+                    <span class="info-value">@ViewBag.OrderId</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Mã giao dịch:</span>
+                    <span class="info-value">@ViewBag.RequestId</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Số tiền thanh toán:</span>
+                    <span class="amount">@(((long)ViewBag.Amount).ToString("N0"))đ</span>
+                </div>
+            </div>
+
+            <form id="paymentForm" method="post" asp-action="ProcessMockPayment">
+                <input type="hidden" name="orderId" value="@ViewBag.OrderId" />
+                <input type="hidden" name="requestId" value="@ViewBag.RequestId" />
+                <input type="hidden" name="amount" value="@ViewBag.Amount" />
+                <input type="hidden" name="success" id="successInput" value="true" />
+
+                <div class="payment-actions">
+                    <button type="button" class="btn btn-success" onclick="processPayment(true)">
+                        ✓ Thanh toán thành công
+                    </button>
+                    <button type="button" class="btn btn-danger" onclick="processPayment(false)">
+                        ✕ Thanh toán thất bại
+                    </button>
+                </div>
+            </form>
+
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Đang xử lý thanh toán...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function processPayment(success) {
+            // Set success value
+            document.getElementById('successInput').value = success;
+
+            // Show loading
+            document.querySelector('.payment-actions').style.display = 'none';
+            document.getElementById('loading').classList.add('active');
+
+            // Submit form after a short delay to simulate processing
+            setTimeout(() => {
+                document.getElementById('paymentForm').submit();
+            }, 1500);
+        }
+    </script>
+</body>
+</html>

@@ -301,9 +301,30 @@ public class CartController(
             // Create order
             var order = await orderService.CreateOrderFromCartAsync(cartId, cart);
 
-            logger.LogInformation("Order {OrderId} created successfully", order.Id);
+            logger.LogInformation("Order {OrderId} created successfully with payment method {PaymentMethod}", 
+                order.Id, order.PaymentMethod);
 
-            // Redirect to confirmation page
+            // Debug logging
+            logger.LogInformation("DEBUG - PaymentMethod: {PaymentMethod}, EWalletProvider: {EWalletProvider}", 
+                model.PaymentMethod, model.EWalletProvider ?? "NULL");
+
+            // Route to appropriate payment provider
+            if (model.PaymentMethod == "EWallet" && !string.IsNullOrEmpty(model.EWalletProvider))
+            {
+                logger.LogInformation("Redirecting to {Provider} payment for order {OrderId}", 
+                    model.EWalletProvider, order.Id);
+                
+                return model.EWalletProvider switch
+                {
+                    "MoMo" => RedirectToAction("InitiateMoMoPayment", "Payment", new { orderId = order.Id }),
+                    "ZaloPay" => RedirectToAction("InitiateZaloPayPayment", "Payment", new { orderId = order.Id }),
+                    "VNPay" => RedirectToAction("InitiateVNPayPayment", "Payment", new { orderId = order.Id }),
+                    "ApplePay" => RedirectToAction("InitiateApplePayPayment", "Payment", new { orderId = order.Id }),
+                    _ => RedirectToAction("Confirmation", new { orderId = order.Id })
+                };
+            }
+
+            // For other payment methods (COD, Banking), redirect to confirmation page
             return RedirectToAction("Confirmation", new { orderId = order.Id });
         }
         catch (Exception ex)

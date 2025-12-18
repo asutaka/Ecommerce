@@ -18,6 +18,21 @@ public class Order : BaseEntity
     // Optional: Link to registered customer
     public Guid? CustomerId { get; set; }
     public Customer? Customer { get; set; }
+    
+    // MoMo Payment Tracking
+    public string? MoMoRequestId { get; set; }
+    public string? MoMoTransactionId { get; set; }
+    public DateTime? PaymentDate { get; set; }
+    
+    // Soft Delete with TTL
+    public bool IsDeleted { get; set; } = false;
+    public DateTime? ExpiresAt { get; set; }
+    
+    // Payment Retry Tracking
+    public int PaymentAttempts { get; set; } = 0;
+    public DateTime? LastPaymentAttempt { get; set; }
+    public DateTime? NextRetryScheduledAt { get; set; }
+    public string? PaymentProvider { get; set; } // MoMo, VNPay, ZaloPay, ApplePay
 
     public ICollection<OrderItem> Items { get; set; } = new List<OrderItem>();
     public Payment? Payment { get; set; }

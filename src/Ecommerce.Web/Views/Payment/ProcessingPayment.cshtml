@@ -1,0 +1,104 @@
+@{
+    ViewData["Title"] = "Đang xử lý thanh toán";
+    var orderId = ViewBag.OrderId;
+    var provider = ViewBag.Provider ?? "Payment Gateway";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 text-center">
+            <div class="card shadow">
+                <div class="card-body p-5">
+                    <div class="spinner-border text-primary mb-4" role="status" style="width: 4rem; height: 4rem;">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    
+                    <h3 class="mb-3">Đang xử lý thanh toán...</h3>
+                    <p class="text-muted mb-4">Vui lòng không đóng trang này</p>
+                    
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i>
+                        <strong id="status-message">Đang kết nối với @provider...</strong>
+                    </div>
+                    
+                    <div class="progress mb-3" style="height: 25px;">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                             role="progressbar" 
+                             id="progress-bar"
+                             style="width: 30%">30%</div>
+                    </div>
+                    
+                    <small class="text-muted">
+                        Mã đơn hàng: <strong>@orderId</strong>
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let pollCount = 0;
+const maxPolls = 60; // Poll for max 3 minutes (60 * 3 seconds)
+
+async function checkPaymentStatus() {
+    try {
+        const response = await fetch('/api/payment/status/@orderId');
+        const data = await response.json();
+        
+        pollCount++;
+        const progress = Math.min(30 + (pollCount * 2), 90);
+        document.getElementById('progress-bar').style.width = progress + '%';
+        document.getElementById('progress-bar').textContent = progress + '%';
+        
+        if (data.status === 'Paid') {
+            document.getElementById('status-message').textContent = 'Thanh toán thành công! Đang chuyển hướng...';
+            document.getElementById('progress-bar').style.width = '100%';
+            document.getElementById('progress-bar').textContent = '100%';
+            document.getElementById('progress-bar').classList.remove('progress-bar-animated');
+            document.getElementById('progress-bar').classList.add('bg-success');
+            
+            setTimeout(() => {
+                window.location.href = '/Cart/Confirmation?orderId=@orderId';
+            }, 1500);
+        } else if (data.status === 'Failed') {
+            document.getElementById('status-message').textContent = 'Thanh toán thất bại!';
+            document.getElementById('progress-bar').classList.remove('progress-bar-animated');
+            document.getElementById('progress-bar').classList.add('bg-danger');
+            
+            setTimeout(() => {
+                window.location.href = '/Cart?error=payment-failed';
+            }, 2000);
+        } else if (pollCount >= maxPolls) {
+            // Timeout after 3 minutes
+            document.getElementById('status-message').textContent = 'Quá thời gian chờ. Vui lòng kiểm tra lại đơn hàng.';
+            document.getElementById('progress-bar').classList.remove('progress-bar-animated');
+            document.getElementById('progress-bar').classList.add('bg-warning');
+            
+            setTimeout(() => {
+                window.location.href = '/Cart';
+            }, 3000);
+        } else {
+            // Update status message based on attempts
+            if (data.attempts > 0) {
+                document.getElementById('status-message').textContent = 
+                    `Đang xử lý... (Lần thử: ${data.attempts})`;
+            }
+        }
+    } catch (error) {
+        console.error('Error checking payment status:', error);
+    }
+}
+
+// Start polling every 3 seconds
+const pollInterval = setInterval(async () => {
+    await checkPaymentStatus();
+    
+    if (pollCount >= maxPolls) {
+        clearInterval(pollInterval);
+    }
+}, 3000);
+
+// Initial check
+checkPaymentStatus();
+</script>

@@ -20,6 +20,7 @@ public class CartViewModel
     
     // Payment
     public string PaymentMethod { get; set; } = "COD";
+    public string? EWalletProvider { get; set; } // MoMo, ZaloPay, VNPay, ApplePay
     public decimal ShippingFee { get; set; } = 30000; // Default 30k
     
     // Calculations

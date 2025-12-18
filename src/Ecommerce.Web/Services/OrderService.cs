@@ -87,6 +87,7 @@ public class OrderService(EcommerceDbContext dbContext, ILogger<OrderService> lo
     {
         return await dbContext.Orders
             .Include(x => x.Items)
+            .Where(x => !x.IsDeleted) // Filter out soft-deleted orders
             .FirstOrDefaultAsync(x => x.Id == orderId);
     }
 }

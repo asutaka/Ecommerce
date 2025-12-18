@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Ecommerce.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Ecommerce.Infrastructure.Migrations
 {
     [DbContext(typeof(EcommerceDbContext))]
-    partial class EcommerceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251218063652_AddMoMoFieldsToOrders")]
+    partial class AddMoMoFieldsToOrders
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -76,12 +79,12 @@ namespace Ecommerce.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2025, 12, 18, 7, 41, 33, 842, DateTimeKind.Utc).AddTicks(3437),
+                            CreatedAt = new DateTime(2025, 12, 18, 6, 36, 52, 546, DateTimeKind.Utc).AddTicks(5507),
                             Email = "admin@ecommerce.com",
                             FullName = "Administrator",
                             IsActive = true,
-                            PasswordHash = "$2a$11$nlKvehOEts.n9GEB24oVRu3Ox/HS9v0WiqbZGfTXPabxW3P.67vAq",
-                            UpdatedAt = new DateTime(2025, 12, 18, 7, 41, 33, 842, DateTimeKind.Utc).AddTicks(3445),
+                            PasswordHash = "$2a$11$IYeGEa2NM4p9Wr/sC1yIKeR7p16FOIWAhQOoGi1vW6xxQHTP0q/yi",
+                            UpdatedAt = new DateTime(2025, 12, 18, 6, 36, 52, 546, DateTimeKind.Utc).AddTicks(5515),
                             Username = "admin"
                         });
                 });
@@ -447,38 +450,20 @@ namespace Ecommerce.Infrastructure.Migrations
                     b.Property<decimal>("Discount")
                         .HasColumnType("numeric");
 
-                    b.Property<DateTime?>("ExpiresAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTime?>("LastPaymentAttempt")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<string>("MoMoRequestId")
                         .HasColumnType("text");
 
                     b.Property<string>("MoMoTransactionId")
                         .HasColumnType("text");
 
-                    b.Property<DateTime?>("NextRetryScheduledAt")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<string>("Note")
                         .HasColumnType("text");
-
-                    b.Property<int>("PaymentAttempts")
-                        .HasColumnType("integer");
 
                     b.Property<DateTime?>("PaymentDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("PaymentMethod")
                         .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("PaymentProvider")
                         .HasColumnType("text");
 
                     b.Property<string>("ShippingAddress")

@@ -1,0 +1,86 @@
+@{
+    ViewData["Title"] = $"Thanh toán {ViewBag.Provider}";
+    var orderId = ViewBag.OrderId;
+    var amount = ViewBag.Amount;
+    var provider = ViewBag.Provider;
+    var providerLogo = ViewBag.ProviderLogo;
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white text-center">
+                    <h4>
+                        @if (!string.IsNullOrEmpty(providerLogo))
+                        {
+                            <img src="@providerLogo" alt="@provider" style="height: 40px; margin-right: 10px;">
+                        }
+                        Thanh toán @provider
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i>
+                        <strong>Đây là trang thanh toán giả lập (Mock)</strong>
+                        <p class="mb-0 mt-2">Trong môi trường thực tế, bạn sẽ được chuyển đến trang thanh toán của @provider</p>
+                    </div>
+
+                    <div class="payment-info mb-4">
+                        <h5 class="mb-3">Thông tin thanh toán</h5>
+                        <table class="table">
+                            <tr>
+                                <td><strong>Mã đơn hàng:</strong></td>
+                                <td>@orderId</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Số tiền:</strong></td>
+                                <td class="text-danger"><strong>@amount.ToString("N0") VNĐ</strong></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Phương thức:</strong></td>
+                                <td>@provider</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="text-center">
+                        <p class="mb-3">Chọn kết quả thanh toán để test:</p>
+                        
+                        <form method="post" action="@Url.Action($"ProcessMock{provider.Replace(" ", "")}Payment", "Payment")" class="d-inline">
+                            <input type="hidden" name="orderId" value="@orderId" />
+                            <input type="hidden" name="amount" value="@amount" />
+                            <input type="hidden" name="success" value="true" />
+                            <button type="submit" class="btn btn-success btn-lg me-2">
+                                <i class="bi bi-check-circle"></i> Thanh toán thành công
+                            </button>
+                        </form>
+
+                        <form method="post" action="@Url.Action($"ProcessMock{provider.Replace(" ", "")}Payment", "Payment")" class="d-inline">
+                            <input type="hidden" name="orderId" value="@orderId" />
+                            <input type="hidden" name="amount" value="@amount" />
+                            <input type="hidden" name="success" value="false" />
+                            <button type="submit" class="btn btn-danger btn-lg">
+                                <i class="bi bi-x-circle"></i> Thanh toán thất bại
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="mt-4 text-center">
+                        <a href="@Url.Action("Index", "Cart")" class="btn btn-link">
+                            <i class="bi bi-arrow-left"></i> Quay lại giỏ hàng
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .payment-info {
+        background-color: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+    }
+</style>
