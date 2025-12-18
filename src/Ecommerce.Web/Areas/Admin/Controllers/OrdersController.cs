@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MassTransit;
 using Ecommerce.Contracts;
-using OfficeOpenXml;
+using ClosedXML.Excel;
 
 namespace Ecommerce.Web.Areas.Admin.Controllers;
 
@@ -154,26 +154,43 @@ public class OrdersController(EcommerceDbContext dbContext) : Controller
         query = query.OrderByDescending(x => x.CreatedAt);
         var orders = await query.Include(x => x.Payment).ToListAsync();
 
-        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-
-        using var package = new ExcelPackage();
-        var worksheet = package.Workbook.Worksheets.Add("Orders");
+        using var workbook = new XLWorkbook();
+        var worksheet = workbook.Worksheets.Add("Orders");
 
         // Headers
-        worksheet.Cells[1, 1].Value = "Id";
-        worksheet.Cells[1, 2].Value = "Customer Name";
-        worksheet.Cells[1, 3].Value = "Customer Email";
-        worksheet.Cells[1, 4].Value = "Status";
-        worksheet.Cells[1, 5].Value = "Total";
-        worksheet.Cells[1, 6].Value = "Created At";
-        worksheet.Cells[1, 7].Value = "Payment Reference";
-
-        using (var range = worksheet.Cells[1, 1, 1, 7])
+        var headers = new[]
         {
-            range.Style.Font.Bold = true;
-            range.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-            range.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightGray);
+            "Mã đơn hàng",
+            "Khách hàng",
+            "Email",
+            "Số điện thoại",
+            "Phương thức TT",
+            "Nhà cung cấp TT",
+            "Trạng thái",
+            "Tổng tiền",
+            "Phí ship",
+            "Giảm giá",
+            "Mã giảm giá",
+            "Số lần thử TT",
+            "Ngày tạo",
+            "Ngày thanh toán",
+            "Mã tham chiếu TT"
+        };
+
+        for (int i = 0; i < headers.Length; i++)
+        {
+            worksheet.Cell(1, i + 1).Value = headers[i];
         }
+
+        // Style header
+        var headerRange = worksheet.Range(1, 1, 1, headers.Length);
+        headerRange.Style.Font.Bold = true;
+        headerRange.Style.Font.FontSize = 12;
+        headerRange.Style.Fill.BackgroundColor = XLColor.FromArgb(68, 114, 196);
+        headerRange.Style.Font.FontColor = XLColor.White;
+        headerRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+        headerRange.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+        headerRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
 
         // Data
         for (int i = 0; i < orders.Count; i++)
@@ -181,23 +198,129 @@ public class OrdersController(EcommerceDbContext dbContext) : Controller
             var order = orders[i];
             var row = i + 2;
 
-            worksheet.Cells[row, 1].Value = order.Id;
-            worksheet.Cells[row, 2].Value = order.CustomerName;
-            worksheet.Cells[row, 3].Value = order.CustomerEmail;
-            worksheet.Cells[row, 4].Value = order.Status.ToString();
-            worksheet.Cells[row, 5].Value = order.Total;
-            worksheet.Cells[row, 6].Value = order.CreatedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss");
-            worksheet.Cells[row, 7].Value = order.Payment?.Reference;
+            worksheet.Cell(row, 1).Value = order.Id.ToString().Substring(0, 8);
+            worksheet.Cell(row, 2).Value = order.CustomerName;
+            worksheet.Cell(row, 3).Value = order.CustomerEmail;
+            worksheet.Cell(row, 4).Value = order.CustomerPhone ?? "";
+            worksheet.Cell(row, 5).Value = order.PaymentMethod;
+            worksheet.Cell(row, 6).Value = order.PaymentProvider ?? "";
+            worksheet.Cell(row, 7).Value = GetStatusText(order.Status);
+            worksheet.Cell(row, 8).Value = order.Total;
+            worksheet.Cell(row, 8).Style.NumberFormat.Format = "#,##0 ₫";
+            worksheet.Cell(row, 9).Value = order.ShippingFee;
+            worksheet.Cell(row, 9).Style.NumberFormat.Format = "#,##0 ₫";
+            worksheet.Cell(row, 10).Value = order.Discount;
+            worksheet.Cell(row, 10).Style.NumberFormat.Format = "#,##0 ₫";
+            worksheet.Cell(row, 11).Value = order.CouponCode ?? "";
+            worksheet.Cell(row, 12).Value = order.PaymentAttempts;
+            worksheet.Cell(row, 13).Value = order.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm");
+            worksheet.Cell(row, 14).Value = order.PaymentDate?.ToLocalTime().ToString("dd/MM/yyyy HH:mm") ?? "";
+            worksheet.Cell(row, 15).Value = order.Payment?.Reference ?? "";
+
+            // Alternate row colors
+            if (i % 2 == 0)
+            {
+                var rowRange = worksheet.Range(row, 1, row, headers.Length);
+                rowRange.Style.Fill.BackgroundColor = XLColor.FromArgb(242, 242, 242);
+            }
+
+            // Color code status
+            var statusCell = worksheet.Cell(row, 7);
+            statusCell.Style.Font.Bold = true;
+            switch (order.Status)
+            {
+                case OrderStatus.Completed:
+                    statusCell.Style.Font.FontColor = XLColor.Green;
+                    break;
+                case OrderStatus.Failed:
+                case OrderStatus.Cancelled:
+                    statusCell.Style.Font.FontColor = XLColor.Red;
+                    break;
+                case OrderStatus.PaymentProcessing:
+                    statusCell.Style.Font.FontColor = XLColor.Orange;
+                    break;
+            }
         }
 
-        worksheet.Cells.AutoFitColumns();
+        // Auto-fit columns
+        worksheet.Columns().AdjustToContents();
+
+        // Add borders to all cells
+        var dataRange = worksheet.Range(1, 1, orders.Count + 1, headers.Length);
+        dataRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+        dataRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
+
+        // Freeze header row
+        worksheet.SheetView.FreezeRows(1);
 
         var stream = new MemoryStream();
-        package.SaveAs(stream);
+        workbook.SaveAs(stream);
         stream.Position = 0;
 
-        var fileName = $"Orders_{DateTime.Now:yyyyMMddHHmmss}.xlsx";
+        var fileName = $"DonHang_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
         return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+    }
+
+    private static string GetStatusText(OrderStatus status)
+    {
+        return status switch
+        {
+            OrderStatus.PendingInvoice => "Chờ hóa đơn",
+            OrderStatus.Invoiced => "Đã xuất HĐ",
+            OrderStatus.PaymentProcessing => "Đang xử lý TT",
+            OrderStatus.Paid => "Đã thanh toán",
+            OrderStatus.Notified => "Đã thông báo",
+            OrderStatus.Completed => "Hoàn thành",
+            OrderStatus.Cancelled => "Đã hủy",
+            OrderStatus.Failed => "Thất bại",
+            _ => status.ToString()
+        };
+    }
+
+    [HttpGet]
+    public IActionResult DownloadTemplate()
+    {
+        using var workbook = new XLWorkbook();
+        var worksheet = workbook.Worksheets.Add("Orders");
+
+        // Header
+        worksheet.Cell(1, 1).Value = "Tên khách hàng *";
+        worksheet.Cell(1, 2).Value = "Email *";
+        worksheet.Cell(1, 3).Value = "Sản phẩm *";
+
+        // Style header
+        var headerRange = worksheet.Range(1, 1, 1, 3);
+        headerRange.Style.Font.Bold = true;
+        headerRange.Style.Fill.BackgroundColor = XLColor.LightBlue;
+        headerRange.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+        // Example rows
+        worksheet.Cell(2, 1).Value = "Nguyễn Văn A";
+        worksheet.Cell(2, 2).Value = "nguyenvana@example.com";
+        worksheet.Cell(2, 3).Value = "iPhone 15:1; Ốp lưng:2";
+
+        worksheet.Cell(3, 1).Value = "Trần Thị B";
+        worksheet.Cell(3, 2).Value = "tranthib@example.com";
+        worksheet.Cell(3, 3).Value = "MacBook Pro:1";
+
+        // Instructions
+        worksheet.Cell(5, 1).Value = "Hướng dẫn:";
+        worksheet.Cell(5, 1).Style.Font.Bold = true;
+        worksheet.Cell(6, 1).Value = "- Các cột có dấu * là bắt buộc";
+        worksheet.Cell(7, 1).Value = "- Cột Sản phẩm: Tên SP:Số lượng; Tên SP 2:Số lượng";
+        worksheet.Cell(8, 1).Value = "- Tên sản phẩm phải khớp chính xác với tên trong hệ thống";
+        worksheet.Cell(9, 1).Value = "- Ví dụ: iPhone 15:1; Ốp lưng:2 (mua 1 iPhone và 2 ốp lưng)";
+        worksheet.Cell(10, 1).Value = "- Xóa các dòng ví dụ và hướng dẫn này trước khi import";
+
+        // Auto-fit columns
+        worksheet.Columns().AdjustToContents();
+
+        // Return file
+        using var stream = new MemoryStream();
+        workbook.SaveAs(stream);
+        var content = stream.ToArray();
+
+        return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Orders_Import_Template.xlsx");
     }
 
     [HttpGet]
@@ -221,16 +344,15 @@ public class OrdersController(EcommerceDbContext dbContext) : Controller
             return View();
         }
 
-        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-
         try
         {
             using var stream = new MemoryStream();
             await file.CopyToAsync(stream);
-            using var package = new ExcelPackage(stream);
+            stream.Position = 0;
             
-            var worksheet = package.Workbook.Worksheets[0];
-            var rowCount = worksheet.Dimension.Rows;
+            using var workbook = new XLWorkbook(stream);
+            var worksheet = workbook.Worksheet(1);
+            var rowCount = worksheet.LastRowUsed()?.RowNumber() ?? 0;
             
             int successCount = 0;
             int errorCount = 0;
@@ -243,9 +365,9 @@ public class OrdersController(EcommerceDbContext dbContext) : Controller
             // Assume header is row 1
             for (int row = 2; row <= rowCount; row++)
             {
-                var customerName = worksheet.Cells[row, 1].Value?.ToString();
-                var customerEmail = worksheet.Cells[row, 2].Value?.ToString();
-                var itemsStr = worksheet.Cells[row, 3].Value?.ToString();
+                var customerName = worksheet.Cell(row, 1).GetString();
+                var customerEmail = worksheet.Cell(row, 2).GetString();
+                var itemsStr = worksheet.Cell(row, 3).GetString();
 
                 if (string.IsNullOrWhiteSpace(customerName) || string.IsNullOrWhiteSpace(customerEmail) || string.IsNullOrWhiteSpace(itemsStr))
                 {

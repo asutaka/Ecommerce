@@ -4,85 +4,142 @@
     ViewData["Title"] = "Phân tích giỏ hàng";
 }
 
-<div class="container-fluid px-0">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3 mb-0">Phân tích giỏ hàng & Bỏ giỏ</h1>
-        <a asp-action="Index" class="btn btn-outline-light rounded-pill">
-            <i class="bi bi-arrow-left me-2"></i>Quay lại danh sách active
-        </a>
-    </div>
-
-    <div class="row mb-4">
-        <div class="col-md-3">
-            <div class="card bg-dark border-secondary text-white h-100">
-                <div class="card-body text-center">
-                    <h6 class="text-muted text-uppercase mb-2">Tổng số giỏ hàng</h6>
-                    <h2 class="display-4 fw-bold mb-0">@Model.TotalCarts</h2>
-                </div>
+<!-- Content Header -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">
+                    <i class="fas fa-chart-line text-primary"></i> Phân tích giỏ hàng
+                </h1>
             </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card bg-dark border-secondary text-white h-100">
-                <div class="card-body text-center">
-                    <h6 class="text-muted text-uppercase mb-2">Đang active (< 24h)</h6>
-                    <h2 class="display-4 fw-bold text-success mb-0">@Model.ActiveCarts</h2>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card bg-dark border-secondary text-white h-100">
-                <div class="card-body text-center">
-                    <h6 class="text-muted text-uppercase mb-2">Đã bỏ giỏ (> 24h)</h6>
-                    <h2 class="display-4 fw-bold text-warning mb-0">@Model.AbandonedCarts</h2>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card bg-dark border-secondary text-white h-100">
-                <div class="card-body text-center">
-                    <h6 class="text-muted text-uppercase mb-2">Tỷ lệ bỏ giỏ</h6>
-                    <h2 class="display-4 fw-bold text-danger mb-0">@Model.AbandonmentRate%</h2>
+            <div class="col-sm-6">
+                <div class="float-right">
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Quay lại
+                    </a>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card bg-transparent border-secondary">
-                <div class="card-header border-secondary bg-transparent">
-                    <h5 class="mb-0"><i class="bi bi-bar-chart-fill me-2"></i>Top 10 sản phẩm bị bỏ quên nhiều nhất</h5>
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- Info boxes -->
+        <div class="row">
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-info">
+                    <div class="inner">
+                        <h3>@Model.TotalCarts</h3>
+                        <p>Tổng số giỏ hàng</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
                 </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-dark table-hover mb-0">
+            </div>
+
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-success">
+                    <div class="inner">
+                        <h3>@Model.ActiveCarts</h3>
+                        <p>Đang hoạt động (&lt; 24h)</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-warning">
+                    <div class="inner">
+                        <h3>@Model.AbandonedCarts</h3>
+                        <p>Đã bỏ giỏ (&gt; 24h)</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-6">
+                <div class="small-box bg-danger">
+                    <div class="inner">
+                        <h3>@Model.AbandonmentRate<sup style="font-size: 20px">%</sup></h3>
+                        <p>Tỷ lệ bỏ giỏ</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-chart-pie"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Abandoned Products -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-chart-bar"></i> Top 10 sản phẩm bị bỏ quên nhiều nhất
+                        </h3>
+                        <div class="card-tools">
+                            <span class="badge badge-warning">
+                                <i class="fas fa-info-circle"></i> Dữ liệu từ giỏ hàng bị bỏ &gt; 24h
+                            </span>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <table class="table table-hover">
                             <thead>
                                 <tr>
+                                    <th style="width: 10px">#</th>
                                     <th>Tên sản phẩm</th>
-                                    <th class="text-end">Số lượng bị bỏ quên</th>
+                                    <th class="text-center">Số lượng bị bỏ quên</th>
                                     <th style="width: 40%;">Tỷ trọng</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @{
-                                    var maxCount = Model.TopAbandonedItems.Any() ? Model.TopAbandonedItems.Max(x => x.AbandonedCount) : 1;
+                                @if (Model.TopAbandonedItems.Any())
+                                {
+                                    var maxCount = Model.TopAbandonedItems.Max(x => x.AbandonedCount);
+                                    var index = 1;
+                                    
+                                    @foreach (var item in Model.TopAbandonedItems)
+                                    {
+                                        var percentage = maxCount > 0 ? (item.AbandonedCount * 100.0 / maxCount) : 0;
+                                        var badgeClass = index <= 3 ? "badge-danger" : index <= 6 ? "badge-warning" : "badge-info";
+                                        
+                                        <tr>
+                                            <td><span class="badge @badgeClass">@index</span></td>
+                                            <td>
+                                                <strong>@item.ProductName</strong>
+                                            </td>
+                                            <td class="text-center">
+                                                <span class="badge badge-warning">
+                                                    <i class="fas fa-times"></i> @item.AbandonedCount
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <div class="progress progress-xs">
+                                                    <div class="progress-bar bg-warning" style="width: @percentage.ToString("F2")%"></div>
+                                                </div>
+                                                <small class="text-muted">@percentage.ToString("F1")%</small>
+                                            </td>
+                                        </tr>
+                                        index++;
+                                    }
                                 }
-                                @foreach (var item in Model.TopAbandonedItems)
+                                else
                                 {
                                     <tr>
-                                        <td>@item.ProductName</td>
-                                        <td class="text-end fw-bold">@item.AbandonedCount</td>
-                                        <td>
-                                            <div class="progress" style="height: 6px;">
-                                                <div class="progress-bar bg-warning" role="progressbar" style="width: @(item.AbandonedCount * 100 / maxCount)%;"></div>
-                                            </div>
+                                        <td colspan="4" class="text-center text-muted py-4">
+                                            <i class="fas fa-inbox fa-3x mb-3 d-block"></i>
+                                            <p class="mb-0">Chưa có dữ liệu về sản phẩm bị bỏ quên</p>
                                         </td>
-                                    </tr>
-                                }
-                                @if (!Model.TopAbandonedItems.Any())
-                                {
-                                    <tr>
-                                        <td colspan="3" class="text-center text-muted fst-italic py-4">Chưa có dữ liệu</td>
                                     </tr>
                                 }
                             </tbody>
@@ -91,5 +148,78 @@
                 </div>
             </div>
         </div>
+
+        <!-- Additional Insights -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card card-primary card-outline">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-lightbulb"></i> Insights
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <dl class="row mb-0">
+                            <dt class="col-sm-6">Tổng giỏ hàng:</dt>
+                            <dd class="col-sm-6"><strong>@Model.TotalCarts</strong></dd>
+                            
+                            <dt class="col-sm-6">Đang hoạt động:</dt>
+                            <dd class="col-sm-6">
+                                <span class="badge badge-success">@Model.ActiveCarts</span>
+                                <small class="text-muted">(@((Model.TotalCarts > 0 ? (Model.ActiveCarts * 100.0 / Model.TotalCarts) : 0).ToString("F1"))%)</small>
+                            </dd>
+                            
+                            <dt class="col-sm-6">Đã bỏ giỏ:</dt>
+                            <dd class="col-sm-6">
+                                <span class="badge badge-warning">@Model.AbandonedCarts</span>
+                                <small class="text-muted">(@Model.AbandonmentRate.ToString("F1")%)</small>
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card card-warning card-outline">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-exclamation-circle"></i> Khuyến nghị
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        @if (Model.AbandonmentRate > 50)
+                        {
+                            <div class="alert alert-danger">
+                                <h5><i class="icon fas fa-ban"></i> Tỷ lệ bỏ giỏ cao!</h5>
+                                Tỷ lệ bỏ giỏ của bạn là <strong>@Model.AbandonmentRate%</strong>, cao hơn mức trung bình. Hãy xem xét:
+                                <ul class="mb-0 mt-2">
+                                    <li>Gửi email nhắc nhở khách hàng</li>
+                                    <li>Cung cấp mã giảm giá khuyến khích</li>
+                                    <li>Cải thiện trải nghiệm thanh toán</li>
+                                </ul>
+                            </div>
+                        }
+                        else if (Model.AbandonmentRate > 30)
+                        {
+                            <div class="alert alert-warning">
+                                <h5><i class="icon fas fa-exclamation-triangle"></i> Tỷ lệ bỏ giỏ trung bình</h5>
+                                Tỷ lệ bỏ giỏ: <strong>@Model.AbandonmentRate%</strong>. Có thể cải thiện bằng cách:
+                                <ul class="mb-0 mt-2">
+                                    <li>Tối ưu hóa quy trình checkout</li>
+                                    <li>Hiển thị rõ phí vận chuyển</li>
+                                </ul>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="alert alert-success">
+                                <h5><i class="icon fas fa-check"></i> Tỷ lệ bỏ giỏ tốt!</h5>
+                                Tỷ lệ bỏ giỏ của bạn là <strong>@Model.AbandonmentRate%</strong>, thấp hơn mức trung bình. Tiếp tục duy trì!
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
+</section>

@@ -4,139 +4,258 @@
     ViewData["Title"] = "Quản lý đơn hàng";
 }
 
-<div class="container-fluid px-0">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3 mb-0">Quản lý đơn hàng</h1>
-        <div>
-            <a asp-action="Export" asp-route-status="@Model.CurrentStatus" asp-route-keyword="@Model.Keyword" asp-route-fromDate="@Model.FromDate" asp-route-toDate="@Model.ToDate" class="btn btn-outline-info rounded-pill me-2">
-                <i class="bi bi-download me-2"></i>Export Excel
-            </a>
-            <a asp-action="Import" class="btn btn-outline-success rounded-pill">
-                <i class="bi bi-file-earmark-spreadsheet me-2"></i>Import Excel
-            </a>
-        </div>
-    </div>
-
-    <div class="card bg-transparent border-secondary mb-4">
-        <div class="card-body">
-            <form method="get" class="row g-3">
-                <div class="col-md-3">
-                    <label class="form-label text-muted small">Từ khóa</label>
-                    <input type="text" name="keyword" class="form-control bg-dark text-light border-secondary" placeholder="Tên, Email..." value="@Model.Keyword">
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label text-muted small">Trạng thái</label>
-                    <select name="status" class="form-select bg-dark text-light border-secondary" asp-items="Html.GetEnumSelectList<Ecommerce.Infrastructure.Entities.OrderStatus>()">
-                        <option value="">Tất cả</option>
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label text-muted small">Từ ngày</label>
-                    <input type="date" name="fromDate" class="form-control bg-dark text-light border-secondary" value="@(Model.FromDate?.ToString("yyyy-MM-dd"))">
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label text-muted small">Đến ngày</label>
-                    <input type="date" name="toDate" class="form-control bg-dark text-light border-secondary" value="@(Model.ToDate?.ToString("yyyy-MM-dd"))">
-                </div>
-                <div class="col-md-3 d-flex align-items-end">
-                    <button type="submit" class="btn btn-primary w-100"><i class="bi bi-search me-2"></i>Tìm kiếm</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<div class="admin-table card bg-transparent border-secondary">
-    <div class="card-body p-0">
-        <div class="table-responsive">
-            <table class="table table-dark table-hover mb-0 align-middle">
-                <thead>
-                    <tr>
-                        <th>Mã đơn hàng</th>
-                        <th>Khách hàng</th>
-                        <th>Ngày đặt</th>
-                        <th>Tổng tiền</th>
-                        <th>Trạng thái</th>
-                        <th class="text-end">Thao tác</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model.Orders)
-                    {
-                        <tr>
-                            <td><code class="text-info">@item.Id</code></td>
-                            <td>
-                                <div class="fw-bold">@item.CustomerName</div>
-                                <div class="small text-muted">@item.CustomerEmail</div>
-                            </td>
-                            <td>@item.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</td>
-                            <td>@item.Total.ToString("N0") ₫</td>
-                            <td>
-                                @switch (item.Status)
-                                {
-                                    case OrderStatus.PendingInvoice:
-                                        <span class="badge bg-secondary">Chờ hóa đơn</span>
-                                        break;
-                                    case OrderStatus.Invoiced:
-                                        <span class="badge bg-info text-dark">Đã xuất HĐ</span>
-                                        break;
-                                    case OrderStatus.PaymentProcessing:
-                                        <span class="badge bg-warning text-dark">Đang xử lý TT</span>
-                                        break;
-                                    case OrderStatus.Paid:
-                                        <span class="badge bg-success">Đã thanh toán</span>
-                                        break;
-                                    case OrderStatus.Notified:
-                                        <span class="badge bg-primary">Đã thông báo</span>
-                                        break;
-                                    case OrderStatus.Completed:
-                                        <span class="badge bg-success">Hoàn thành</span>
-                                        break;
-                                    case OrderStatus.Failed:
-                                        <span class="badge bg-danger">Thất bại</span>
-                                        break;
-                                    default:
-                                        <span class="badge bg-light text-dark">@item.Status</span>
-                                        break;
-                                }
-                            </td>
-                            <td class="text-end">
-                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-light">
-                                    <i class="bi bi-eye me-1"></i> Chi tiết
-                                </a>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-    </div>
-    @if (Model.Orders.TotalPages > 1)
-    {
-        <div class="card-footer border-top border-secondary bg-transparent">
-            <div class="d-flex justify-content-between align-items-center">
-                <div class="text-muted small">
-                    Trang @Model.Orders.PageIndex / @Model.Orders.TotalPages
-                </div>
-                <div>
-                    @{
-                        var prevDisabled = !Model.Orders.HasPreviousPage ? "disabled" : "";
-                        var nextDisabled = !Model.Orders.HasNextPage ? "disabled" : "";
-                    }
-                    <a asp-action="Index"
-                       asp-route-pageNumber="@(Model.Orders.PageIndex - 1)"
-                       asp-route-status="@Model.CurrentStatus"
-                       class="btn btn-sm btn-outline-light @prevDisabled">
-                        <i class="bi bi-chevron-left"></i> Trước
+<!-- Content Header -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">
+                    <i class="fas fa-shopping-cart text-primary"></i> Quản lý đơn hàng
+                </h1>
+            </div>
+            <div class="col-sm-6">
+                <div class="float-right">
+                    <a asp-controller="Settings" asp-action="Index" class="btn btn-secondary mr-2">
+                        <i class="fas fa-arrow-left"></i> Quay lại
                     </a>
-                    <a asp-action="Index"
-                       asp-route-pageNumber="@(Model.Orders.PageIndex + 1)"
-                       asp-route-status="@Model.CurrentStatus"
-                       class="btn btn-sm btn-outline-light @nextDisabled ms-1">
-                        Sau <i class="bi bi-chevron-right"></i>
+                    <a asp-action="Export" asp-route-status="@Model.CurrentStatus" asp-route-keyword="@Model.Keyword" asp-route-fromDate="@Model.FromDate" asp-route-toDate="@Model.ToDate" class="btn btn-info mr-2">
+                        <i class="fas fa-file-excel"></i> Export Excel
+                    </a>
+                    <a asp-action="Import" class="btn btn-success">
+                        <i class="fas fa-file-upload"></i> Import Excel
                     </a>
                 </div>
             </div>
         </div>
-    }
+    </div>
 </div>
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Danh sách đơn hàng</h3>
+                <div class="card-tools">
+                    <form method="get" class="form-inline">
+                        <div class="input-group input-group-sm mr-2" style="width: 200px;">
+                            <input type="text" name="keyword" class="form-control" placeholder="Tên, Email..." value="@Model.Keyword">
+                            <div class="input-group-append">
+                                <button type="submit" class="btn btn-default">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <select name="status" class="form-control form-control-sm mr-2" style="width: 150px;" asp-items="Html.GetEnumSelectList<OrderStatus>()">
+                            <option value="">Tất cả trạng thái</option>
+                        </select>
+                        <input type="date" name="fromDate" class="form-control form-control-sm mr-2" value="@(Model.FromDate?.ToString("yyyy-MM-dd"))" placeholder="Từ ngày">
+                        <input type="date" name="toDate" class="form-control form-control-sm mr-2" value="@(Model.ToDate?.ToString("yyyy-MM-dd"))" placeholder="Đến ngày">
+                        <button type="submit" class="btn btn-primary btn-sm">
+                            <i class="fas fa-filter"></i> Lọc
+                        </button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="card-body table-responsive p-0">
+                <table class="table table-hover text-nowrap">
+                    <thead>
+                        <tr>
+                            <th>Mã đơn hàng</th>
+                            <th>Khách hàng</th>
+                            <th>Ngày đặt</th>
+                            <th>Tổng tiền</th>
+                            <th>Phương thức TT</th>
+                            <th>Trạng thái</th>
+                            <th class="text-right">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Orders.Any())
+                        {
+                            @foreach (var item in Model.Orders)
+                            {
+                                <tr>
+                                    <td>
+                                        <code class="text-primary">#@item.Id.ToString().Substring(0, 8)</code>
+                                    </td>
+                                    <td>
+                                        <strong>@item.CustomerName</strong><br>
+                                        <small class="text-muted">@item.CustomerEmail</small>
+                                    </td>
+                                    <td>
+                                        <small>@item.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</small>
+                                    </td>
+                                    <td>
+                                        <strong>@item.Total.ToString("N0") ₫</strong>
+                                    </td>
+                                    <td>
+                                        @switch (item.PaymentMethod)
+                                        {
+                                            case "COD":
+                                                <span class="badge badge-secondary">
+                                                    <i class="fas fa-money-bill"></i> COD
+                                                </span>
+                                                break;
+                                            case "EWallet":
+                                                <span class="badge badge-info">
+                                                    <i class="fas fa-wallet"></i> @(item.PaymentProvider ?? "E-Wallet")
+                                                </span>
+                                                break;
+                                            default:
+                                                <span class="badge badge-light">@item.PaymentMethod</span>
+                                                break;
+                                        }
+                                    </td>
+                                    <td>
+                                        @switch (item.Status)
+                                        {
+                                            case OrderStatus.PendingInvoice:
+                                                <span class="badge badge-secondary">
+                                                    <i class="fas fa-clock"></i> Chờ hóa đơn
+                                                </span>
+                                                break;
+                                            case OrderStatus.Invoiced:
+                                                <span class="badge badge-info">
+                                                    <i class="fas fa-file-invoice"></i> Đã xuất HĐ
+                                                </span>
+                                                break;
+                                            case OrderStatus.PaymentProcessing:
+                                                <span class="badge badge-warning">
+                                                    <i class="fas fa-spinner fa-spin"></i> Đang xử lý TT
+                                                </span>
+                                                break;
+                                            case OrderStatus.Paid:
+                                                <span class="badge badge-success">
+                                                    <i class="fas fa-check-circle"></i> Đã thanh toán
+                                                </span>
+                                                break;
+                                            case OrderStatus.Notified:
+                                                <span class="badge badge-primary">
+                                                    <i class="fas fa-bell"></i> Đã thông báo
+                                                </span>
+                                                break;
+                                            case OrderStatus.Completed:
+                                                <span class="badge badge-success">
+                                                    <i class="fas fa-check-double"></i> Hoàn thành
+                                                </span>
+                                                break;
+                                            case OrderStatus.Cancelled:
+                                                <span class="badge badge-dark">
+                                                    <i class="fas fa-ban"></i> Đã hủy
+                                                </span>
+                                                break;
+                                            case OrderStatus.Failed:
+                                                <span class="badge badge-danger">
+                                                    <i class="fas fa-times-circle"></i> Thất bại
+                                                </span>
+                                                break;
+                                            default:
+                                                <span class="badge badge-light">@item.Status</span>
+                                                break;
+                                        }
+                                        @if (item.PaymentAttempts > 0)
+                                        {
+                                            <br><small class="text-muted">
+                                                <i class="fas fa-redo"></i> @item.PaymentAttempts lần thử
+                                            </small>
+                                        }
+                                    </td>
+                                    <td class="text-right">
+                                        <div class="btn-group">
+                                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info" title="Chi tiết">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="7" class="text-center text-muted py-4">
+                                    <i class="fas fa-inbox fa-3x mb-3 d-block"></i>
+                                    <p class="mb-0">Không có đơn hàng nào</p>
+                                    @if (!string.IsNullOrEmpty(Model.Keyword))
+                                    {
+                                        <small>Không tìm thấy kết quả cho "<strong>@Model.Keyword</strong>"</small>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            
+            @if (Model.Orders.TotalPages > 1)
+            {
+                <div class="card-footer clearfix">
+                    <div class="float-left">
+                        <small class="text-muted">
+                            Trang @Model.Orders.PageIndex / @Model.Orders.TotalPages
+                            (Tổng: <strong>@Model.Orders.TotalCount</strong> đơn hàng)
+                        </small>
+                    </div>
+                    <ul class="pagination pagination-sm m-0 float-right">
+                        @if (Model.Orders.HasPreviousPage)
+                        {
+                            <li class="page-item">
+                                <a asp-action="Index"
+                                   asp-route-pageNumber="@(Model.Orders.PageIndex - 1)"
+                                   asp-route-status="@Model.CurrentStatus"
+                                   asp-route-keyword="@Model.Keyword"
+                                   asp-route-fromDate="@Model.FromDate"
+                                   asp-route-toDate="@Model.ToDate"
+                                   class="page-link">
+                                    <i class="fas fa-chevron-left"></i>
+                                </a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="page-item disabled">
+                                <span class="page-link"><i class="fas fa-chevron-left"></i></span>
+                            </li>
+                        }
+                        
+                        @for (int i = Math.Max(1, Model.Orders.PageIndex - 2); i <= Math.Min(Model.Orders.TotalPages, Model.Orders.PageIndex + 2); i++)
+                        {
+                            <li class="page-item @(i == Model.Orders.PageIndex ? "active" : "")">
+                                <a asp-action="Index"
+                                   asp-route-pageNumber="@i"
+                                   asp-route-status="@Model.CurrentStatus"
+                                   asp-route-keyword="@Model.Keyword"
+                                   asp-route-fromDate="@Model.FromDate"
+                                   asp-route-toDate="@Model.ToDate"
+                                   class="page-link">@i</a>
+                            </li>
+                        }
+                        
+                        @if (Model.Orders.HasNextPage)
+                        {
+                            <li class="page-item">
+                                <a asp-action="Index"
+                                   asp-route-pageNumber="@(Model.Orders.PageIndex + 1)"
+                                   asp-route-status="@Model.CurrentStatus"
+                                   asp-route-keyword="@Model.Keyword"
+                                   asp-route-fromDate="@Model.FromDate"
+                                   asp-route-toDate="@Model.ToDate"
+                                   class="page-link">
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="page-item disabled">
+                                <span class="page-link"><i class="fas fa-chevron-right"></i></span>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            }
+        </div>
+    </div>
+</section>

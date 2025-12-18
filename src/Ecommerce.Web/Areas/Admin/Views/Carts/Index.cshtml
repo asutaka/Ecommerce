@@ -1,77 +1,221 @@
 @model Ecommerce.Web.Areas.Admin.ViewModels.CartListViewModel
 
 @{
-    ViewData["Title"] = "Quản lý giỏ hàng active";
+    ViewData["Title"] = "Quản lý giỏ hàng";
 }
 
-<div class="container-fluid px-0">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h1 class="h3 mb-0">Giỏ hàng đang hoạt động</h1>
-            <p class="text-muted">Các giỏ hàng có cập nhật trong 24h qua</p>
+<!-- Content Header -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">
+                    <i class="fas fa-shopping-cart text-primary"></i> Quản lý giỏ hàng
+                </h1>
+            </div>
+            <div class="col-sm-6">
+                <div class="float-right">
+                    <a asp-controller="Settings" asp-action="Index" class="btn btn-secondary mr-2">
+                        <i class="fas fa-arrow-left"></i> Quay lại
+                    </a>
+                    <a asp-action="Analytics" class="btn btn-info">
+                        <i class="fas fa-chart-line"></i> Thống kê bỏ giỏ
+                    </a>
+                </div>
+            </div>
         </div>
-        <a asp-action="Analytics" class="btn btn-outline-info rounded-pill">
-            <i class="bi bi-graph-up me-2"></i>Xem thống kê bỏ giỏ
-        </a>
     </div>
+</div>
 
-    <div class="card bg-transparent border-secondary">
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-dark table-hover mb-0 align-middle">
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- Info boxes -->
+        <div class="row mb-3">
+            <div class="col-md-3 col-sm-6 col-12">
+                <div class="info-box">
+                    <span class="info-box-icon bg-info"><i class="fas fa-shopping-cart"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">Tổng giỏ hàng</span>
+                        <span class="info-box-number">@Model.Carts.TotalCount</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 col-12">
+                <div class="info-box">
+                    <span class="info-box-icon bg-success"><i class="fas fa-box"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">Tổng sản phẩm</span>
+                        <span class="info-box-number">@Model.Carts.Sum(c => c.Items.Sum(i => i.Quantity))</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 col-12">
+                <div class="info-box">
+                    <span class="info-box-icon bg-warning"><i class="fas fa-dollar-sign"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">Giá trị tạm tính</span>
+                        <span class="info-box-number">@Model.Carts.Sum(c => c.Items.Sum(i => i.UnitPrice * i.Quantity)).ToString("N0") ₫</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 col-12">
+                <div class="info-box">
+                    <span class="info-box-icon bg-danger"><i class="fas fa-clock"></i></span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">Cập nhật 24h</span>
+                        <span class="info-box-number">@Model.Carts.Count(c => c.UpdatedAt.HasValue && c.UpdatedAt.Value > DateTime.UtcNow.AddHours(-24))</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Danh sách giỏ hàng đang hoạt động</h3>
+                <div class="card-tools">
+                    <small class="text-muted">
+                        <i class="fas fa-info-circle"></i> Các giỏ hàng có cập nhật trong 24h qua
+                    </small>
+                </div>
+            </div>
+            
+            <div class="card-body p-0">
+                <table class="table table-hover text-nowrap">
                     <thead>
                         <tr>
                             <th>Session ID</th>
                             <th>Số lượng SP</th>
-                            <th>Tổng giá trị (tạm tính)</th>
+                            <th>Tổng giá trị</th>
                             <th>Cập nhật cuối</th>
-                            <th class="text-end">Thao tác</th>
+                            <th>Trạng thái</th>
+                            <th class="text-right">Thao tác</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var item in Model.Carts)
+                        @if (Model.Carts.Any())
+                        {
+                            @foreach (var item in Model.Carts)
+                            {
+                                var totalValue = item.Items.Sum(x => x.UnitPrice * x.Quantity);
+                                var itemCount = item.Items.Sum(x => x.Quantity);
+                                var lastUpdate = item.UpdatedAt?.ToLocalTime();
+                                var isRecent = lastUpdate.HasValue && lastUpdate.Value > DateTime.Now.AddHours(-1);
+                                
+                                <tr>
+                                    <td>
+                                        <code class="text-primary">@item.SessionId.Substring(0, Math.Min(16, item.SessionId.Length))...</code>
+                                    </td>
+                                    <td>
+                                        <span class="badge badge-info">@itemCount sản phẩm</span>
+                                    </td>
+                                    <td>
+                                        <strong>@totalValue.ToString("N0") ₫</strong>
+                                    </td>
+                                    <td>
+                                        <small>
+                                            @if (lastUpdate.HasValue)
+                                            {
+                                                @lastUpdate.Value.ToString("dd/MM/yyyy HH:mm")
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">Chưa cập nhật</span>
+                                            }
+                                        </small>
+                                    </td>
+                                    <td>
+                                        @if (isRecent)
+                                        {
+                                            <span class="badge badge-success">
+                                                <i class="fas fa-circle"></i> Đang hoạt động
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge badge-secondary">
+                                                <i class="far fa-circle"></i> Không hoạt động
+                                            </span>
+                                        }
+                                    </td>
+                                    <td class="text-right">
+                                        <div class="btn-group">
+                                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info" title="Chi tiết">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
                         {
                             <tr>
-                                <td><code class="text-info">@item.SessionId</code></td>
-                                <td>@item.Items.Sum(x => x.Quantity)</td>
-                                <td>@item.Items.Sum(x => x.UnitPrice * x.Quantity).ToString("N0") ₫</td>
-                                <td>@item.UpdatedAt?.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</td>
-                                <td class="text-end">
-                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-light">
-                                        <i class="bi bi-eye me-1"></i> Chi tiết
-                                    </a>
+                                <td colspan="6" class="text-center text-muted py-4">
+                                    <i class="fas fa-inbox fa-3x mb-3 d-block"></i>
+                                    <p class="mb-0">Không có giỏ hàng nào</p>
                                 </td>
                             </tr>
                         }
                     </tbody>
                 </table>
             </div>
-        </div>
-        @if (Model.Carts.TotalPages > 1)
-        {
-            <div class="card-footer border-top border-secondary bg-transparent">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div class="text-muted small">
-                        Trang @Model.Carts.PageIndex / @Model.Carts.TotalPages
+            
+            @if (Model.Carts.TotalPages > 1)
+            {
+                <div class="card-footer clearfix">
+                    <div class="float-left">
+                        <small class="text-muted">
+                            Trang @Model.Carts.PageIndex / @Model.Carts.TotalPages
+                            (Tổng: <strong>@Model.Carts.TotalCount</strong> giỏ hàng)
+                        </small>
                     </div>
-                    <div>
-                        @{
-                            var prevDisabled = !Model.Carts.HasPreviousPage ? "disabled" : "";
-                            var nextDisabled = !Model.Carts.HasNextPage ? "disabled" : "";
+                    <ul class="pagination pagination-sm m-0 float-right">
+                        @if (Model.Carts.HasPreviousPage)
+                        {
+                            <li class="page-item">
+                                <a asp-action="Index"
+                                   asp-route-pageNumber="@(Model.Carts.PageIndex - 1)"
+                                   class="page-link">
+                                    <i class="fas fa-chevron-left"></i>
+                                </a>
+                            </li>
                         }
-                        <a asp-action="Index"
-                           asp-route-pageNumber="@(Model.Carts.PageIndex - 1)"
-                           class="btn btn-sm btn-outline-light @prevDisabled">
-                            <i class="bi bi-chevron-left"></i> Trước
-                        </a>
-                        <a asp-action="Index"
-                           asp-route-pageNumber="@(Model.Carts.PageIndex + 1)"
-                           class="btn btn-sm btn-outline-light @nextDisabled ms-1">
-                            Sau <i class="bi bi-chevron-right"></i>
-                        </a>
-                    </div>
+                        else
+                        {
+                            <li class="page-item disabled">
+                                <span class="page-link"><i class="fas fa-chevron-left"></i></span>
+                            </li>
+                        }
+                        
+                        @for (int i = Math.Max(1, Model.Carts.PageIndex - 2); i <= Math.Min(Model.Carts.TotalPages, Model.Carts.PageIndex + 2); i++)
+                        {
+                            <li class="page-item @(i == Model.Carts.PageIndex ? "active" : "")">
+                                <a asp-action="Index"
+                                   asp-route-pageNumber="@i"
+                                   class="page-link">@i</a>
+                            </li>
+                        }
+                        
+                        @if (Model.Carts.HasNextPage)
+                        {
+                            <li class="page-item">
+                                <a asp-action="Index"
+                                   asp-route-pageNumber="@(Model.Carts.PageIndex + 1)"
+                                   class="page-link">
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="page-item disabled">
+                                <span class="page-link"><i class="fas fa-chevron-right"></i></span>
+                            </li>
+                        }
+                    </ul>
                 </div>
-            </div>
-        }
+            }
+        </div>
     </div>
-</div>
+</section>

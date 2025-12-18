@@ -5,202 +5,274 @@
     ViewData["Title"] = "Chi tiết đơn hàng";
 }
 
-<div class="container-fluid px-0">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <div class="d-flex align-items-center gap-3">
-                <h1 class="h3 mb-0">Đơn hàng <code class="text-info fs-4">@Model.Id</code></h1>
-                @switch (Model.Status)
-                {
-                    case OrderStatus.PendingInvoice:
-                        <span class="badge bg-secondary">Chờ hóa đơn</span>
-                        break;
-                    case OrderStatus.Invoiced:
-                        <span class="badge bg-info text-dark">Đã xuất HĐ</span>
-                        break;
-                    case OrderStatus.PaymentProcessing:
-                        <span class="badge bg-warning text-dark">Đang xử lý TT</span>
-                        break;
-                    case OrderStatus.Paid:
-                        <span class="badge bg-success">Đã thanh toán</span>
-                        break;
-                    case OrderStatus.Notified:
-                        <span class="badge bg-primary">Đã thông báo</span>
-                        break;
-                    case OrderStatus.Completed:
-                        <span class="badge bg-success">Hoàn thành</span>
-                        break;
-                    case OrderStatus.Failed:
-                        <span class="badge bg-danger">Thất bại</span>
-                        break;
-                }
+<!-- Content Header -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">
+                    <i class="fas fa-shopping-cart text-primary"></i> Chi tiết đơn hàng
+                </h1>
             </div>
-            <p class="text-muted mt-1">Ngày đặt: @Model.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm:ss")</p>
-        </div>
-        <div>
-            <a asp-action="Index" class="btn btn-outline-light rounded-pill me-2">
-                <i class="bi bi-arrow-left me-2"></i>Quay lại
-            </a>
-            @if (Model.Status != OrderStatus.Completed && Model.Status != OrderStatus.Cancelled && Model.Status != OrderStatus.Failed)
-            {
-                <form asp-action="Cancel" asp-route-id="@Model.Id" method="post" class="d-inline" onsubmit="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này?');">
-                    <button type="submit" class="btn btn-danger rounded-pill">
-                        <i class="bi bi-x-circle me-2"></i>Hủy đơn hàng
-                    </button>
-                </form>
-            }
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-8">
-            <!-- Order Items -->
-            <div class="card bg-transparent border-secondary mb-4">
-                <div class="card-header border-secondary bg-transparent">
-                    <h5 class="mb-0"><i class="bi bi-cart3 me-2"></i>Sản phẩm</h5>
-                </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-dark table-hover mb-0">
-                            <thead>
-                                <tr>
-                                    <th>Sản phẩm</th>
-                                    <th class="text-end">Đơn giá</th>
-                                    <th class="text-center">SL</th>
-                                    <th class="text-end">Thành tiền</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var item in Model.Items)
-                                {
-                                    <tr>
-                                        <td>@item.ProductName</td>
-                                        <td class="text-end">@item.UnitPrice.ToString("N0") ₫</td>
-                                        <td class="text-center">@item.Quantity</td>
-                                        <td class="text-end">@item.LineTotal.ToString("N0") ₫</td>
-                                    </tr>
-                                }
-                            </tbody>
-                            <tfoot>
-                                <tr class="fw-bold">
-                                    <td colspan="3" class="text-end">Tổng cộng:</td>
-                                    <td class="text-end text-success fs-5">@Model.Total.ToString("N0") ₫</td>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Saga Timeline / Status -->
-            <div class="card bg-transparent border-secondary">
-                <div class="card-header border-secondary bg-transparent">
-                    <h5 class="mb-0"><i class="bi bi-activity me-2"></i>Tiến trình xử lý (Saga)</h5>
-                </div>
-                <div class="card-body">
-                    <div class="position-relative m-4">
-                        <div class="progress" style="height: 2px;">
-                            @{
-                                var progress = 0;
-                                if (Model.Status >= OrderStatus.Invoiced) progress = 33;
-                                if (Model.Status >= OrderStatus.Paid) progress = 66;
-                                if (Model.Status >= OrderStatus.Completed) progress = 100;
-                            }
-                            <div class="progress-bar bg-success" role="progressbar" style="width: @progress%;" aria-valuenow="@progress" aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
-                        <div class="position-absolute top-0 start-0 translate-middle btn btn-sm btn-primary rounded-pill" style="width: 2rem; height:2rem;">1</div>
-                        <div class="position-absolute top-0 start-33 translate-middle btn btn-sm @(Model.Status >= OrderStatus.Invoiced ? "btn-primary" : "btn-secondary") rounded-pill" style="width: 2rem; height:2rem; left: 33%;">2</div>
-                        <div class="position-absolute top-0 start-66 translate-middle btn btn-sm @(Model.Status >= OrderStatus.Paid ? "btn-primary" : "btn-secondary") rounded-pill" style="width: 2rem; height:2rem; left: 66%;">3</div>
-                        <div class="position-absolute top-0 start-100 translate-middle btn btn-sm @(Model.Status >= OrderStatus.Completed ? "btn-primary" : "btn-secondary") rounded-pill" style="width: 2rem; height:2rem; left: 100%;">4</div>
-                        
-                        <div class="d-flex justify-content-between mt-3 text-muted small">
-                            <span>Khởi tạo</span>
-                            <span>Hóa đơn</span>
-                            <span>Thanh toán</span>
-                            <span>Hoàn tất</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <!-- Customer Info -->
-            <div class="card bg-transparent border-secondary mb-4">
-                <div class="card-header border-secondary bg-transparent">
-                    <h5 class="mb-0"><i class="bi bi-person me-2"></i>Khách hàng</h5>
-                </div>
-                <div class="card-body">
-                    <div class="mb-3">
-                        <label class="text-muted small">Họ tên</label>
-                        <div class="fw-bold">@Model.CustomerName</div>
-                    </div>
-                    <div>
-                        <label class="text-muted small">Email</label>
-                        <div><a href="mailto:@Model.CustomerEmail" class="text-info text-decoration-none">@Model.CustomerEmail</a></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Payment Info -->
-            <div class="card bg-transparent border-secondary mb-4">
-                <div class="card-header border-secondary bg-transparent">
-                    <h5 class="mb-0"><i class="bi bi-credit-card me-2"></i>Thanh toán</h5>
-                </div>
-                <div class="card-body">
-                    @if (Model.Payment != null)
+            <div class="col-sm-6">
+                <div class="float-right">
+                    <a asp-action="Index" class="btn btn-secondary mr-2">
+                        <i class="fas fa-arrow-left"></i> Quay lại
+                    </a>
+                    @if (Model.Status != OrderStatus.Completed && Model.Status != OrderStatus.Cancelled && Model.Status != OrderStatus.Failed)
                     {
-                        <div class="mb-3">
-                            <label class="text-muted small">Số tiền</label>
-                            <div class="fw-bold text-success">@Model.Payment.Amount.ToString("N0") ₫</div>
-                        </div>
-                        <div class="mb-3">
-                            <label class="text-muted small">Mã tham chiếu</label>
-                            <div class="font-monospace">@Model.Payment.Reference</div>
-                        </div>
-                        <div>
-                            <label class="text-muted small">Thời gian xử lý</label>
-                            <div>@Model.Payment.ProcessedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm:ss")</div>
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="text-muted fst-italic">Chưa có thông tin thanh toán</div>
-                    }
-                </div>
-            </div>
-
-            <!-- Notification Log -->
-            <div class="card bg-transparent border-secondary">
-                <div class="card-header border-secondary bg-transparent">
-                    <h5 class="mb-0"><i class="bi bi-bell me-2"></i>Thông báo</h5>
-                </div>
-                <div class="card-body">
-                    @if (Model.Notification != null)
-                    {
-                        <div class="mb-3">
-                            <label class="text-muted small">Kênh</label>
-                            <div><span class="badge bg-light text-dark">@Model.Notification.Channel</span></div>
-                        </div>
-                        <div class="mb-3">
-                            <label class="text-muted small">Gửi đến</label>
-                            <div>@Model.Notification.Destination</div>
-                        </div>
-                        <div class="mb-3">
-                            <label class="text-muted small">Thời gian gửi</label>
-                            <div>@Model.Notification.SentAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm:ss")</div>
-                        </div>
-                        <div>
-                            <label class="text-muted small">Nội dung</label>
-                            <div class="p-2 bg-dark rounded border border-secondary small">@Model.Notification.Message</div>
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="text-muted fst-italic">Chưa có log thông báo</div>
+                        <form asp-action="Cancel" asp-route-id="@Model.Id" method="post" class="d-inline" onsubmit="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này?');">
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-times-circle"></i> Hủy đơn hàng
+                            </button>
+                        </form>
                     }
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- Order Header Info -->
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <div class="callout callout-info">
+                    <h5><i class="fas fa-info-circle"></i> Mã đơn hàng: <code>#@Model.Id.ToString().Substring(0, 8)</code></h5>
+                    <p class="mb-0">
+                        <strong>Ngày đặt:</strong> @Model.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm:ss") |
+                        <strong>Trạng thái:</strong>
+                        @switch (Model.Status)
+                        {
+                            case OrderStatus.PendingInvoice:
+                                <span class="badge badge-secondary"><i class="fas fa-clock"></i> Chờ hóa đơn</span>
+                                break;
+                            case OrderStatus.Invoiced:
+                                <span class="badge badge-info"><i class="fas fa-file-invoice"></i> Đã xuất HĐ</span>
+                                break;
+                            case OrderStatus.PaymentProcessing:
+                                <span class="badge badge-warning"><i class="fas fa-spinner fa-spin"></i> Đang xử lý TT</span>
+                                break;
+                            case OrderStatus.Paid:
+                                <span class="badge badge-success"><i class="fas fa-check-circle"></i> Đã thanh toán</span>
+                                break;
+                            case OrderStatus.Notified:
+                                <span class="badge badge-primary"><i class="fas fa-bell"></i> Đã thông báo</span>
+                                break;
+                            case OrderStatus.Completed:
+                                <span class="badge badge-success"><i class="fas fa-check-double"></i> Hoàn thành</span>
+                                break;
+                            case OrderStatus.Cancelled:
+                                <span class="badge badge-dark"><i class="fas fa-ban"></i> Đã hủy</span>
+                                break;
+                            case OrderStatus.Failed:
+                                <span class="badge badge-danger"><i class="fas fa-times-circle"></i> Thất bại</span>
+                                break;
+                        }
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Left Column -->
+            <div class="col-md-8">
+                <!-- Order Items -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fas fa-box"></i> Sản phẩm</h3>
+                    </div>
+                    <div class="card-body p-0">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Sản phẩm</th>
+                                    <th class="text-right">Đơn giá</th>
+                                    <th class="text-center">SL</th>
+                                    <th class="text-right">Thành tiền</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.Items)
+                                {
+                                    <tr>
+                                        <td>
+                                            <strong>@item.ProductName</strong>
+                                        </td>
+                                        <td class="text-right">@item.UnitPrice.ToString("N0") ₫</td>
+                                        <td class="text-center"><span class="badge badge-primary">@item.Quantity</span></td>
+                                        <td class="text-right"><strong>@item.LineTotal.ToString("N0") ₫</strong></td>
+                                    </tr>
+                                }
+                            </tbody>
+                            <tfoot>
+                                <tr class="bg-light">
+                                    <td colspan="3" class="text-right"><strong>Tổng cộng:</strong></td>
+                                    <td class="text-right"><h5 class="text-success mb-0">@Model.Total.ToString("N0") ₫</h5></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Order Progress -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fas fa-tasks"></i> Tiến trình xử lý</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="timeline">
+                            <div>
+                                <i class="fas fa-file-alt bg-blue"></i>
+                                <div class="timeline-item">
+                                    <span class="time"><i class="fas fa-clock"></i> @Model.CreatedAt.ToLocalTime().ToString("HH:mm")</span>
+                                    <h3 class="timeline-header">Đơn hàng được tạo</h3>
+                                    <div class="timeline-body">
+                                        Đơn hàng #@Model.Id.ToString().Substring(0, 8) đã được khởi tạo
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            @if (Model.Status >= OrderStatus.Invoiced)
+                            {
+                                <div>
+                                    <i class="fas fa-file-invoice bg-info"></i>
+                                    <div class="timeline-item">
+                                        <span class="time"><i class="fas fa-clock"></i> @Model.CreatedAt.ToLocalTime().ToString("HH:mm")</span>
+                                        <h3 class="timeline-header">Hóa đơn đã xuất</h3>
+                                    </div>
+                                </div>
+                            }
+                            
+                            @if (Model.Status >= OrderStatus.Paid && Model.Payment != null)
+                            {
+                                <div>
+                                    <i class="fas fa-credit-card bg-success"></i>
+                                    <div class="timeline-item">
+                                        <span class="time"><i class="fas fa-clock"></i> @Model.Payment.ProcessedAt.ToLocalTime().ToString("HH:mm")</span>
+                                        <h3 class="timeline-header">Thanh toán thành công</h3>
+                                        <div class="timeline-body">
+                                            Số tiền: <strong class="text-success">@Model.Payment.Amount.ToString("N0") ₫</strong><br>
+                                            Mã tham chiếu: <code>@Model.Payment.Reference</code>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            
+                            @if (Model.Status >= OrderStatus.Notified && Model.Notification != null)
+                            {
+                                <div>
+                                    <i class="fas fa-bell bg-warning"></i>
+                                    <div class="timeline-item">
+                                        <span class="time"><i class="fas fa-clock"></i> @Model.Notification.SentAt.ToLocalTime().ToString("HH:mm")</span>
+                                        <h3 class="timeline-header">Đã gửi thông báo</h3>
+                                        <div class="timeline-body">
+                                            Kênh: <span class="badge badge-secondary">@Model.Notification.Channel</span><br>
+                                            Gửi đến: @Model.Notification.Destination
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            
+                            @if (Model.Status == OrderStatus.Completed)
+                            {
+                                <div>
+                                    <i class="fas fa-check-circle bg-success"></i>
+                                    <div class="timeline-item">
+                                        <h3 class="timeline-header">Đơn hàng hoàn thành</h3>
+                                    </div>
+                                </div>
+                            }
+                            
+                            @if (Model.Status == OrderStatus.Failed || Model.Status == OrderStatus.Cancelled)
+                            {
+                                <div>
+                                    <i class="fas fa-times-circle bg-danger"></i>
+                                    <div class="timeline-item">
+                                        <h3 class="timeline-header">
+                                            @(Model.Status == OrderStatus.Failed ? "Đơn hàng thất bại" : "Đơn hàng đã hủy")
+                                        </h3>
+                                    </div>
+                                </div>
+                            }
+                            
+                            <div>
+                                <i class="fas fa-clock bg-gray"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="col-md-4">
+                <!-- Customer Info -->
+                <div class="card card-primary card-outline">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fas fa-user"></i> Thông tin khách hàng</h3>
+                    </div>
+                    <div class="card-body">
+                        <strong><i class="fas fa-user-circle mr-1"></i> Họ tên</strong>
+                        <p class="text-muted">@Model.CustomerName</p>
+                        <hr>
+                        <strong><i class="fas fa-envelope mr-1"></i> Email</strong>
+                        <p class="text-muted">
+                            <a href="mailto:@Model.CustomerEmail">@Model.CustomerEmail</a>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Payment Info -->
+                <div class="card card-success card-outline">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fas fa-credit-card"></i> Thanh toán</h3>
+                    </div>
+                    <div class="card-body">
+                        @if (Model.Payment != null)
+                        {
+                            <strong><i class="fas fa-money-bill-wave mr-1"></i> Số tiền</strong>
+                            <p class="text-success"><strong>@Model.Payment.Amount.ToString("N0") ₫</strong></p>
+                            <hr>
+                            <strong><i class="fas fa-hashtag mr-1"></i> Mã tham chiếu</strong>
+                            <p class="text-muted"><code>@Model.Payment.Reference</code></p>
+                            <hr>
+                            <strong><i class="fas fa-clock mr-1"></i> Thời gian xử lý</strong>
+                            <p class="text-muted">@Model.Payment.ProcessedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm:ss")</p>
+                        }
+                        else
+                        {
+                            <p class="text-muted"><em>Chưa có thông tin thanh toán</em></p>
+                        }
+                    </div>
+                </div>
+
+                <!-- Notification Log -->
+                @if (Model.Notification != null)
+                {
+                    <div class="card card-warning card-outline">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="fas fa-bell"></i> Thông báo</h3>
+                        </div>
+                        <div class="card-body">
+                            <strong><i class="fas fa-broadcast-tower mr-1"></i> Kênh</strong>
+                            <p class="text-muted"><span class="badge badge-info">@Model.Notification.Channel</span></p>
+                            <hr>
+                            <strong><i class="fas fa-paper-plane mr-1"></i> Gửi đến</strong>
+                            <p class="text-muted">@Model.Notification.Destination</p>
+                            <hr>
+                            <strong><i class="fas fa-clock mr-1"></i> Thời gian gửi</strong>
+                            <p class="text-muted">@Model.Notification.SentAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm:ss")</p>
+                            <hr>
+                            <strong><i class="fas fa-comment-alt mr-1"></i> Nội dung</strong>
+                            <div class="callout callout-secondary">
+                                <small>@Model.Notification.Message</small>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</section>
