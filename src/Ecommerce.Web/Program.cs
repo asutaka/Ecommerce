@@ -42,6 +42,9 @@ builder.Services.AddScoped<Ecommerce.Web.Services.ICustomerAuthService, Ecommerc
 builder.Services.AddScoped<Ecommerce.Web.Services.IPermissionService, Ecommerce.Web.Services.PermissionService>();
 builder.Services.AddHttpContextAccessor(); // Required for PermissionService to get current user
 
+// Register banner analytics service
+builder.Services.AddScoped<Ecommerce.Web.Services.IBannerAnalyticsService, Ecommerce.Web.Services.BannerAnalyticsService>();
+
 // Configure MoMo Payment
 builder.Services.Configure<Ecommerce.Web.Models.MoMoPaymentOptions>(
     builder.Configuration.GetSection(Ecommerce.Web.Models.MoMoPaymentOptions.SectionName));

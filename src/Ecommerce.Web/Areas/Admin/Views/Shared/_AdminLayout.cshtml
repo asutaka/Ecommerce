@@ -179,6 +179,17 @@
                             </li>
                         }
 
+                        <!-- Banners - Check permission -->
+                        @if (await PermissionService.HasPermissionAsync("products.view"))
+                        {
+                            <li class="nav-item">
+                                <a asp-area="Admin" asp-controller="Banners" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Banners" ? "active" : "")">
+                                    <i class="nav-icon fas fa-image"></i>
+                                    <p>Banners</p>
+                                </a>
+                            </li>
+                        }
+
                         <!-- Orders - Check permission -->
                         @if (await PermissionService.HasPermissionAsync("orders.view"))
                         {

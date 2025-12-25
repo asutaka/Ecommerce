@@ -24,6 +24,8 @@ public class EcommerceDbContext(DbContextOptions<EcommerceDbContext> options) : 
     public DbSet<Supplier> Suppliers => Set<Supplier>();
     public DbSet<Warehouse> Warehouses => Set<Warehouse>();
     public DbSet<Group> Groups => Set<Group>();
+    public DbSet<Banner> Banners => Set<Banner>();
+    public DbSet<BannerAnalytics> BannerAnalytics => Set<BannerAnalytics>();
 
     // In OnModelCreating
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -262,6 +264,44 @@ public class EcommerceDbContext(DbContextOptions<EcommerceDbContext> options) : 
 
             entity.HasIndex(x => x.Code).IsUnique();
             entity.HasIndex(x => x.IsActive);
+        });
+
+
+        modelBuilder.Entity<Banner>(entity =>
+        {
+            entity.Property(x => x.Title).HasMaxLength(200).IsRequired();
+            entity.Property(x => x.Description).HasMaxLength(500);
+            entity.Property(x => x.ImageUrl).HasMaxLength(1024).IsRequired();
+            entity.Property(x => x.MobileImageUrl).HasMaxLength(1024);
+            entity.Property(x => x.LinkUrl).HasMaxLength(1024);
+            
+            // Indexes for better query performance
+            entity.HasIndex(x => x.IsActive);
+            entity.HasIndex(x => x.BannerType);
+            entity.HasIndex(x => x.Position);
+            entity.HasIndex(x => x.DisplayOrder);
+            entity.HasIndex(x => new { x.StartDate, x.EndDate });
+            
+            // Relationship with Category
+            entity.HasOne(x => x.Category)
+                .WithMany()
+                .HasForeignKey(x => x.CategoryId)
+                .OnDelete(DeleteBehavior.SetNull);
+        });
+
+        modelBuilder.Entity<BannerAnalytics>(entity =>
+        {
+            // Composite unique index on BannerId and Date
+            entity.HasIndex(x => new { x.BannerId, x.Date }).IsUnique();
+            
+            // Index for date filtering
+            entity.HasIndex(x => x.Date);
+            
+            // Relationship with Banner
+            entity.HasOne(x => x.Banner)
+                .WithMany()
+                .HasForeignKey(x => x.BannerId)
+                .OnDelete(DeleteBehavior.Cascade); // Delete analytics when banner is deleted
         });
 
         //modelBuilder.SeedInitialData();

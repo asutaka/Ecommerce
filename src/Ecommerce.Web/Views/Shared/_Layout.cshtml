@@ -20,8 +20,13 @@
     <link rel="stylesheet" href="~/css/slider.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/navigation.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/sections.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/banner.css" asp-append-version="true" />
 </head>
 <body>
+    @await Html.PartialAsync("_TopBannerPartial")
+    @await Html.PartialAsync("_LeftSidebarPartial")
+    @await Html.PartialAsync("_RightSidebarPartial")
+    @await Html.PartialAsync("_PopupBannerPartial")
     <div class="page-wrapper">
         <header class="moderno-nav">
             <a asp-controller="Home" asp-action="Index" style="text-decoration: none; color: inherit;">
@@ -195,6 +200,7 @@
     </script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/js/cart.js" asp-append-version="true"></script>
+    <script src="~/js/banner-tracking.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

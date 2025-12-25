@@ -70,20 +70,129 @@ namespace Ecommerce.Infrastructure.Migrations
                     b.HasIndex("Username")
                         .IsUnique();
 
-                    b.ToTable("AdminUsers", (string)null);
+                    b.ToTable("AdminUsers");
 
                     b.HasData(
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2025, 12, 18, 7, 41, 33, 842, DateTimeKind.Utc).AddTicks(3437),
+                            CreatedAt = new DateTime(2025, 12, 25, 7, 35, 10, 320, DateTimeKind.Utc).AddTicks(9792),
                             Email = "admin@ecommerce.com",
                             FullName = "Administrator",
                             IsActive = true,
-                            PasswordHash = "$2a$11$nlKvehOEts.n9GEB24oVRu3Ox/HS9v0WiqbZGfTXPabxW3P.67vAq",
-                            UpdatedAt = new DateTime(2025, 12, 18, 7, 41, 33, 842, DateTimeKind.Utc).AddTicks(3445),
+                            PasswordHash = "$2a$11$Sv9RiTrkJ/H4DuipSKvit.71Oc4gs4/SfKbw5.1rxon7rNsMZd3mC",
+                            UpdatedAt = new DateTime(2025, 12, 25, 7, 35, 10, 320, DateTimeKind.Utc).AddTicks(9798),
                             Username = "admin"
                         });
+                });
+
+            modelBuilder.Entity("Ecommerce.Infrastructure.Entities.Banner", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("BannerType")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid?>("CategoryId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("EndDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasMaxLength(1024)
+                        .HasColumnType("character varying(1024)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("LinkUrl")
+                        .HasMaxLength(1024)
+                        .HasColumnType("character varying(1024)");
+
+                    b.Property<string>("MobileImageUrl")
+                        .HasMaxLength(1024)
+                        .HasColumnType("character varying(1024)");
+
+                    b.Property<bool>("OpenInNewTab")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("Position")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("StartDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BannerType");
+
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("DisplayOrder");
+
+                    b.HasIndex("IsActive");
+
+                    b.HasIndex("Position");
+
+                    b.HasIndex("StartDate", "EndDate");
+
+                    b.ToTable("Banners");
+                });
+
+            modelBuilder.Entity("Ecommerce.Infrastructure.Entities.BannerAnalytics", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("BannerId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Clicks")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Views")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Date");
+
+                    b.HasIndex("BannerId", "Date")
+                        .IsUnique();
+
+                    b.ToTable("BannerAnalytics");
                 });
 
             modelBuilder.Entity("Ecommerce.Infrastructure.Entities.CartItem", b =>
@@ -144,7 +253,7 @@ namespace Ecommerce.Infrastructure.Migrations
 
                     b.HasIndex("ProductVariantId");
 
-                    b.ToTable("CartItems", (string)null);
+                    b.ToTable("CartItems");
                 });
 
             modelBuilder.Entity("Ecommerce.Infrastructure.Entities.Category", b =>
@@ -178,7 +287,7 @@ namespace Ecommerce.Infrastructure.Migrations
 
                     b.HasIndex("ParentId");
 
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("Ecommerce.Infrastructure.Entities.Coupon", b =>
@@ -237,7 +346,7 @@ namespace Ecommerce.Infrastructure.Migrations
 
                     b.HasIndex("IsActive");
 
-                    b.ToTable("Coupons", (string)null);
+                    b.ToTable("Coupons");
                 });
 
             modelBuilder.Entity("Ecommerce.Infrastructure.Entities.Customer", b =>
@@ -290,7 +399,7 @@ namespace Ecommerce.Infrastructure.Migrations
                     b.HasIndex("Email")
                         .IsUnique();
 
-                    b.ToTable("Customers", (string)null);
+                    b.ToTable("Customers");
                 });
 
             modelBuilder.Entity("Ecommerce.Infrastructure.Entities.ExternalLogin", b =>
@@ -325,7 +434,7 @@ namespace Ecommerce.Infrastructure.Migrations
                     b.HasIndex("Provider", "ProviderKey")
                         .IsUnique();
 
-                    b.ToTable("ExternalLogins", (string)null);
+                    b.ToTable("ExternalLogins");
                 });
 
             modelBuilder.Entity("Ecommerce.Infrastructure.Entities.Group", b =>
@@ -370,7 +479,7 @@ namespace Ecommerce.Infrastructure.Migrations
 
                     b.HasIndex("IsActive");
 
-                    b.ToTable("Groups", (string)null);
+                    b.ToTable("Groups");
                 });
 
             modelBuilder.Entity("Ecommerce.Infrastructure.Entities.NotificationLog", b =>
@@ -413,7 +522,7 @@ namespace Ecommerce.Infrastructure.Migrations
                     b.HasIndex("OrderId")
                         .IsUnique();
 
-                    b.ToTable("Notifications", (string)null);
+                    b.ToTable("Notifications");
                 });
 
             modelBuilder.Entity("Ecommerce.Infrastructure.Entities.Order", b =>
@@ -504,7 +613,7 @@ namespace Ecommerce.Infrastructure.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("Orders", (string)null);
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("Ecommerce.Infrastructure.Entities.OrderItem", b =>
@@ -553,7 +662,7 @@ namespace Ecommerce.Infrastructure.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("OrderItems", (string)null);
+                    b.ToTable("OrderItems");
                 });
 
             modelBuilder.Entity("Ecommerce.Infrastructure.Entities.Payment", b =>
@@ -594,7 +703,7 @@ namespace Ecommerce.Infrastructure.Migrations
                     b.HasIndex("OrderId")
                         .IsUnique();
 
-                    b.ToTable("Payments", (string)null);
+                    b.ToTable("Payments");
                 });
 
             modelBuilder.Entity("Ecommerce.Infrastructure.Entities.Product", b =>
@@ -642,7 +751,7 @@ namespace Ecommerce.Infrastructure.Migrations
 
                     b.HasIndex("PrimaryCategoryId");
 
-                    b.ToTable("Products", (string)null);
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("Ecommerce.Infrastructure.Entities.ProductCategory", b =>
@@ -657,7 +766,7 @@ namespace Ecommerce.Infrastructure.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("ProductCategories", (string)null);
+                    b.ToTable("ProductCategories");
                 });
 
             modelBuilder.Entity("Ecommerce.Infrastructure.Entities.ProductVariant", b =>
@@ -712,7 +821,7 @@ namespace Ecommerce.Infrastructure.Migrations
                     b.HasIndex("SKU")
                         .IsUnique();
 
-                    b.ToTable("ProductVariants", (string)null);
+                    b.ToTable("ProductVariants");
                 });
 
             modelBuilder.Entity("Ecommerce.Infrastructure.Entities.ShoppingCart", b =>
@@ -747,7 +856,7 @@ namespace Ecommerce.Infrastructure.Migrations
 
                     b.HasIndex("SessionId");
 
-                    b.ToTable("ShoppingCarts", (string)null);
+                    b.ToTable("ShoppingCarts");
                 });
 
             modelBuilder.Entity("Ecommerce.Infrastructure.Entities.Supplier", b =>
@@ -786,7 +895,7 @@ namespace Ecommerce.Infrastructure.Migrations
                     b.HasIndex("Code")
                         .IsUnique();
 
-                    b.ToTable("Suppliers", (string)null);
+                    b.ToTable("Suppliers");
                 });
 
             modelBuilder.Entity("Ecommerce.Infrastructure.Entities.Warehouse", b =>
@@ -825,7 +934,7 @@ namespace Ecommerce.Infrastructure.Migrations
                     b.HasIndex("Code")
                         .IsUnique();
 
-                    b.ToTable("Warehouses", (string)null);
+                    b.ToTable("Warehouses");
                 });
 
             modelBuilder.Entity("Ecommerce.Infrastructure.Entities.AdminUser", b =>
@@ -836,6 +945,27 @@ namespace Ecommerce.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Group");
+                });
+
+            modelBuilder.Entity("Ecommerce.Infrastructure.Entities.Banner", b =>
+                {
+                    b.HasOne("Ecommerce.Infrastructure.Entities.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("Ecommerce.Infrastructure.Entities.BannerAnalytics", b =>
+                {
+                    b.HasOne("Ecommerce.Infrastructure.Entities.Banner", "Banner")
+                        .WithMany()
+                        .HasForeignKey("BannerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Banner");
                 });
 
             modelBuilder.Entity("Ecommerce.Infrastructure.Entities.CartItem", b =>

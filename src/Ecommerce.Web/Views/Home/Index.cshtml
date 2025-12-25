@@ -38,78 +38,10 @@
     };
 }
 
-<section class="hero-carousel-wrapper" style="margin-bottom: 0 !important; max-width: 1200px; margin-left: auto; margin-right: auto; padding: 0 20px;">
-    <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="6000">
-        <div class="carousel-indicators">
-            @for (var i = 0; i < slides.Length; i++)
-            {
-                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="@i" class="@(i == 0 ? "active" : "")" aria-label="Slide @(i + 1)"></button>
-            }
-        </div>
-        <div class="carousel-inner">
-            @for (var i = 0; i < slides.Length; i++)
-            {
-                var slide = slides[i];
-                var isActive = i == 0;
-                <div class="carousel-item @(isActive ? "active" : "")">
-                    <div class="hero-slide" style="min-height: 320px !important;">
-                        @if (isActive)
-                        {
-                            @* First slide - load immediately *@
-                            <div class="hero-slide-inner" style="background-image:url('@ImageHelper.OptimizeImageUrl(slide.Image, 1200)'); min-height: 320px !important;">
-                                <div class="hero-overlay">
-                                    <div class="pill pill-dark">@slide.Badge</div>
-                                    <p class="pill subtle-pill">@slide.Subtitle</p>
-                                    <h1>@slide.Title</h1>
-                                    <p class="lede">@slide.Copy</p>
-                                    <div class="hero-cta">
-                                        <a class="btn btn-primary" href="@slide.CtaPrimary">Shop Now</a>
-                                        <a class="btn btn-ghost" href="@slide.CtaSecondary">Xem tất cả</a>
-                                    </div>
-                                    <div class="hero-perks">
-                                        <span>Miễn phí giao hàng &gt; 1.000.000đ</span>
-                                        <span>Đổi trả 30 ngày</span>
-                                        <span>Hàng mới mỗi tuần</span>
-                                    </div>
-                                </div>
-                            </div>
-                        }
-                        else
-                        {
-                            @* Other slides - lazy load with data-bg *@
-                            <div class="hero-slide-inner" data-bg="@ImageHelper.OptimizeImageUrl(slide.Image, 1200)" style="min-height: 320px !important;">
-                                <div class="hero-overlay">
-                                    <div class="pill pill-dark">@slide.Badge</div>
-                                    <p class="pill subtle-pill">@slide.Subtitle</p>
-                                    <h1>@slide.Title</h1>
-                                    <p class="lede">@slide.Copy</p>
-                                    <div class="hero-cta">
-                                        <a class="btn btn-primary" href="@slide.CtaPrimary">Shop Now</a>
-                                        <a class="btn btn-ghost" href="@slide.CtaSecondary">Xem tất cả</a>
-                                    </div>
-                                    <div class="hero-perks">
-                                        <span>Miễn phí giao hàng &gt; 1.000.000đ</span>
-                                        <span>Đổi trả 30 ngày</span>
-                                        <span>Hàng mới mỗi tuần</span>
-                                    </div>
-                                </div>
-                            </div>
-                        }
-                    </div>
-                </div>
-            }
-        </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
-        </button>
-    </div>
-</section>
+@* Database-driven Hero Banner *@
+@await Html.PartialAsync("_HeroBannerPartial")
 
+@* Status message *@
 @if (!string.IsNullOrWhiteSpace(status))
 {
     <div class="alert @(status == "success" ? "alert-success" : "alert-danger")">
@@ -145,6 +77,9 @@
         </div>
     </section>
 }
+
+@* Promotional Banners *@
+@await Html.PartialAsync("_PromotionalBannerPartial")
 
 @if (Model.NewArrivalsByCategory.Any())
 {
