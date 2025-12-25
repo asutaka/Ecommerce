@@ -1,0 +1,244 @@
+@model Ecommerce.Web.Areas.Admin.ViewModels.BannerAnalyticsViewModel
+
+@{
+    ViewData["Title"] = $"Analytics - {Model.BannerTitle}";
+}
+
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">Banner Analytics</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a asp-action="Index">Banners</a></li>
+                    <li class="breadcrumb-item active">Analytics</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="content">
+    <div class="container-fluid">
+        <!-- Banner Info -->
+        <div class="row mb-3">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h4>@Model.BannerTitle</h4>
+                        <span class="badge badge-info">@Model.BannerType</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Date Filter -->
+        <div class="row mb-3">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <form method="get" class="form-inline">
+                            <input type="hidden" name="id" value="@Model.BannerId" />
+                            <div class="form-group mr-3">
+                                <label class="mr-2">From:</label>
+                                <input type="date" name="from" class="form-control" value="@Model.FromDate.ToString("yyyy-MM-dd")" />
+                            </div>
+                            <div class="form-group mr-3">
+                                <label class="mr-2">To:</label>
+                                <input type="date" name="to" class="form-control" value="@Model.ToDate.ToString("yyyy-MM-dd")" />
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-filter"></i> Filter
+                            </button>
+                            <a asp-action="Analytics" asp-route-id="@Model.BannerId" class="btn btn-secondary ml-2">
+                                <i class="fas fa-redo"></i> Reset (Last 30 Days)
+                            </a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="row">
+            <div class="col-lg-4 col-6">
+                <div class="small-box bg-info">
+                    <div class="inner">
+                        <h3>@Model.TotalViews.ToString("N0")</h3>
+                        <p>Total Views (Impressions)</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-6">
+                <div class="small-box bg-success">
+                    <div class="inner">
+                        <h3>@Model.TotalClicks.ToString("N0")</h3>
+                        <p>Total Clicks</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-mouse-pointer"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-6">
+                <div class="small-box bg-warning">
+                    <div class="inner">
+                        <h3>@Model.AverageCTR.ToString("F2")%</h3>
+                        <p>Click-Through Rate (CTR)</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chart -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-chart-area mr-1"></i>
+                            Views & Clicks Over Time
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="analyticsChart" style="height: 300px;"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Daily Breakdown Table -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Daily Breakdown</h3>
+                    </div>
+                    <div class="card-body table-responsive">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th class="text-right">Views</th>
+                                    <th class="text-right">Clicks</th>
+                                    <th class="text-right">CTR (%)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.DailyData.Any())
+                                {
+                                    @foreach (var day in Model.DailyData.OrderByDescending(d => d.Date))
+                                    {
+                                        <tr>
+                                            <td>@DateTime.Parse(day.Date).ToString("dd/MM/yyyy") (@DateTime.Parse(day.Date).ToString("ddd"))</td>
+                                            <td class="text-right">@day.Views.ToString("N0")</td>
+                                            <td class="text-right">@day.Clicks.ToString("N0")</td>
+                                            <td class="text-right">@day.CTR.ToString("F2")%</td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="4" class="text-center text-muted">No data available for selected date range</td>
+                                    </tr>
+                                }
+                            </tbody>
+                            <tfoot>
+                                <tr class="font-weight-bold">
+                                    <td>Total</td>
+                                    <td class="text-right">@Model.TotalViews.ToString("N0")</td>
+                                    <td class="text-right">@Model.TotalClicks.ToString("N0")</td>
+                                    <td class="text-right">@Model.AverageCTR.ToString("F2")%</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script>
+        // Prepare chart data
+        var chartData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.DailyData.OrderBy(d => d.Date)));
+        
+        var labels = chartData.map(d => {
+            var date = new Date(d.Date);
+            return date.toLocaleDateString('vi-VN', { month: 'short', day: 'numeric' });
+        });
+        var viewsData = chartData.map(d => d.Views);
+        var clicksData = chartData.map(d => d.Clicks);
+        
+        // Create chart
+        var ctx = document.getElementById('analyticsChart').getContext('2d');
+        var chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Views',
+                        data: viewsData,
+                        borderColor: 'rgb(54, 162, 235)',
+                        backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    },
+                    {
+                        label: 'Clicks',
+                        data: clicksData,
+                        borderColor: 'rgb(75, 192, 192)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                plugins: {
+                    title: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            afterLabel: function(context) {
+                                if (context.datasetIndex === 0) {
+                                    var index = context.dataIndex;
+                                    var ctr = chartData[index].CTR;
+                                    return 'CTR: ' + ctr.toFixed(2) + '%';
+                                }
+                                return '';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+}

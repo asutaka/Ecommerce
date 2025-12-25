@@ -1,0 +1,274 @@
+@model Ecommerce.Web.Areas.Admin.ViewModels.BannerViewModel
+
+@{
+    ViewData["Title"] = "Thêm Banner mới";
+}
+
+<!-- Content Header -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-12">
+                <h1 class="m-0">
+                    <i class="fas fa-image text-primary"></i> Thêm Banner mới
+                </h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title">Thông tin Banner</h3>
+                        </div>
+                        
+                        <div class="card-body">
+                            <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                            <div class="form-group">
+                                <label asp-for="Title" class="required"></label>
+                                <input asp-for="Title" class="form-control" placeholder="Ví dụ: Banner khuyến mãi mùa hè">
+                                <span asp-validation-for="Title" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="Description"></label>
+                                <textarea asp-for="Description" class="form-control" rows="2" placeholder="Mô tả ngắn về banner"></textarea>
+                                <span asp-validation-for="Description" class="text-danger"></span>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label asp-for="BannerType" class="required"></label>
+                                        <select asp-for="BannerType" asp-items="Model.BannerTypes" class="form-control" id="bannerTypeSelect">
+                                        </select>
+                                        <span asp-validation-for="BannerType" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label asp-for="Position" class="required"></label>
+                                        <select asp-for="Position" asp-items="Model.Positions" class="form-control">
+                                        </select>
+                                        <span asp-validation-for="Position" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group" id="categorySelect">
+                                <label asp-for="CategoryId"></label>
+                                <select asp-for="CategoryId" asp-items="Model.Categories" class="form-control">
+                                </select>
+                                <span asp-validation-for="CategoryId" class="text-danger"></span>
+                                <small class="form-text text-muted">Chỉ áp dụng cho Banner loại Category</small>
+                            </div>
+
+                            <h6 class="border-bottom pb-2 mt-4 mb-3">
+                                <i class="fas fa-images"></i> Hình ảnh
+                            </h6>
+
+                            <div class="form-group">
+                                <label asp-for="ImageFile" class="required">Ảnh Desktop</label>
+                                <div class="custom-file">
+                                    <input asp-for="ImageFile" type="file" class="custom-file-input" id="desktopImageInput" accept="image/*">
+                                    <label class="custom-file-label" for="desktopImageInput">Chọn file ảnh...</label>
+                                </div>
+                                <span asp-validation-for="ImageFile" class="text-danger"></span>
+                                <small class="form-text text-muted">
+                                    Khuyến nghị: 1920x600px (Hero), 1920x80px (Top Bar), 1200x400px (Promotional)
+                                </small>
+                                <div id="desktopPreview" class="mt-2" style="display: none;">
+                                    <img id="desktopPreviewImg" src="#" alt="Preview" class="img-thumbnail" style="max-width: 100%; max-height: 300px;">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="MobileImageFile">Ảnh Mobile (Tùy chọn)</label>
+                                <div class="custom-file">
+                                    <input asp-for="MobileImageFile" type="file" class="custom-file-input" id="mobileImageInput" accept="image/*">
+                                    <label class="custom-file-label" for="mobileImageInput">Chọn file ảnh...</label>
+                                </div>
+                                <span asp-validation-for="MobileImageFile" class="text-danger"></span>
+                                <small class="form-text text-muted">
+                                    Nếu không có, sẽ sử dụng ảnh desktop. Khuyến nghị: 800x600px
+                                </small>
+                                <div id="mobilePreview" class="mt-2" style="display: none;">
+                                    <img id="mobilePreviewImg" src="#" alt="Preview" class="img-thumbnail" style="max-width: 400px; max-height: 300px;">
+                                </div>
+                            </div>
+
+                            <h6 class="border-bottom pb-2 mt-4 mb-3">
+                                <i class="fas fa-link"></i> Link & Cài đặt
+                            </h6>
+
+                            <div class="form-group">
+                                <label asp-for="LinkUrl"></label>
+                                <input asp-for="LinkUrl" class="form-control" placeholder="https://example.com">
+                                <span asp-validation-for="LinkUrl" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="custom-control custom-checkbox">
+                                    <input asp-for="OpenInNewTab" type="checkbox" class="custom-control-input" id="openInNewTabCheck">
+                                    <label class="custom-control-label" for="openInNewTabCheck">
+                                        Mở link trong tab mới
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="ExternalAdCode"></label>
+                                <textarea asp-for="ExternalAdCode" class="form-control" rows="6" placeholder="Paste mã Google AdSense hoặc HTML/JavaScript quảng cáo..."></textarea>
+                                <span asp-validation-for="ExternalAdCode" class="text-danger"></span>
+                                <small class="form-text text-muted">
+                                    <i class="fas fa-info-circle"></i> <strong>Tùy chọn:</strong> Nếu có mã quảng cáo, hệ thống sẽ ưu tiên hiển thị mã này thay vì ảnh banner. 
+                                    Hỗ trợ Google AdSense, HTML, iframe.
+                                </small>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label asp-for="StartDate"></label>
+                                        <input asp-for="StartDate" type="datetime-local" class="form-control">
+                                        <span asp-validation-for="StartDate" class="text-danger"></span>
+                                        <small class="form-text text-muted">Để trống để hiển thị ngay</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label asp-for="EndDate"></label>
+                                        <input asp-for="EndDate" type="datetime-local" class="form-control">
+                                        <span asp-validation-for="EndDate" class="text-danger"></span>
+                                        <small class="form-text text-muted">Để trống để hiển thị mãi</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label asp-for="DisplayOrder"></label>
+                                        <input asp-for="DisplayOrder" type="number" class="form-control" value="0">
+                                        <span asp-validation-for="DisplayOrder" class="text-danger"></span>
+                                        <small class="form-text text-muted">Số nhỏ hiển thị trước</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <br>
+                                        <div class="custom-control custom-checkbox">
+                                            <input asp-for="IsActive" type="checkbox" class="custom-control-input" id="isActiveCheck" checked>
+                                            <label class="custom-control-label" for="isActiveCheck">
+                                                <strong>Kích hoạt</strong>
+                                                <small class="d-block text-muted">Banner sẽ hiển thị trên website</small>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-footer">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Lưu Banner
+                            </button>
+                            <a asp-action="Index" class="btn btn-default">
+                                <i class="fas fa-times"></i> Hủy
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card card-info">
+                        <div class="card-header">
+                            <h3 class="card-title">Hướng dẫn</h3>
+                        </div>
+                        <div class="card-body">
+                            <h6><i class="fas fa-info-circle"></i> Các loại Banner</h6>
+                            <ul class="text-sm pl-3">
+                                <li><strong>Hero Banner:</strong> Carousel lớn trên trang chủ</li>
+                                <li><strong>Top Banner:</strong> Thanh thông báo trên đầu trang</li>
+                                <li><strong>Promotional:</strong> Banner khuyến mãi giữa trang</li>
+                                <li><strong>Category:</strong> Banner cho từng danh mục</li>
+                            </ul>
+                            
+                            <h6><i class="fas fa-lightbulb"></i> Lưu ý</h6>
+                            <ul class="text-sm pl-3">
+                                <li>Sử dụng ảnh chất lượng cao</li>
+                                <li>Tối ưu kích thước file (&lt; 500KB)</li>
+                                <li>Định dạng: JPG, PNG, WebP</li>
+                                <li>Mobile image nên có tỷ lệ khác desktop</li>
+                            </ul>
+
+                            <h6><i class="fas fa-clock"></i> Lịch hiển thị</h6>
+                            <p class="text-sm">
+                                Đặt ngày bắt đầu/kết thúc để tự động hiển thị/ẩn banner theo thời gian.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(document).ready(function() {
+            // Handle file input label update
+            $('input[type="file"]').on('change', function() {
+                var fileName = $(this).val().split('\\').pop();
+                $(this).next('.custom-file-label').html(fileName);
+            });
+
+            // Desktop image preview
+            $('#desktopImageInput').on('change', function() {
+                const file = this.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        $('#desktopPreviewImg').attr('src', e.target.result);
+                        $('#desktopPreview').show();
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Mobile image preview
+            $('#mobileImageInput').on('change', function() {
+                const file = this.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        $('#mobilePreviewImg').attr('src', e.target.result);
+                        $('#mobilePreview').show();
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Toggle category select based on banner type
+            function toggleCategorySelect() {
+                var bannerType = $('#bannerTypeSelect').val();
+                if (bannerType == '4') { // Category banner
+                    $('#categorySelect').show();
+                } else {
+                    $('#categorySelect').hide();
+                }
+            }
+
+            $('#bannerTypeSelect').on('change', toggleCategorySelect);
+            toggleCategorySelect(); // Initial state
+        });
+    </script>
+}

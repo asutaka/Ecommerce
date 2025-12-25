@@ -1,0 +1,473 @@
+/* ==========================================================================
+   Banner Styles
+   ========================================================================== */
+
+/* Hero Banner Section */
+.hero-banner-section {
+    margin-bottom: 2rem;
+}
+
+.hero-banner-section .carousel-item {
+    height: 500px;
+    min-height: 350px;
+}
+
+.hero-banner-section .carousel-item img {
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.hero-banner-section .carousel-caption {
+    background: rgba(0, 0, 0, 0.5);
+    padding: 20px 30px;
+    border-radius: 10px;
+    bottom: 50px;
+}
+
+.hero-banner-section .carousel-caption h3 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.hero-banner-section .carousel-caption p {
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+}
+
+.hero-banner-section .carousel-indicators li {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin: 0 5px;
+}
+
+.hero-banner-section .carousel-control-prev-icon,
+.hero-banner-section .carousel-control-next-icon {
+    width: 40px;
+    height: 40px;
+}
+
+/* Top Banner Bar */
+.top-banner-bar {
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    animation: slideDown 0.5s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.top-banner-bar a:hover {
+    text-decoration: underline !important;
+}
+
+.top-banner-bar .close {
+    opacity: 0.8;
+    transition: opacity 0.3s;
+}
+
+.top-banner-bar .close:hover {
+    opacity: 1;
+}
+
+/* Promotional Banners */
+.promotional-banners .promotional-banner {
+    overflow: hidden;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.promotional-banners .promotional-banner:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.promotional-banners .promotional-banner img {
+    transition: transform 0.5s ease;
+}
+
+.promotional-banners .promotional-banner:hover img {
+    transform: scale(1.05);
+}
+
+.promo-countdown {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+/* Category Banner */
+.category-banner {
+    overflow: hidden;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    max-height: 400px;
+}
+
+.category-banner img {
+    transition: transform 0.5s ease;
+}
+
+.category-banner:hover img {
+    transform: scale(1.05);
+}
+
+.category-banner-overlay {
+    transition: background 0.3s ease;
+}
+
+.category-banner:hover .category-banner-overlay {
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.7) 100%) !important;
+}
+
+.category-banner h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+}
+
+.category-banner p {
+    font-size: 1.1rem;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+}
+
+/* ==========================================================================
+   Responsive Design
+   ========================================================================== */
+
+/* Tablet */
+@media (max-width: 992px) {
+    .hero-banner-section .carousel-item {
+        height: 400px;
+    }
+
+    .hero-banner-section .carousel-caption h3 {
+        font-size: 2rem;
+    }
+
+    .hero-banner-section .carousel-caption p {
+        font-size: 1rem;
+    }
+
+    .category-banner h2 {
+        font-size: 2rem;
+    }
+
+    .category-banner p {
+        font-size: 1rem;
+    }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .hero-banner-section .carousel-item {
+        height: 300px;
+        min-height: 250px;
+    }
+
+    .hero-banner-section .carousel-caption {
+        padding: 10px 15px;
+        bottom: 20px;
+    }
+
+    .hero-banner-section .carousel-caption h3 {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .hero-banner-section .carousel-caption p {
+        font-size: 0.9rem;
+        margin-bottom: 0.75rem;
+        display: none;
+        /* Hide description on mobile to save space */
+    }
+
+    .hero-banner-section .carousel-caption .btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+    }
+
+    .top-banner-bar {
+        font-size: 0.875rem;
+        padding: 0.5rem 0 !important;
+    }
+
+    .top-banner-bar .close {
+        margin-left: 1rem !important;
+        font-size: 1.2rem;
+    }
+
+    .category-banner {
+        max-height: 250px;
+    }
+
+    .category-banner h2 {
+        font-size: 1.5rem;
+    }
+
+    .category-banner p {
+        font-size: 0.9rem;
+    }
+
+    .category-banner-overlay {
+        padding: 15px !important;
+    }
+
+    .promo-countdown {
+        font-size: 0.875rem;
+        padding: 5px 10px !important;
+    }
+}
+
+/* Small Mobile */
+@media (max-width: 576px) {
+    .hero-banner-section .carousel-item {
+        height: 250px;
+    }
+
+    .hero-banner-section .carousel-caption h3 {
+        font-size: 1.25rem;
+    }
+
+    .hero-banner-section .carousel-indicators {
+        display: none;
+        /* Hide indicators on very small screens */
+    }
+
+    .category-banner {
+        max-height: 200px;
+    }
+}
+
+/* ==========================================================================
+   Popup Banner Styles
+   ========================================================================== */
+
+.popup-banner-modal .modal-dialog {
+    max-width: 700px;
+    margin: 100px auto;
+}
+
+.popup-banner-modal .modal-content {
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.popup-banner-modal .modal-body {
+    padding: 0;
+    position: relative;
+}
+
+.popup-banner-modal .popup-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    z-index: 10;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    border: 2px solid white;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: bold;
+    opacity: 1;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    padding: 0;
+}
+
+.popup-banner-modal .popup-close:hover {
+    background: rgba(255, 255, 255, 0.9);
+    color: #000;
+    transform: rotate(90deg);
+}
+
+.popup-banner-modal img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.popup-banner-modal .popup-content {
+    text-align: center;
+}
+
+.popup-banner-modal .popup-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.popup-banner-modal .popup-description {
+    font-size: 1rem;
+    color: #666;
+    margin-bottom: 1.5rem;
+}
+
+/* ==========================================================================
+   Sidebar Banner Styles
+   ========================================================================== */
+
+.sidebar-banner {
+    position: fixed;
+    top: 5%;
+    width: 240px;
+    height: 90vh;
+    max-height: 90vh;
+    z-index: 1040;
+    transition: transform 0.4s ease;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.sidebar-banner-left {
+    left: 0;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.sidebar-banner-right {
+    right: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.sidebar-banner.closed.sidebar-banner-left {
+    transform: translateX(-100%);
+}
+
+.sidebar-banner.closed.sidebar-banner-right {
+    transform: translateX(100%);
+}
+
+.sidebar-banner .sidebar-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+}
+
+.sidebar-banner .sidebar-close-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    font-size: 24px;
+    font-weight: 300;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 10;
+    padding: 0;
+}
+
+.sidebar-banner .sidebar-close-btn:hover {
+    background: rgba(255, 255, 255, 0.95);
+    color: #000;
+    transform: scale(1.15);
+}
+
+.sidebar-banner a {
+    display: block;
+    height: 100%;
+}
+
+.sidebar-banner .external-ad-container {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.sidebar-banner .external-ad-container iframe,
+.sidebar-banner .external-ad-container ins {
+    width: 100%;
+    height: 100%;
+}
+
+/* Hide sidebar banners on tablets and mobile */
+@media (max-width: 1400px) {
+    .sidebar-banner {
+        width: 200px;
+    }
+}
+
+@media (max-width: 1200px) {
+    .sidebar-banner {
+        width: 160px;
+        height: 80vh;
+        max-height: 80vh;
+    }
+}
+
+@media (max-width: 992px) {
+    .sidebar-banner {
+        display: none;
+    }
+}
+
+/* Hide popup close icon on mobile (use modal's native close) */
+@media (max-width: 768px) {
+    .popup-banner-modal .modal-dialog {
+        margin: 20px;
+        max-width: calc(100% - 40px);
+    }
+
+    .popup-banner-modal .popup-title {
+        font-size: 1.5rem;
+    }
+}
+
+/* ==========================================================================
+   Print Styles
+   ========================================================================== */
+
+@media print {
+
+    .top-banner-bar,
+    .hero-banner-section .carousel-control-prev,
+    .hero-banner-section .carousel-control-next,
+    .hero-banner-section .carousel-indicators,
+    .popup-banner-modal,
+    .sidebar-banner {
+        display: none !important;
+    }
+}

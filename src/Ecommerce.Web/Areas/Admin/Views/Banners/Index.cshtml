@@ -1,0 +1,343 @@
+@model List<Ecommerce.Web.Areas.Admin.ViewModels.BannerViewModel>
+
+@{
+    ViewData["Title"] = "Quản lý Banner";
+}
+
+<!-- Content Header -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">
+                    <i class="fas fa-image text-primary"></i> Quản lý Banner/Quảng cáo
+                </h1>
+            </div>
+            <div class="col-sm-6">
+                <div class="float-right">
+                    <a asp-controller="Settings" asp-action="Index" class="btn btn-secondary mr-2">
+                        <i class="fas fa-arrow-left"></i> Quay lại
+                    </a>
+                    <a asp-action="Create" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Thêm Banner
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- Filter Card -->
+        <div class="card card-outline card-primary collapsed-card">
+            <div class="card-header">
+                <h3 class="card-title"><i class="fas fa-filter"></i> Bộ lọc</h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <form asp-action="Index" method="get" class="form-inline">
+                    <div class="form-group mr-3">
+                        <label class="mr-2">Loại Banner:</label>
+                        <select name="bannerType" class="form-control">
+                            <option value="">-- Tất cả --</option>
+                            <option value="1" selected="@(ViewBag.BannerType == 1)">Hero Banner</option>
+                            <option value="2" selected="@(ViewBag.BannerType == 2)">Top Banner</option>
+                            <option value="3" selected="@(ViewBag.BannerType == 3)">Promotional</option>
+                            <option value="4" selected="@(ViewBag.BannerType == 4)">Category</option>
+                        </select>
+                    </div>
+                    <div class="form-group mr-3">
+                        <label class="mr-2">Vị trí:</label>
+                        <select name="position" class="form-control">
+                            <option value="">-- Tất cả --</option>
+                            <option value="0" selected="@(ViewBag.Position == 0)">Tất cả trang</option>
+                            <option value="1" selected="@(ViewBag.Position == 1)">Trang chủ</option>
+                            <option value="2" selected="@(ViewBag.Position == 2)">Trang danh mục</option>
+                            <option value="3" selected="@(ViewBag.Position == 3)">Trang sản phẩm</option>
+                        </select>
+                    </div>
+                    <div class="form-group mr-3">
+                        <label class="mr-2">Trạng thái:</label>
+                        <select name="isActive" class="form-control">
+                            <option value="">-- Tất cả --</option>
+                            <option value="true" selected="@(ViewBag.IsActive == true)">Hoạt động</option>
+                            <option value="false" selected="@(ViewBag.IsActive == false)">Vô hiệu</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary mr-2">
+                        <i class="fas fa-search"></i> Lọc
+                    </button>
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="fas fa-redo"></i> Reset
+                    </a>
+                </form>
+            </div>
+        </div>
+
+        <!-- Banners Table -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Danh sách Banner (@Model.Count)</h3>
+            </div>
+            
+            <div class="card-body table-responsive p-0">
+                <table class="table table-hover text-nowrap">
+                    <thead>
+                        <tr>
+                            <th style="width: 100px;">Preview</th>
+                            <th>Tiêu đề</th>
+                            <th>Loại</th>
+                            <th>Vị trí</th>
+                            <th>Thứ tự</th>
+                            <th>Thời gian</th>
+                            <th>Trạng thái</th>
+                            <th class="text-right">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Any())
+                        {
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        <img src="@item.ImageUrl" alt="@item.Title" 
+                                             class="img-thumbnail banner-thumbnail" 
+                                             style="width: 80px; height: 50px; object-fit: cover; cursor: pointer;"
+                                             data-desktop="@item.ImageUrl"
+                                             data-mobile="@item.MobileImageUrl"
+                                             data-title="@item.Title"
+                                             title="Click để xem chi tiết">
+                                    </td>
+                                    <td>
+                                        <strong>@item.Title</strong>
+                                        @if (!string.IsNullOrEmpty(item.Description))
+                                        {
+                                            <br><small class="text-muted">@(item.Description.Length > 60 ? item.Description.Substring(0, 60) + "..." : item.Description)</small>
+                                        }
+                                        @if (!string.IsNullOrEmpty(item.LinkUrl))
+                                        {
+                                            <br><small><i class="fas fa-link"></i> <a href="@item.LinkUrl" target="_blank">@item.LinkUrl</a></small>
+                                        }
+                                    </td>
+                                    <td>
+                                        @switch (item.BannerType)
+                                        {
+                                            case Ecommerce.Infrastructure.Entities.BannerType.Hero:
+                                                <span class="badge badge-primary"><i class="fas fa-images"></i> Hero</span>
+                                                break;
+                                            case Ecommerce.Infrastructure.Entities.BannerType.TopBar:
+                                                <span class="badge badge-info"><i class="fas fa-bars"></i> Top Bar</span>
+                                                break;
+                                            case Ecommerce.Infrastructure.Entities.BannerType.Promotional:
+                                                <span class="badge badge-warning"><i class="fas fa-percent"></i> Promotion</span>
+                                                break;
+                                            case Ecommerce.Infrastructure.Entities.BannerType.Category:
+                                                <span class="badge badge-success"><i class="fas fa-folder"></i> Category</span>
+                                                break;
+                                            case Ecommerce.Infrastructure.Entities.BannerType.Popup:
+                                                <span class="badge badge-danger"><i class="fas fa-window-restore"></i> Popup</span>
+                                                break;
+                                            case Ecommerce.Infrastructure.Entities.BannerType.LeftSidebar:
+                                                <span class="badge badge-secondary"><i class="fas fa-align-left"></i> Left Sidebar</span>
+                                                break;
+                                            case Ecommerce.Infrastructure.Entities.BannerType.RightSidebar:
+                                                <span class="badge badge-dark"><i class="fas fa-align-right"></i> Right Sidebar</span>
+                                                break;
+                                        }
+                                        @if (item.CategoryId.HasValue)
+                                        {
+                                            <br><small class="text-muted">@item.CategoryName</small>
+                                        }
+                                    </td>
+                                    <td>
+                                        @switch (item.Position)
+                                        {
+                                            case Ecommerce.Infrastructure.Entities.BannerPosition.All:
+                                                <span class="badge badge-secondary">Tất cả</span>
+                                                break;
+                                            case Ecommerce.Infrastructure.Entities.BannerPosition.Home:
+                                                <span class="badge badge-primary">Trang chủ</span>
+                                                break;
+                                            case Ecommerce.Infrastructure.Entities.BannerPosition.CategoryPage:
+                                                <span class="badge badge-info">Danh mục</span>
+                                                break;
+                                            case Ecommerce.Infrastructure.Entities.BannerPosition.ProductDetail:
+                                                <span class="badge badge-warning">Sản phẩm</span>
+                                                break;
+                                        }
+                                    </td>
+                                    <td>
+                                        <span class="badge badge-dark">@item.DisplayOrder</span>
+                                    </td>
+                                    <td>
+                                        @if (item.StartDate.HasValue || item.EndDate.HasValue)
+                                        {
+                                            <small>
+                                                @if (item.StartDate.HasValue)
+                                                {
+                                                    <div><i class="fas fa-calendar-check text-success"></i> @item.StartDate.Value.ToString("dd/MM/yyyy HH:mm")</div>
+                                                }
+                                                @if (item.EndDate.HasValue)
+                                                {
+                                                    <div><i class="fas fa-calendar-times text-danger"></i> @item.EndDate.Value.ToString("dd/MM/yyyy HH:mm")</div>
+                                                }
+                                            </small>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">-</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (item.IsActive)
+                                        {
+                                            <span class="badge badge-success">
+                                                <i class="fas fa-check"></i> Hoạt động
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge badge-secondary">
+                                                <i class="fas fa-times"></i> Vô hiệu
+                                            </span>
+                                        }
+                                    </td>
+                                    <td class="text-right">
+                                        <div class="btn-group">
+                                            <a asp-action="Analytics" asp-route-id="@item.Id" class="btn btn-sm btn-primary" title="Analytics">
+                                                <i class="fas fa-chart-line"></i>
+                                            </a>
+                                            <button type="button" class="btn btn-sm @(item.IsActive ? "btn-success" : "btn-secondary") toggle-active-btn" 
+                                                    data-id="@item.Id"
+                                                    title="@(item.IsActive ? "Vô hiệu hóa" : "Kích hoạt")">
+                                                <i class="fas fa-power-off"></i>
+                                            </button>
+                                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-info" title="Chỉnh sửa">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline" 
+                                                  onsubmit="return confirm('Bạn có chắc chắn muốn xóa banner @item.Title?');">
+                                                @Html.AntiForgeryToken()
+                                                <button type="submit" class="btn btn-sm btn-danger" title="Xóa">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="8" class="text-center text-muted py-4">
+                                    <i class="fas fa-image fa-3x mb-3 d-block"></i>
+                                    <p class="mb-0">Chưa có banner nào</p>
+                                    <a asp-action="Create" class="btn btn-primary mt-3">
+                                        <i class="fas fa-plus"></i> Tạo banner đầu tiên
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Image Preview Modal -->
+<div class="modal fade" id="imagePreviewModal" tabindex="-1" role="dialog" aria-labelledby="imagePreviewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imagePreviewModalLabel">Preview Banner</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <ul class="nav nav-tabs" id="bannerTabs" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="desktop-tab" data-toggle="tab" href="#desktop" role="tab">
+                            <i class="fas fa-desktop"></i> Desktop
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="mobile-tab" data-toggle="tab" href="#mobile" role="tab">
+                            <i class="fas fa-mobile-alt"></i> Mobile
+                        </a>
+                    </li>
+                </ul>
+                <div class="tab-content mt-3" id="bannerTabContent">
+                    <div class="tab-pane fade show active" id="desktop" role="tabpanel">
+                        <img id="desktopImage" src="" class="img-fluid" style="max-height: 600px; width: 100%; object-fit: contain;">
+                    </div>
+                    <div class="tab-pane fade" id="mobile" role="tabpanel">
+                        <div class="text-center">
+                            <img id="mobileImage" src="" class="img-fluid" style="max-height: 600px; max-width: 400px; object-fit: contain;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Handle banner thumbnail click
+            $('.banner-thumbnail').on('click', function() {
+                var title = $(this).data('title');
+                var desktopImg = $(this).data('desktop');
+                var mobileImg = $(this).data('mobile');
+                
+                $('#imagePreviewModalLabel').text(title);
+                $('#desktopImage').attr('src', desktopImg);
+                
+                if (mobileImg) {
+                    $('#mobileImage').attr('src', mobileImg);
+                    $('#mobile-tab').show();
+                } else {
+                    $('#mobileImage').attr('src', desktopImg);
+                    $('#mobile-tab').hide();
+                }
+                
+                $('#imagePreviewModal').modal('show');
+            });
+
+            // Handle toggle active
+            $('.toggle-active-btn').on('click', function() {
+                var btn = $(this);
+                var id = btn.data('id');
+                
+                $.ajax({
+                    url: '@Url.Action("ToggleActive", "Banners")',
+                    type: 'POST',
+                    data: {
+                        id: id,
+                        __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            location.reload();
+                        } else {
+                            alert('Lỗi: ' + response.message);
+                        }
+                    },
+                    error: function() {
+                        alert('Có lỗi xảy ra!');
+                    }
+                });
+            });
+        });
+    </script>
+}

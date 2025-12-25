@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Ecommerce.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Ecommerce.Infrastructure.Migrations
 {
     [DbContext(typeof(EcommerceDbContext))]
-    partial class EcommerceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251225065157_AddBannerEntity")]
+    partial class AddBannerEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -76,12 +79,12 @@ namespace Ecommerce.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2025, 12, 25, 8, 58, 11, 645, DateTimeKind.Utc).AddTicks(7639),
+                            CreatedAt = new DateTime(2025, 12, 25, 6, 51, 56, 196, DateTimeKind.Utc).AddTicks(2728),
                             Email = "admin@ecommerce.com",
                             FullName = "Administrator",
                             IsActive = true,
-                            PasswordHash = "$2a$11$9nb/KdffsZNuD23kzOkTBO29Tzs659gKy7RADJ6zwrSaFCpgJUv1e",
-                            UpdatedAt = new DateTime(2025, 12, 25, 8, 58, 11, 645, DateTimeKind.Utc).AddTicks(7643),
+                            PasswordHash = "$2a$11$KIdjH3wDER1FtWiHjtyT1uDO7BIz/cBoPH4/Z6K54.7V4cBEuwEaa",
+                            UpdatedAt = new DateTime(2025, 12, 25, 6, 51, 56, 196, DateTimeKind.Utc).AddTicks(2732),
                             Username = "admin"
                         });
                 });
@@ -110,9 +113,6 @@ namespace Ecommerce.Infrastructure.Migrations
 
                     b.Property<DateTime?>("EndDate")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("ExternalAdCode")
-                        .HasColumnType("text");
 
                     b.Property<string>("ImageUrl")
                         .IsRequired()
@@ -162,40 +162,6 @@ namespace Ecommerce.Infrastructure.Migrations
                     b.HasIndex("StartDate", "EndDate");
 
                     b.ToTable("Banners");
-                });
-
-            modelBuilder.Entity("Ecommerce.Infrastructure.Entities.BannerAnalytics", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("BannerId")
-                        .HasColumnType("uuid");
-
-                    b.Property<int>("Clicks")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("Views")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Date");
-
-                    b.HasIndex("BannerId", "Date")
-                        .IsUnique();
-
-                    b.ToTable("BannerAnalytics");
                 });
 
             modelBuilder.Entity("Ecommerce.Infrastructure.Entities.CartItem", b =>
@@ -958,17 +924,6 @@ namespace Ecommerce.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Category");
-                });
-
-            modelBuilder.Entity("Ecommerce.Infrastructure.Entities.BannerAnalytics", b =>
-                {
-                    b.HasOne("Ecommerce.Infrastructure.Entities.Banner", "Banner")
-                        .WithMany()
-                        .HasForeignKey("BannerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Banner");
                 });
 
             modelBuilder.Entity("Ecommerce.Infrastructure.Entities.CartItem", b =>

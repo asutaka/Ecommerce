@@ -1,0 +1,87 @@
+@model Guid?
+@using Ecommerce.Infrastructure.Entities
+@using Ecommerce.Infrastructure.Persistence
+@using Microsoft.EntityFrameworkCore
+@inject EcommerceDbContext DbContext
+
+@{
+    if (Model.HasValue)
+    {
+        // Load active Category banner for this specific category
+        var categoryBanner = await DbContext.Banners
+            .Where(b => b.BannerType == BannerType.Category 
+                     && b.IsActive 
+                     && b.CategoryId == Model.Value
+                     && (b.StartDate == null || b.StartDate <= DateTime.UtcNow)
+                     && (b.EndDate == null || b.EndDate >= DateTime.UtcNow))
+            .OrderBy(b => b.DisplayOrder)
+            .FirstOrDefaultAsync();
+
+        if (categoryBanner != null)
+        {
+            var isMobile = Context.Request.Headers["User-Agent"].ToString().ToLower().Contains("mobile");
+            var imageUrl = (isMobile && !string.IsNullOrEmpty(categoryBanner.MobileImageUrl)) 
+                ? categoryBanner.MobileImageUrl 
+                : categoryBanner.ImageUrl;
+
+            <div class="category-banner mb-4">
+                @if (!string.IsNullOrEmpty(categoryBanner.LinkUrl))
+                {
+                    <a href="@categoryBanner.LinkUrl" target="@(categoryBanner.OpenInNewTab ? "_blank" : "_self")" class="d-block position-relative">
+                        <picture>
+                            @if (!string.IsNullOrEmpty(categoryBanner.MobileImageUrl))
+                            {
+                                <source media="(max-width: 768px)" srcset="@categoryBanner.MobileImageUrl">
+                            }
+                            <img src="@categoryBanner.ImageUrl" class="img-fluid w-100" alt="@categoryBanner.Title" loading="eager">
+                        </picture>
+                        
+                        @if (!string.IsNullOrEmpty(categoryBanner.Title) || !string.IsNullOrEmpty(categoryBanner.Description))
+                        {
+                            <div class="category-banner-overlay position-absolute w-100 h-100" style="top: 0; left: 0; background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.6) 100%); display: flex; align-items: flex-end; justify-content: center; padding: 30px;">
+                                <div class="text-center text-white">
+                                    @if (!string.IsNullOrEmpty(categoryBanner.Title))
+                                    {
+                                        <h2 class="mb-2">@categoryBanner.Title</h2>
+                                    }
+                                    @if (!string.IsNullOrEmpty(categoryBanner.Description))
+                                    {
+                                        <p class="mb-0">@categoryBanner.Description</p>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    </a>
+                }
+                else
+                {
+                    <div class="position-relative">
+                        <picture>
+                            @if (!string.IsNullOrEmpty(categoryBanner.MobileImageUrl))
+                            {
+                                <source media="(max-width: 768px)" srcset="@categoryBanner.MobileImageUrl">
+                            }
+                            <img src="@categoryBanner.ImageUrl" class="img-fluid w-100" alt="@categoryBanner.Title" loading="eager">
+                        </picture>
+                        
+                        @if (!string.IsNullOrEmpty(categoryBanner.Title) || !string.IsNullOrEmpty(categoryBanner.Description))
+                        {
+                            <div class="category-banner-overlay position-absolute w-100 h-100" style="top: 0; left: 0; background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.6) 100%); display: flex; align-items: flex-end; justify-content: center; padding: 30px;">
+                                <div class="text-center text-white">
+                                    @if (!string.IsNullOrEmpty(categoryBanner.Title))
+                                    {
+                                        <h2 class="mb-2">@categoryBanner.Title</h2>
+                                    }
+                                    @if (!string.IsNullOrEmpty(categoryBanner.Description))
+                                    {
+                                        <p class="mb-0">@categoryBanner.Description</p>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        }
+    }
+}

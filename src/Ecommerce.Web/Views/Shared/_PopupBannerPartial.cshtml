@@ -1,0 +1,135 @@
+@using Ecommerce.Infrastructure.Entities
+@using Ecommerce.Infrastructure.Persistence
+@using Microsoft.EntityFrameworkCore
+@inject EcommerceDbContext DbContext
+
+@{
+    // Load active Popup banners
+    var popupBanners = await DbContext.Banners
+        .Where(b => b.BannerType == BannerType.Popup 
+                 && b.IsActive 
+                 && (b.Position == BannerPosition.All || b.Position == BannerPosition.Home)
+                 && (b.StartDate == null || b.StartDate <= DateTime.UtcNow)
+                 && (b.EndDate == null || b.EndDate >= DateTime.UtcNow))
+        .OrderBy(b => b.DisplayOrder)
+        .Take(1) // Only show first popup to avoid annoying users
+        .ToListAsync();
+}
+
+@foreach (var banner in popupBanners)
+{
+    var isMobile = Context.Request.Headers["User-Agent"].ToString().ToLower().Contains("mobile");
+    var imageUrl = (isMobile && !string.IsNullOrEmpty(banner.MobileImageUrl)) 
+        ? banner.MobileImageUrl 
+        : banner.ImageUrl;
+
+    <!-- Popup Banner Modal -->
+    <div class="modal fade popup-banner-modal" id="popupBanner_@banner.Id" tabindex="-1" aria-hidden="true" 
+         data-banner-id="@banner.Id" data-popup-trigger="onload">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <button type="button" class="btn-close popup-close" data-bs-dismiss="modal" aria-label="Close" 
+                        onclick="dismissPopup('@banner.Id')">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <div class="modal-body p-0">
+                    @if (!string.IsNullOrEmpty(banner.LinkUrl))
+                    {
+                        <a href="@banner.LinkUrl" target="@(banner.OpenInNewTab ? "_blank" : "_self")" 
+                           onclick="trackBannerClick('@banner.Id')">
+                            <picture>
+                                @if (!string.IsNullOrEmpty(banner.MobileImageUrl))
+                                {
+                                    <source media="(max-width: 768px)" srcset="@banner.MobileImageUrl">
+                                }
+                                <img src="@banner.ImageUrl" class="img-fluid w-100" alt="@banner.Title">
+                            </picture>
+                        </a>
+                    }
+                    else
+                    {
+                        <picture>
+                            @if (!string.IsNullOrEmpty(banner.MobileImageUrl))
+                            {
+                                <source media="(max-width: 768px)" srcset="@banner.MobileImageUrl">
+                            }
+                            <img src="@banner.ImageUrl" class="img-fluid w-100" alt="@banner.Title">
+                        </picture>
+                    }
+
+                    @if (!string.IsNullOrEmpty(banner.Title) || !string.IsNullOrEmpty(banner.Description))
+                    {
+                        <div class="popup-content p-4">
+                            @if (!string.IsNullOrEmpty(banner.Title))
+                            {
+                                <h3 class="popup-title">@banner.Title</h3>
+                            }
+                            @if (!string.IsNullOrEmpty(banner.Description))
+                            {
+                                <p class="popup-description">@banner.Description</p>
+                            }
+                            @if (!string.IsNullOrEmpty(banner.LinkUrl))
+                            {
+                                <a href="@banner.LinkUrl" class="btn btn-primary btn-lg" 
+                                   target="@(banner.OpenInNewTab ? "_blank" : "_self")"
+                                   onclick="trackBannerClick('@banner.Id')">
+                                    Xem ngay <i class="fas fa-arrow-right"></i>
+                                </a>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<script>
+    function dismissPopup(bannerId) {
+        // Save dismiss timestamp (show again after 24 hours)
+        const dismissTime = new Date().getTime();
+        localStorage.setItem('popup_dismissed_' + bannerId, dismissTime.toString());
+    }
+
+    // Check if popup should be shown (expired after 24 hours)
+    function shouldShowPopup(bannerId) {
+        const dismissedTime = localStorage.getItem('popup_dismissed_' + bannerId);
+        
+        if (!dismissedTime) {
+            return true; // Never dismissed before
+        }
+        
+        const currentTime = new Date().getTime();
+        const hoursSinceDismissed = (currentTime - parseInt(dismissedTime)) / (1000 * 60 * 60);
+        
+        // Show again if more than 24 hours have passed
+        return hoursSinceDismissed >= 24;
+    }
+
+    // Initialize popup banners on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        initPopupBanners();
+    });
+
+    function initPopupBanners() {
+        document.querySelectorAll('[data-popup-trigger]').forEach(function(popupEl) {
+            const bannerId = popupEl.dataset.bannerId;
+            const trigger = popupEl.dataset.popupTrigger;
+
+            // Check if popup should be shown (24-hour expiration)
+            if (!shouldShowPopup(bannerId)) {
+                return;
+            }
+
+            // Show based on trigger type
+            if (trigger === 'onload') {
+                // Show after short delay (1 second) for better UX
+                setTimeout(function() {
+                    var modal = new bootstrap.Modal(popupEl);
+                    modal.show();
+                    trackBannerView(bannerId);
+                }, 1000);
+            }
+        });
+    }
+</script>

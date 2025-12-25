@@ -1,0 +1,100 @@
+@using Ecommerce.Infrastructure.Entities
+@using Ecommerce.Infrastructure.Persistence
+@using Microsoft.EntityFrameworkCore
+@inject EcommerceDbContext DbContext
+
+@{
+    // Load active Hero banners for Home page
+    var heroBanners = await DbContext.Banners
+        .Where(b => b.BannerType == BannerType.Hero 
+                 && b.IsActive 
+                 && (b.Position == BannerPosition.All || b.Position == BannerPosition.Home)
+                 && (b.StartDate == null || b.StartDate <= DateTime.UtcNow)
+                 && (b.EndDate == null || b.EndDate >= DateTime.UtcNow))
+        .OrderBy(b => b.DisplayOrder)
+        .Take(5)
+        .ToListAsync();
+}
+
+@if (heroBanners.Any())
+{
+    <div id="heroBannerCarousel" class="carousel slide hero-banner-section" data-bs-ride="carousel" data-bs-interval="5000">
+        <!-- Indicators -->
+        <div class="carousel-indicators">
+            @for (int i = 0; i < heroBanners.Count; i++)
+            {
+                <button type="button" data-bs-target="#heroBannerCarousel" data-bs-slide-to="@i" class="@(i == 0 ? "active" : "")" aria-current="@(i == 0 ? "true" : "false")" aria-label="Slide @(i + 1)"></button>
+            }
+        </div>
+
+        <!-- Slides -->
+        <div class="carousel-inner">
+            @for (int i = 0; i < heroBanners.Count; i++)
+            {
+                var banner = heroBanners[i];
+                var isMobile = Context.Request.Headers["User-Agent"].ToString().ToLower().Contains("mobile");
+                var imageUrl = (isMobile && !string.IsNullOrEmpty(banner.MobileImageUrl)) 
+                    ? banner.MobileImageUrl 
+                    : banner.ImageUrl;
+
+                <div class="carousel-item @(i == 0 ? "active" : "")" data-banner-id="@banner.Id">
+                    @if (!string.IsNullOrEmpty(banner.LinkUrl))
+                    {
+                        <a href="@banner.LinkUrl" target="@(banner.OpenInNewTab ? "_blank" : "_self")" onclick="trackBannerClick('@banner.Id')">
+                            <picture>
+                                @if (!string.IsNullOrEmpty(banner.MobileImageUrl))
+                                {
+                                    <source media="(max-width: 768px)" srcset="@banner.MobileImageUrl">
+                                }
+                                <img src="@banner.ImageUrl" class="d-block w-100" alt="@banner.Title" loading="@(i == 0 ? "eager" : "lazy")">
+                            </picture>
+                        </a>
+                    }
+                    else
+                    {
+                        <picture>
+                            @if (!string.IsNullOrEmpty(banner.MobileImageUrl))
+                            {
+                                <source media="(max-width: 768px)" srcset="@banner.MobileImageUrl">
+                            }
+                            <img src="@banner.ImageUrl" class="d-block w-100" alt="@banner.Title" loading="@(i == 0 ? "eager" : "lazy")">
+                        </picture>
+                    }
+                    
+                    @if (!string.IsNullOrEmpty(banner.Title) || !string.IsNullOrEmpty(banner.Description))
+                    {
+                        <div class="carousel-caption d-none d-md-block">
+                            @if (!string.IsNullOrEmpty(banner.Title))
+                            {
+                                <h3>@banner.Title</h3>
+                            }
+                            @if (!string.IsNullOrEmpty(banner.Description))
+                            {
+                                <p>@banner.Description</p>
+                            }
+                            @if (!string.IsNullOrEmpty(banner.LinkUrl))
+                            {
+                                <a href="@banner.LinkUrl" class="btn btn-primary btn-lg" target="@(banner.OpenInNewTab ? "_blank" : "_self")" onclick="trackBannerClick('@banner.Id')">
+                                    Xem ngay <i class="fas fa-arrow-right"></i>
+                                </a>
+                            }
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+
+        <!-- Controls -->
+        @if (heroBanners.Count > 1)
+        {
+            <button class="carousel-control-prev" type="button" data-bs-target="#heroBannerCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#heroBannerCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        }
+    </div>
+}

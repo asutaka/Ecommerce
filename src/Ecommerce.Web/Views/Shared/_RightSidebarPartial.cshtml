@@ -1,0 +1,71 @@
+@using Ecommerce.Infrastructure.Entities
+@using Ecommerce.Infrastructure.Persistence
+@using Microsoft.EntityFrameworkCore
+@inject EcommerceDbContext DbContext
+
+@{
+    // Load active Right Sidebar banner
+    var rightBanner = await DbContext.Banners
+        .Where(b => b.BannerType == BannerType.RightSidebar 
+                 && b.IsActive 
+                 && (b.Position == BannerPosition.All || b.Position == BannerPosition.Home)
+                 && (b.StartDate == null || b.StartDate <= DateTime.UtcNow)
+                 && (b.EndDate == null || b.EndDate >= DateTime.UtcNow))
+        .OrderBy(b => b.DisplayOrder)
+        .FirstOrDefaultAsync();
+}
+
+@if (rightBanner != null)
+{
+    var isMobile = Context.Request.Headers["User-Agent"].ToString().ToLower().Contains("mobile");
+    var imageUrl = (isMobile && !string.IsNullOrEmpty(rightBanner.MobileImageUrl)) 
+        ? rightBanner.MobileImageUrl 
+        : rightBanner.ImageUrl;
+
+    <div class="sidebar-banner sidebar-banner-right" data-banner-id="@rightBanner.Id">
+        <button type="button" class="sidebar-close-btn" onclick="closeSidebarBanner('@rightBanner.Id', 'right')" aria-label="Close">
+            ×
+        </button>
+        
+        @if (!string.IsNullOrWhiteSpace(rightBanner.ExternalAdCode))
+        {
+            @* Render external ad code *@
+            <div class="external-ad-container">
+                @Html.Raw(rightBanner.ExternalAdCode)
+            </div>
+        }
+        else if (!string.IsNullOrEmpty(rightBanner.LinkUrl))
+        {
+            <a href="@rightBanner.LinkUrl" target="@(rightBanner.OpenInNewTab ? "_blank" : "_self")" 
+               onclick="trackBannerClick('@rightBanner.Id')">
+                <picture>
+                    @if (!string.IsNullOrEmpty(rightBanner.MobileImageUrl))
+                    {
+                        <source media="(max-width: 768px)" srcset="@rightBanner.MobileImageUrl">
+                    }
+                    <img src="@rightBanner.ImageUrl" alt="@rightBanner.Title" class="sidebar-image">
+                </picture>
+            </a>
+        }
+        else
+        {
+            <picture>
+                @if (!string.IsNullOrEmpty(rightBanner.MobileImageUrl))
+                {
+                    <source media="(max-width: 768px)" srcset="@rightBanner.MobileImageUrl">
+                }
+                <img src="@rightBanner.ImageUrl" alt="@rightBanner.Title" class="sidebar-image">
+            </picture>
+        }
+    </div>
+
+    <script>
+        // Track view when sidebar becomes visible
+        trackBannerView('@rightBanner.Id');
+
+        // Check if sidebar was previously closed
+        if (localStorage.getItem('sidebar_closed_@rightBanner.Id') === 'true') {
+            document.querySelector('[data-banner-id="@rightBanner.Id"]').classList.add('closed');
+        }
+    </script>
+}

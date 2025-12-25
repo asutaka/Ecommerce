@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Ecommerce.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Ecommerce.Infrastructure.Migrations
 {
     [DbContext(typeof(EcommerceDbContext))]
-    partial class EcommerceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251225073510_AddBannerAnalytics")]
+    partial class AddBannerAnalytics
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -76,12 +79,12 @@ namespace Ecommerce.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2025, 12, 25, 8, 58, 11, 645, DateTimeKind.Utc).AddTicks(7639),
+                            CreatedAt = new DateTime(2025, 12, 25, 7, 35, 10, 320, DateTimeKind.Utc).AddTicks(9792),
                             Email = "admin@ecommerce.com",
                             FullName = "Administrator",
                             IsActive = true,
-                            PasswordHash = "$2a$11$9nb/KdffsZNuD23kzOkTBO29Tzs659gKy7RADJ6zwrSaFCpgJUv1e",
-                            UpdatedAt = new DateTime(2025, 12, 25, 8, 58, 11, 645, DateTimeKind.Utc).AddTicks(7643),
+                            PasswordHash = "$2a$11$Sv9RiTrkJ/H4DuipSKvit.71Oc4gs4/SfKbw5.1rxon7rNsMZd3mC",
+                            UpdatedAt = new DateTime(2025, 12, 25, 7, 35, 10, 320, DateTimeKind.Utc).AddTicks(9798),
                             Username = "admin"
                         });
                 });
@@ -110,9 +113,6 @@ namespace Ecommerce.Infrastructure.Migrations
 
                     b.Property<DateTime?>("EndDate")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("ExternalAdCode")
-                        .HasColumnType("text");
 
                     b.Property<string>("ImageUrl")
                         .IsRequired()

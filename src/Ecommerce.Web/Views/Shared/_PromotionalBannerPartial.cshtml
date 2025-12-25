@@ -1,0 +1,115 @@
+@using Ecommerce.Infrastructure.Entities
+@using Ecommerce.Infrastructure.Persistence
+@using Microsoft.EntityFrameworkCore
+@inject EcommerceDbContext DbContext
+
+@{
+    // Load active Promotional banners
+    var promotionalBanners = await DbContext.Banners
+        .Where(b => b.BannerType == BannerType.Promotional 
+                 && b.IsActive 
+                 && (b.Position == BannerPosition.All || b.Position == BannerPosition.Home)
+                 && (b.StartDate == null || b.StartDate <= DateTime.UtcNow)
+                 && (b.EndDate == null || b.EndDate >= DateTime.UtcNow))
+        .OrderBy(b => b.DisplayOrder)
+        .Take(3)
+        .ToListAsync();
+}
+
+@if (promotionalBanners.Any())
+{
+    <section class="promotional-banners my-4">
+        <div class="container">
+            @foreach (var banner in promotionalBanners)
+            {
+                var isMobile = Context.Request.Headers["User-Agent"].ToString().ToLower().Contains("mobile");
+                var imageUrl = (isMobile && !string.IsNullOrEmpty(banner.MobileImageUrl)) 
+                    ? banner.MobileImageUrl 
+                    : banner.ImageUrl;
+
+                <div class="promotional-banner mb-4 position-relative" data-banner-id="@banner.Id">
+                    @if (!string.IsNullOrEmpty(banner.LinkUrl))
+                    {
+                        <a href="@banner.LinkUrl" target="@(banner.OpenInNewTab ? "_blank" : "_self")" class="d-block" onclick="trackBannerClick('@banner.Id')">
+                            <picture>
+                                @if (!string.IsNullOrEmpty(banner.MobileImageUrl))
+                                {
+                                    <source media="(max-width: 768px)" srcset="@banner.MobileImageUrl">
+                                }
+                                <img src="@banner.ImageUrl" class="img-fluid w-100 rounded" alt="@banner.Title" loading="lazy">
+                            </picture>
+                        </a>
+                    }
+                    else
+                    {
+                        <picture>
+                            @if (!string.IsNullOrEmpty(banner.MobileImageUrl))
+                            {
+                                <source media="(max-width: 768px)" srcset="@banner.MobileImageUrl">
+                            }
+                            <img src="@banner.ImageUrl" class="img-fluid w-100 rounded" alt="@banner.Title" loading="lazy">
+                        </picture>
+                    }
+
+                    @* Show countdown if EndDate is set *@
+                    @if (banner.EndDate.HasValue)
+                    {
+                        var endDate = banner.EndDate.Value;
+                        <div class="promo-countdown position-absolute" style="top: 10px; right: 10px; background: rgba(220, 53, 69, 0.9); color: white; padding: 10px 15px; border-radius: 5px;">
+                            <small><i class="fas fa-clock"></i> Kết thúc:</small><br>
+                            <strong class="countdown-timer" data-end-date="@endDate.ToString("yyyy-MM-ddTHH:mm:ss")">
+                                @{
+                                    var timeRemaining = endDate - DateTime.UtcNow;
+                                    if (timeRemaining.TotalDays >= 1)
+                                    {
+                                        <span>@((int)timeRemaining.TotalDays) ngày</span>
+                                    }
+                                    else if (timeRemaining.TotalHours >= 1)
+                                    {
+                                        <span>@((int)timeRemaining.TotalHours) giờ</span>
+                                    }
+                                    else
+                                    {
+                                        <span>@((int)timeRemaining.TotalMinutes) phút</span>
+                                    }
+                                }
+                            </strong>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </section>
+
+    <script>
+        // Simple countdown timer (optional enhancement)
+        document.querySelectorAll('.countdown-timer').forEach(function(timer) {
+            var endDate = new Date(timer.getAttribute('data-end-date'));
+            
+            function updateCountdown() {
+                var now = new Date();
+                var diff = endDate - now;
+                
+                if (diff <= 0) {
+                    timer.innerHTML = 'Đã kết thúc';
+                    return;
+                }
+                
+                var days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                var hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                var minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                
+                if (days > 0) {
+                    timer.innerHTML = days + ' ngày ' + hours + ' giờ';
+                } else if (hours > 0) {
+                    timer.innerHTML = hours + ' giờ ' + minutes + ' phút';
+                } else {
+                    timer.innerHTML = minutes + ' phút';
+                }
+            }
+            
+            updateCountdown();
+            setInterval(updateCountdown, 60000); // Update every minute
+        });
+    </script>
+}
