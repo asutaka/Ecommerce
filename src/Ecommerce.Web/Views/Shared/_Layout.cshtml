@@ -72,7 +72,7 @@
                             @(User.Identity.Name ?? User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value ?? "Tài khoản")
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" asp-controller="Account" asp-action="Profile"><i class="bi bi-person me-2"></i>Tài khoản của tôi</a></li>
+                            <li><a class="dropdown-item" asp-route="profile"><i class="bi bi-person me-2"></i>Tài khoản của tôi</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li>
                                 <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
@@ -84,7 +84,7 @@
                 }
                 else
                 {
-                    <a asp-controller="Account" asp-action="Login" class="btn btn-link text-decoration-none" style="color: #2563eb;">
+                    <a asp-route="login" class="btn btn-link text-decoration-none" style="color: #2563eb;">
                         <i class="bi bi-person-circle me-1"></i>Đăng nhập
                     </a>
                 }

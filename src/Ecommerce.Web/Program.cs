@@ -222,7 +222,22 @@ app.MapControllerRoute(
     name: "areas",
     pattern: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}");
 
-// SEO-friendly product URL
+// SEO-friendly URLs
+app.MapControllerRoute(
+    name: "login",
+    pattern: "login",
+    defaults: new { controller = "Account", action = "Login" });
+
+app.MapControllerRoute(
+    name: "cart",
+    pattern: "gio-hang",
+    defaults: new { controller = "Cart", action = "Index" });
+
+app.MapControllerRoute(
+    name: "profile",
+    pattern: "profile",
+    defaults: new { controller = "Account", action = "Profile" });
+
 app.MapControllerRoute(
     name: "product-details",
     pattern: "san-pham/{slug}",

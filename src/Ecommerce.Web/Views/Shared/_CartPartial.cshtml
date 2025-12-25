@@ -12,7 +12,7 @@
     }
 }
 
-<a href="@Url.Action("Index", "Cart")" class="cart-badge">
+<a asp-route="cart" class="cart-badge">
     <i class="bi bi-cart3" style="font-size: 1.5rem;"></i>
     <span class="badge" id="cart-badge-count">@itemCount</span>
 </a>
