@@ -70,7 +70,7 @@ namespace Ecommerce.Infrastructure.Migrations
                     b.HasIndex("Username")
                         .IsUnique();
 
-                    b.ToTable("AdminUsers");
+                    b.ToTable("AdminUsers", (string)null);
 
                     b.HasData(
                         new
@@ -144,7 +144,7 @@ namespace Ecommerce.Infrastructure.Migrations
 
                     b.HasIndex("ProductVariantId");
 
-                    b.ToTable("CartItems");
+                    b.ToTable("CartItems", (string)null);
                 });
 
             modelBuilder.Entity("Ecommerce.Infrastructure.Entities.Category", b =>
@@ -178,7 +178,7 @@ namespace Ecommerce.Infrastructure.Migrations
 
                     b.HasIndex("ParentId");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("Ecommerce.Infrastructure.Entities.Coupon", b =>
@@ -237,7 +237,7 @@ namespace Ecommerce.Infrastructure.Migrations
 
                     b.HasIndex("IsActive");
 
-                    b.ToTable("Coupons");
+                    b.ToTable("Coupons", (string)null);
                 });
 
             modelBuilder.Entity("Ecommerce.Infrastructure.Entities.Customer", b =>
@@ -290,7 +290,7 @@ namespace Ecommerce.Infrastructure.Migrations
                     b.HasIndex("Email")
                         .IsUnique();
 
-                    b.ToTable("Customers");
+                    b.ToTable("Customers", (string)null);
                 });
 
             modelBuilder.Entity("Ecommerce.Infrastructure.Entities.ExternalLogin", b =>
@@ -325,7 +325,7 @@ namespace Ecommerce.Infrastructure.Migrations
                     b.HasIndex("Provider", "ProviderKey")
                         .IsUnique();
 
-                    b.ToTable("ExternalLogins");
+                    b.ToTable("ExternalLogins", (string)null);
                 });
 
             modelBuilder.Entity("Ecommerce.Infrastructure.Entities.Group", b =>
@@ -370,7 +370,7 @@ namespace Ecommerce.Infrastructure.Migrations
 
                     b.HasIndex("IsActive");
 
-                    b.ToTable("Groups");
+                    b.ToTable("Groups", (string)null);
                 });
 
             modelBuilder.Entity("Ecommerce.Infrastructure.Entities.NotificationLog", b =>
@@ -413,7 +413,7 @@ namespace Ecommerce.Infrastructure.Migrations
                     b.HasIndex("OrderId")
                         .IsUnique();
 
-                    b.ToTable("Notifications");
+                    b.ToTable("Notifications", (string)null);
                 });
 
             modelBuilder.Entity("Ecommerce.Infrastructure.Entities.Order", b =>
@@ -504,7 +504,7 @@ namespace Ecommerce.Infrastructure.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Orders", (string)null);
                 });
 
             modelBuilder.Entity("Ecommerce.Infrastructure.Entities.OrderItem", b =>
@@ -553,7 +553,7 @@ namespace Ecommerce.Infrastructure.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("OrderItems");
+                    b.ToTable("OrderItems", (string)null);
                 });
 
             modelBuilder.Entity("Ecommerce.Infrastructure.Entities.Payment", b =>
@@ -594,7 +594,7 @@ namespace Ecommerce.Infrastructure.Migrations
                     b.HasIndex("OrderId")
                         .IsUnique();
 
-                    b.ToTable("Payments");
+                    b.ToTable("Payments", (string)null);
                 });
 
             modelBuilder.Entity("Ecommerce.Infrastructure.Entities.Product", b =>
@@ -642,7 +642,7 @@ namespace Ecommerce.Infrastructure.Migrations
 
                     b.HasIndex("PrimaryCategoryId");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("Ecommerce.Infrastructure.Entities.ProductCategory", b =>
@@ -657,7 +657,7 @@ namespace Ecommerce.Infrastructure.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("ProductCategories");
+                    b.ToTable("ProductCategories", (string)null);
                 });
 
             modelBuilder.Entity("Ecommerce.Infrastructure.Entities.ProductVariant", b =>
@@ -712,7 +712,7 @@ namespace Ecommerce.Infrastructure.Migrations
                     b.HasIndex("SKU")
                         .IsUnique();
 
-                    b.ToTable("ProductVariants");
+                    b.ToTable("ProductVariants", (string)null);
                 });
 
             modelBuilder.Entity("Ecommerce.Infrastructure.Entities.ShoppingCart", b =>
@@ -747,7 +747,7 @@ namespace Ecommerce.Infrastructure.Migrations
 
                     b.HasIndex("SessionId");
 
-                    b.ToTable("ShoppingCarts");
+                    b.ToTable("ShoppingCarts", (string)null);
                 });
 
             modelBuilder.Entity("Ecommerce.Infrastructure.Entities.Supplier", b =>
@@ -786,7 +786,7 @@ namespace Ecommerce.Infrastructure.Migrations
                     b.HasIndex("Code")
                         .IsUnique();
 
-                    b.ToTable("Suppliers");
+                    b.ToTable("Suppliers", (string)null);
                 });
 
             modelBuilder.Entity("Ecommerce.Infrastructure.Entities.Warehouse", b =>
@@ -825,7 +825,7 @@ namespace Ecommerce.Infrastructure.Migrations
                     b.HasIndex("Code")
                         .IsUnique();
 
-                    b.ToTable("Warehouses");
+                    b.ToTable("Warehouses", (string)null);
                 });
 
             modelBuilder.Entity("Ecommerce.Infrastructure.Entities.AdminUser", b =>

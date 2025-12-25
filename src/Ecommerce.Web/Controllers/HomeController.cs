@@ -4,16 +4,23 @@ using Ecommerce.Web.Models;
 using Ecommerce.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Ecommerce.Web.Controllers;
 
 public class HomeController(
     ILogger<HomeController> logger,
-    EcommerceDbContext dbContext) : Controller
+    EcommerceDbContext dbContext,
+    IMemoryCache cache) : Controller
 {
     [HttpGet]
+    [ResponseCache(Duration = 300, VaryByQueryKeys = new[] { "*" })] // Cache for 5 minutes
     public async Task<IActionResult> Index()
     {
+        var cacheKey = "home_page_data";
+        
+        if (!cache.TryGetValue(cacheKey, out HomeViewModel? model))
+        {
         // 1. Featured Products - Optimized
         // - Added AsNoTracking() for read-only performance
         // - Removed Include(Category) as it's not used in projection
@@ -106,7 +113,6 @@ public class HomeController(
         }
 
 
-        // Get statistics
         var statistics = new HomeStatistics
         {
             TotalProducts = await dbContext.Products.CountAsync(),
@@ -114,7 +120,7 @@ public class HomeController(
             TotalOrders = await dbContext.Orders.CountAsync()
         };
 
-        var model = new HomeViewModel
+        model = new HomeViewModel
         {
             FeaturedProducts = products,
             Checkout = new CheckoutViewModel
@@ -127,7 +133,10 @@ public class HomeController(
             Statistics = statistics
         };
 
-        logger.LogInformation("Rendering storefront with {ProductCount} sản phẩm", products.Count);
+            cache.Set(cacheKey, model, TimeSpan.FromMinutes(5));
+        }
+
+        logger.LogInformation("Rendering storefront with {ProductCount} sản phẩm", model.FeaturedProducts.Count);
 
         ViewBag.CheckoutStatus = TempData["CheckoutStatus"]?.ToString();
 
@@ -185,3 +194,4 @@ public class HomeController(
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
 }
+

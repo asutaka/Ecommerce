@@ -9,6 +9,14 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddControllersWithViews();
 
+// Add performance optimizations
+builder.Services.AddResponseCaching();
+builder.Services.AddMemoryCache();
+builder.Services.AddResponseCompression(options =>
+{
+    options.EnableForHttps = true;
+});
+
 // Add session support for cart
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
@@ -66,7 +74,11 @@ builder.Services.AddHangfire(config => config
     .UseRecommendedSerializerSettings()
     .UsePostgreSqlStorage(c => c.UseNpgsqlConnection(connectionString)));
 
-builder.Services.AddHangfireServer();
+// Optimize Hangfire for development
+builder.Services.AddHangfireServer(options =>
+{
+    options.WorkerCount = 5; // Reduce from default 20 to 5
+});
 
 // Register cleanup job
 builder.Services.AddScoped<CleanupExpiredOrdersJob>();
@@ -168,7 +180,16 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseStaticFiles();
+app.UseResponseCompression();
+app.UseResponseCaching();
+app.UseStaticFiles(new StaticFileOptions
+{
+    OnPrepareResponse = ctx =>
+    {
+        // Cache static files for 7 days
+        ctx.Context.Response.Headers.Append("Cache-Control", "public,max-age=604800");
+    }
+});
 app.UseRouting();
 
 app.UseSession(); // Enable session for cart
