@@ -53,6 +53,7 @@ public class CategoryController(EcommerceDbContext dbContext) : Controller
             Products = products.Select(p => new ProductViewModel
             {
                 Id = p.Id,
+                Slug = p.Slug,
                 Name = p.Name,
                 Description = p.Description,
                 Images = p.Images,

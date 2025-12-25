@@ -222,6 +222,12 @@ app.MapControllerRoute(
     name: "areas",
     pattern: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}");
 
+// SEO-friendly product URL
+app.MapControllerRoute(
+    name: "product-details",
+    pattern: "san-pham/{slug}",
+    defaults: new { controller = "Product", action = "Details" });
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");

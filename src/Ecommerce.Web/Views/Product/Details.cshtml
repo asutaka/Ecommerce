@@ -185,7 +185,7 @@
                     @foreach (var product in Model.RelatedProducts)
                     {
                         <article class="product-card" style="min-width: 250px; flex: 0 0 250px;">
-                            <a asp-controller="Product" asp-action="Details" asp-route-id="@product.Id" class="product-link">
+                            <a asp-controller="Product" asp-action="Details" asp-route-slug="@product.Slug" class="product-link">
                                 <img src="@product.HeroImageUrl" alt="@product.Name" loading="lazy" style="height: 320px;" />
                                 <div class="card-body">
                                     <div class="card-meta">

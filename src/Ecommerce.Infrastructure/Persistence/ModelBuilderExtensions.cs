@@ -14,6 +14,7 @@ public static class ModelBuilderExtensions
             {
                 Id = Guid.Parse("dc1c2d1d-a2bb-45f7-9e1b-87cdc53a7a10"),
                 Name = "Moderno Leather Chair",
+                Slug = "moderno-leather-chair-dc1c2d",
                 Description = "Góc ngồi sang trọng với chất liệu da Ý cao cấp.",
                 Images = new List<string> { "https://images.unsplash.com/photo-1503602642458-232111445657?auto=format&fit=crop&w=900&q=60" },
                 Price = 420m,
@@ -24,6 +25,7 @@ public static class ModelBuilderExtensions
             {
                 Id = Guid.Parse("f5d9d030-8cde-41e4-ac7c-7e27c856223c"),
                 Name = "Canvas Lighting Kit",
+                Slug = "canvas-lighting-kit-f5d9d0",
                 Description = "Bộ đèn canvas cân bằng ánh sáng tự nhiên.",
                 Images = new List<string> { "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=900&q=60" },
                 Price = 289m,
@@ -34,6 +36,7 @@ public static class ModelBuilderExtensions
             {
                 Id = Guid.Parse("c812781e-3cc3-4cef-a0aa-3b40ffde4f74"),
                 Name = "Nordic Marble Table",
+                Slug = "nordic-marble-table-c81278",
                 Description = "Bàn ăn đá cẩm thạch với đường nét tối giản.",
                 Images = new List<string> { "https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=900&q=60" },
                 Price = 980m,

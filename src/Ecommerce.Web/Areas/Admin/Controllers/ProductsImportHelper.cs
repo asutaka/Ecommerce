@@ -86,9 +86,12 @@ public static class ProductsControllerImportExtension
                     originalPrice = parsedOriginalPrice;
                 }
 
+                var productId = Guid.NewGuid();
                 var product = new Product
                 {
+                    Id = productId,
                     Name = name,
+                    Slug = Helpers.SlugHelper.GenerateProductSlug(name, productId),
                     Description = description,
                     Price = price,
                     OriginalPrice = originalPrice,

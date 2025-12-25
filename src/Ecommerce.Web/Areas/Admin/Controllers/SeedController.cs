@@ -101,10 +101,12 @@ public class SeedController(EcommerceDbContext dbContext) : Controller
                 var isFeatured = random.Next(0, 10) < 3; // 30% nổi bật
                 var isActive = random.Next(0, 10) < 9; // 90% active
                 
+                var productId = Guid.NewGuid();
                 var product = new Product
                 {
-                    Id = Guid.NewGuid(),
+                    Id = productId,
                     Name = name,
+                    Slug = Helpers.SlugHelper.GenerateProductSlug(name, productId),
                     Description = $"Sản phẩm {name} chất lượng cao, thiết kế {adj}, phù hợp cho mọi lứa tuổi. Chất liệu tốt, bền đẹp.",
                     Price = price,
                     Images = images,

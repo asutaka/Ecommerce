@@ -8,85 +8,41 @@ namespace Ecommerce.Web.Controllers;
 public class ProductController(EcommerceDbContext dbContext) : Controller
 {
     [HttpGet]
-    public async Task<IActionResult> Details(Guid id)
+    public async Task<IActionResult> Details(string? slug = null, Guid? id = null)
     {
-        var product = await dbContext.Products
-            .Include(x => x.PrimaryCategory)
-            .FirstOrDefaultAsync(x => x.Id == id);
+        Infrastructure.Entities.Product? product = null;
+
+        // Try to find by slug first (new SEO-friendly URLs)
+        if (!string.IsNullOrEmpty(slug))
+        {
+            // Extract short ID from slug (last segment after final hyphen)
+            var parts = slug.Split('-');
+            var shortId = parts[^1]; // Last element
+
+            product = await dbContext.Products
+                .Include(x => x.PrimaryCategory)
+                .FirstOrDefaultAsync(x => 
+                    x.Slug == slug || 
+                    x.Id.ToString().ToLower().StartsWith(shortId.ToLower()));
+        }
+
+        // Fallback: try by ID (for backward compatibility with old URLs)
+        if (product == null && id.HasValue)
+        {
+            product = await dbContext.Products
+                .Include(x => x.PrimaryCategory)
+                .FirstOrDefaultAsync(x => x.Id == id.Value);
+
+            // If found, redirect to new SEO-friendly URL (301 Permanent Redirect)
+            if (product != null)
+            {
+                return RedirectToActionPermanent("Details", new { slug = product.Slug });
+            }
+        }
 
         if (product == null)
         {
-            // FAKE DATA FALLBACK (For UI Verification)
-            // If product not found in DB, generate a dummy one so we can see the UI
-            var rnd = new Random();
-            var fakeModel = new ProductDetailViewModel
-            {
-                Id = id,
-                Name = "Sản phẩm Demo " + id.ToString().Substring(0, 4),
-                Description = "Đây là dữ liệu giả lập để kiểm tra giao diện chi tiết sản phẩm. Sản phẩm này chưa có trong cơ sở dữ liệu thực tế.",
-                SKU = "MOD-DEMO-" + rnd.Next(1000, 9999),
-                Price = rnd.Next(50, 500) * 10000,
-                OriginalPrice = rnd.Next(600, 800) * 10000, // Fake original price
-                IsFeatured = true,
-                PrimaryCategoryId = Guid.Empty,
-                CategoryName = "Danh mục Demo",
-                Images = new List<string> 
-                { 
-                    "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=800&q=80",
-                    "https://images.unsplash.com/photo-1529139574466-a302d20525a9?auto=format&fit=crop&w=800&q=80",
-                    "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=800&q=80"
-                },
-                RelatedProducts = new List<ProductViewModel>()
-            };
-
-            // Add some fake related products
-            for(int i=0; i<4; i++) {
-                fakeModel.RelatedProducts.Add(new ProductViewModel {
-                    Id = Guid.NewGuid(),
-                    Name = $"Sản phẩm gợi ý {i+1}",
-                    Price = 1500000,
-                    Images = new List<string> { "https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=800&q=80" }
-                });
-            }
-
-            // Add fake coupons
-            fakeModel.AvailableCoupons = new List<CouponViewModel>
-            {
-                new CouponViewModel
-                {
-                    Code = "GIAM40K",
-                    Description = "Giảm 40.000đ cho đơn hàng từ 500.000đ",
-                    DiscountAmount = 40000m,
-                    MinimumOrderAmount = 500000m,
-                    EndDate = DateTime.UtcNow.AddDays(30)
-                },
-                new CouponViewModel
-                {
-                    Code = "GIAM50K",
-                    Description = "Giảm 50.000đ cho đơn hàng từ 800.000đ",
-                    DiscountAmount = 50000m,
-                    MinimumOrderAmount = 800000m,
-                    EndDate = DateTime.UtcNow.AddDays(45)
-                },
-                new CouponViewModel
-                {
-                    Code = "GIAM100K",
-                    Description = "Giảm 100.000đ cho đơn hàng từ 1.500.000đ",
-                    DiscountAmount = 100000m,
-                    MinimumOrderAmount = 1500000m,
-                    EndDate = DateTime.UtcNow.AddDays(60)
-                },
-                new CouponViewModel
-                {
-                    Code = "FREESHIP",
-                    Description = "Miễn phí vận chuyển cho đơn hàng từ 300.000đ",
-                    DiscountAmount = 30000m,
-                    MinimumOrderAmount = 300000m,
-                    EndDate = DateTime.UtcNow.AddDays(90)
-                }
-            };
-
-            return View(fakeModel);
+            return NotFound();
         }
 
         // Get related products from same category
@@ -99,6 +55,7 @@ public class ProductController(EcommerceDbContext dbContext) : Controller
             {
                 Id = p.Id,
                 Name = p.Name,
+                Slug = p.Slug,
                 Description = p.Description,
                 Images = p.Images,
                 Price = p.Price,
@@ -185,6 +142,7 @@ public class ProductController(EcommerceDbContext dbContext) : Controller
         {
             Id = product.Id,
             Name = product.Name,
+            Slug = product.Slug,
             Description = product.Description,
             SKU = "MOD-" + product.Id.ToString().Substring(0, 8).ToUpper(),
             Images = product.Images,

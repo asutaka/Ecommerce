@@ -3,6 +3,7 @@ namespace Ecommerce.Infrastructure.Entities;
 public class Product : BaseEntity
 {
     public required string Name { get; set; }
+    public required string Slug { get; set; } // SEO-friendly URL slug
     public required string Description { get; set; }
     public List<string> Images { get; set; } = new();
     public decimal Price { get; set; }

@@ -28,7 +28,7 @@
                 @foreach (var product in Model.Results)
                 {
                     <article class="product-card @(product.IsFeatured ? "featured" : string.Empty)">
-                        <a asp-controller="Product" asp-action="Details" asp-route-id="@product.Id" class="product-link">
+                        <a asp-controller="Product" asp-action="Details" asp-route-slug="@product.Slug" class="product-link">
                             @if (product.IsFeatured)
                             {
                                 <div class="badge-pill accent">Best Seller</div>

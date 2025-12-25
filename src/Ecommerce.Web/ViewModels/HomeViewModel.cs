@@ -15,6 +15,7 @@ public class HomeViewModel
 public class ProductViewModel
 {
     public Guid Id { get; init; }
+    public string Slug { get; init; } = string.Empty;
     public string Name { get; init; } = string.Empty;
     public string Description { get; init; } = string.Empty;
     public List<string> Images { get; init; } = [];

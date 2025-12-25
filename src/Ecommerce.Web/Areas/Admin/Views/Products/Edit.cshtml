@@ -38,6 +38,17 @@
                                 <span asp-validation-for="Name" class="text-danger"></span>
                             </div>
 
+                            @if (!string.IsNullOrEmpty(Model.Slug))
+                            {
+                                <div class="form-group">
+                                    <label asp-for="Slug"></label>
+                                    <input asp-for="Slug" class="form-control" readonly style="background-color: #f4f6f9; cursor: not-allowed;">
+                                    <small class="form-text text-muted">
+                                        <i class="fas fa-info-circle"></i> SEO URL: <strong>/san-pham/@Model.Slug</strong> (tự động tạo từ tên sản phẩm)
+                                    </small>
+                                </div>
+                            }
+
                             <div class="form-group">
                                 <label asp-for="Description">Mô tả</label>
                                 <textarea asp-for="Description" class="form-control" rows="3" placeholder="Mô tả chi tiết về sản phẩm"></textarea>

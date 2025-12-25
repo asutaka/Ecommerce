@@ -60,9 +60,12 @@ public class ProductsController(EcommerceDbContext dbContext) : Controller
             return View(model);
         }
 
+        var productId = Guid.NewGuid();
         var product = new Product
         {
+            Id = productId,
             Name = model.Name,
+            Slug = Helpers.SlugHelper.GenerateProductSlug(model.Name, productId),
             Description = model.Description,
             Price = model.Price,
             OriginalPrice = model.OriginalPrice,
@@ -97,6 +100,7 @@ public class ProductsController(EcommerceDbContext dbContext) : Controller
         {
             Id = product.Id,
             Name = product.Name,
+            Slug = product.Slug,
             Description = product.Description,
             Price = product.Price,
             OriginalPrice = product.OriginalPrice,
@@ -147,6 +151,13 @@ public class ProductsController(EcommerceDbContext dbContext) : Controller
         }
 
         product.Name = model.Name;
+        
+        // Regenerate slug if name changed
+        if (product.Name != model.Name)
+        {
+            product.Slug = Helpers.SlugHelper.GenerateProductSlug(model.Name, product.Id);
+        }
+        
         product.Description = model.Description;
         product.Price = model.Price;
         product.OriginalPrice = model.OriginalPrice;

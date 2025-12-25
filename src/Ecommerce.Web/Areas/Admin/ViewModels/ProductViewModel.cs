@@ -11,6 +11,9 @@ public class ProductFormViewModel
     [MaxLength(250)]
     public string Name { get; set; } = string.Empty;
 
+    [Display(Name = "SEO Slug (tự động)")]
+    public string? Slug { get; set; }
+
     [Required(ErrorMessage = "Vui lòng nhập mô tả")]
     public string Description { get; set; } = string.Empty;
 

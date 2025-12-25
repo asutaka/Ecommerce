@@ -34,6 +34,7 @@ public class HomeController(
             .Select(x => new ProductViewModel
             {
                 Id = x.Id,
+                Slug = x.Slug,
                 Name = x.Name,
                 Description = x.Description,
                 Images = x.Images,
@@ -65,6 +66,7 @@ public class HomeController(
             .Select(x => new ProductViewModel
             {
                 Id = x.Id,
+                Slug = x.Slug,
                 Name = x.Name,
                 Description = x.Description,
                 Images = x.Images,
@@ -100,6 +102,7 @@ public class HomeController(
                     .Select(x => new ProductViewModel
                     {
                          Id = x.Id,
+                         Slug = x.Slug,
                          Name = x.Name,
                          Description = x.Description,
                          Images = x.Images,
