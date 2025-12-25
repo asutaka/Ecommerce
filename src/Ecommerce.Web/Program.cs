@@ -135,6 +135,25 @@ builder.Services.AddAuthentication(options =>
     options.RetrieveUserDetails = true;
 });
 
+// Add SignalR
+builder.Services.AddSignalR();
+
+// Add HttpClient for AI providers
+builder.Services.AddHttpClient("GroqAI", client =>
+{
+    client.Timeout = TimeSpan.FromSeconds(30);
+});
+
+// Add Chat Services
+builder.Services.AddScoped<Ecommerce.Web.Services.IChatService, Ecommerce.Web.Services.ChatService>();
+
+// Add AI Provider (Groq - FREE)
+var enableAI = builder.Configuration.GetValue<bool>("ChatSettings:EnableAI", true);
+if (enableAI)
+{
+    builder.Services.AddScoped<Ecommerce.Web.Services.AI.IAIProvider, Ecommerce.Web.Services.AI.GroqProvider>();
+}
+
 builder.Services.AddMassTransit(x =>
 {
     // Register consumers
@@ -246,5 +265,8 @@ app.MapControllerRoute(
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+// Map SignalR Hub
+app.MapHub<Ecommerce.Web.Hubs.ChatHub>("/chathub");
 
 app.Run();

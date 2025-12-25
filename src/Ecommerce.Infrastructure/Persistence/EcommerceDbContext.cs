@@ -26,6 +26,12 @@ public class EcommerceDbContext(DbContextOptions<EcommerceDbContext> options) : 
     public DbSet<Group> Groups => Set<Group>();
     public DbSet<Banner> Banners => Set<Banner>();
     public DbSet<BannerAnalytics> BannerAnalytics => Set<BannerAnalytics>();
+    
+    // Chat entities
+    public DbSet<ChatSession> ChatSessions => Set<ChatSession>();
+    public DbSet<ChatMessage> ChatMessages => Set<ChatMessage>();
+    public DbSet<AdminOnlineStatus> AdminOnlineStatuses => Set<AdminOnlineStatus>();
+   public DbSet<ChatSettings> ChatSettings => Set<ChatSettings>();
 
     // In OnModelCreating
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -302,6 +308,61 @@ public class EcommerceDbContext(DbContextOptions<EcommerceDbContext> options) : 
                 .WithMany()
                 .HasForeignKey(x => x.BannerId)
                 .OnDelete(DeleteBehavior.Cascade); // Delete analytics when banner is deleted
+        });
+
+        // Chat entities configuration
+        modelBuilder.Entity<ChatSession>(entity =>
+        {
+            entity.Property(x => x.SessionToken).HasMaxLength(100).IsRequired();
+            entity.Property(x => x.CustomerName).HasMaxLength(200);
+            entity.Property(x => x.CustomerEmail).HasMaxLength(200);
+            entity.Property(x => x.Status).HasMaxLength(20).IsRequired();
+            
+            entity.HasIndex(x => x.SessionToken).IsUnique();
+            entity.HasIndex(x => x.Status);
+            entity.HasIndex(x => x.AssignedAdminId);
+            
+            entity.HasOne(x => x.Customer)
+                .WithMany()
+                .HasForeignKey(x => x.CustomerId)
+                .OnDelete(DeleteBehavior.SetNull);
+                
+            entity.HasOne(x => x.AssignedAdmin)
+                .WithMany()
+                .HasForeignKey(x => x.AssignedAdminId)
+                .OnDelete(DeleteBehavior.SetNull);
+        });
+        
+        modelBuilder.Entity<ChatMessage>(entity =>
+        {
+            entity.Property(x => x.SenderType).HasMaxLength(20).IsRequired();
+            entity.Property(x => x.SenderName).HasMaxLength(200);
+            entity.Property(x => x.Message).IsRequired();
+            
+            entity.HasIndex(x => x.SessionId);
+            entity.HasIndex(x => x.SentAt);
+            
+            entity.HasOne(x => x.Session)
+                .WithMany(x => x.Messages)
+                .HasForeignKey(x => x.SessionId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+        
+        modelBuilder.Entity<AdminOnlineStatus>(entity =>
+        {
+            entity.HasKey(x => x.AdminId);
+            
+            entity.HasOne(x => x.Admin)
+                .WithOne()
+                .HasForeignKey<AdminOnlineStatus>(x => x.AdminId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+        
+        modelBuilder.Entity<ChatSettings>(entity =>
+        {
+            entity.Property(x => x.AiProvider).HasMaxLength(50);
+            entity.Property(x => x.AiModel).HasMaxLength(100);
+            entity.Property(x => x.OfflineMessage).IsRequired();
         });
 
         //modelBuilder.SeedInitialData();

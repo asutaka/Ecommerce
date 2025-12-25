@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="~/css/navigation.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/sections.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/banner.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/chat-widget.css" asp-append-version="true" />
 </head>
 <body>
     @await Html.PartialAsync("_TopBannerPartial")
@@ -191,6 +192,9 @@
         </footer>
     </div>
 
+    @* Chat Widget *@
+    @await Html.PartialAsync("_ChatWidget")
+
     <script src="~/lib/jquery/jquery.min.js" asp-append-version="true"></script>
     <script src="~/lib/jquery-validation/jquery.validate.min.js" asp-append-version="true"></script>
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js" asp-append-version="true"></script>
@@ -201,6 +205,11 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/js/cart.js" asp-append-version="true"></script>
     <script src="~/js/banner-tracking.js" asp-append-version="true"></script>
+    
+    @* Chat Widget Scripts *@
+    <script src="https://cdn.jsdelivr.net/npm/@@microsoft/signalr@@7.0.0/dist/browser/signalr.min.js"></script>
+    <script src="~/js/chat-widget.js" asp-append-version="true"></script>
+    
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

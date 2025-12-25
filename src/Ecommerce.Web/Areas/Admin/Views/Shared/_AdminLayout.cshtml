@@ -17,6 +17,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.css">
     <!-- Custom Admin CSS -->
     <link rel="stylesheet" href="~/css/admin/admin.css" asp-append-version="true">
+    
+    @await RenderSectionAsync("Styles", required: false)
+    
     <style>
         /* Custom Sidebar Styling - White background with full opacity menu items */
         .main-sidebar {
@@ -222,6 +225,14 @@
                                 </a>
                             </li>
                         }
+
+                        <!-- Chat - Always visible for admins -->
+                        <li class="nav-item">
+                            <a asp-area="Admin" asp-controller="Chat" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Chat" ? "active" : "")">
+                                <i class="nav-icon fas fa-comments"></i>
+                                <p>Chat hỗ trợ</p>
+                            </a>
+                        </li>
                     </ul>
                 </nav>
                 <!-- /.sidebar-menu -->
