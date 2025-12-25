@@ -121,7 +121,7 @@ Nếu câu hỏi nằm ngoài khả năng, hãy lịch sự nói rằng bạn s�
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error calling Groq API");
-            return $"[DEBUG] Lỗi ngoại lệ: {ex.Message}";
+            return "Xin lỗi, đã có lỗi xảy ra khi xử lý yêu cầu của bạn. Vui lòng thử lại sau.";
         }
     }
 
