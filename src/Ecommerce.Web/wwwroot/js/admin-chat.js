@@ -132,10 +132,10 @@
             if (!currentSessionToken) return;
 
             if (confirm('Bạn có chắc muốn đóng cuộc trò chuyện này?')) {
-                const session = sessions.find(s => s.SessionToken === currentSessionToken);
+                const session = sessions.find(s => s.sessionToken === currentSessionToken);
                 if (session) {
                     try {
-                        const response = await fetch(`/Admin/Chat/CloseSession?sessionId=${session.Id}`, {
+                        const response = await fetch(`/Admin/Chat/CloseSession?sessionId=${session.id}`, {
                             method: 'POST'
                         });
 
@@ -184,21 +184,21 @@
         }
 
         sessionsListEl.innerHTML = sessions.map(session => `
-            <div class="list-group-item chat-session-item ${session.SessionToken === currentSessionToken ? 'active' : ''}" 
-                 data-session-token="${session.SessionToken}">
+            <div class="list-group-item chat-session-item ${session.sessionToken === currentSessionToken ? 'active' : ''}" 
+                 data-session-token="${session.sessionToken}">
                 <div class="d-flex justify-content-between align-items-start">
                     <div class="flex-grow-1">
                         <h6 class="mb-1">
-                            <i class="bi ${session.IsAiHandling ? 'bi-robot' : 'bi-person'}"></i>
-                            ${session.CustomerName || 'Khách hàng'}
+                            <i class="bi ${session.isAiHandling ? 'bi-robot' : 'bi-person'}"></i>
+                            ${session.customerName || 'Khách hàng'}
                         </h6>
                         <p class="mb-1 text-muted small text-truncate" style="max-width: 200px;">
-                            ${session.LastMessage || 'Chưa có tin nhắn'}
+                            ${session.lastMessage || 'Chưa có tin nhắn'}
                         </p>
-                        <small class="text-muted">${formatRelativeTime(session.LastMessageAt)}</small>
+                        <small class="text-muted">${formatRelativeTime(session.lastMessageAt)}</small>
                     </div>
                     <div>
-                        ${session.UnreadCount > 0 ? `<span class="unread-badge">${session.UnreadCount}</span>` : ''}
+                        ${session.unreadCount > 0 ? `<span class="unread-badge">${session.unreadCount}</span>` : ''}
                     </div>
                 </div>
             </div>
@@ -219,14 +219,14 @@
             const response = await fetch(`/Admin/Chat/GetSessionHistory?sessionToken=${sessionToken}`);
             const data = await response.json();
 
-            currentCustomerName.textContent = data.session.CustomerName || 'Khách hàng';
+            currentCustomerName.textContent = data.session.customerName || 'Khách hàng';
             inputContainer.style.display = 'block';
             closeSessionBtn.style.display = 'inline-block';
 
             // Render messages
             chatMessagesEl.innerHTML = '';
             data.messages.forEach(msg => {
-                addMessageToChat(msg.Message, msg.SenderName, msg.SenderType, msg.SentAt);
+                addMessageToChat(msg.message, msg.senderName, msg.senderType, msg.sentAt);
             });
 
             // Re-render sessions to update active state

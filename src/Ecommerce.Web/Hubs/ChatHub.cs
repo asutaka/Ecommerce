@@ -3,6 +3,8 @@ using Ecommerce.Web.Services;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
+using System.Security.Claims;
+
 namespace Ecommerce.Web.Hubs;
 
 public class ChatHub : Hub
@@ -84,16 +86,28 @@ public class ChatHub : Hub
     /// <summary>
     /// Admin sends message
     /// </summary>
+    /// <summary>
+    /// Admin sends message
+    /// </summary>
     public async Task SendMessageFromAdmin(string sessionToken, string message)
     {
         try
         {
-            var adminId = Guid.Parse(Context.UserIdentifier ?? throw new Exception("Admin not authenticated"));
+            // Find the specific identity that has the "Admin" role
+            var adminIdentity = Context.User?.Identities
+                .FirstOrDefault(i => i.HasClaim(c => c.Type == ClaimTypes.Role && c.Value == "Admin"));
+
+            var adminIdStr = adminIdentity?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(adminIdStr))
+                 throw new Exception("Admin not authenticated (No Admin identity found)");
+                 
+            var adminId = Guid.Parse(adminIdStr);
             var admin = await _db.AdminUsers.FindAsync(adminId);
 
             if (admin == null)
             {
-                await Clients.Caller.SendAsync("Error", "Admin không tồn tại");
+                await Clients.Caller.SendAsync("Error", "Admin không tồn tại trong DB");
                 return;
             }
 
@@ -156,7 +170,15 @@ public class ChatHub : Hub
     {
         try
         {
-            var adminId = Guid.Parse(Context.UserIdentifier ?? throw new Exception("Admin not authenticated"));
+            // Find the specific identity that has the "Admin" role
+            var adminIdentity = Context.User?.Identities
+                .FirstOrDefault(i => i.HasClaim(c => c.Type == ClaimTypes.Role && c.Value == "Admin"));
+
+            var adminIdStr = adminIdentity?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(adminIdStr)) return;
+
+            var adminId = Guid.Parse(adminIdStr);
             await _chatService.UpdateAdminOnlineStatusAsync(adminId, isOnline);
 
             _logger.LogInformation("Admin {AdminId} set status to {Status}", adminId, isOnline ? "online" : "offline");

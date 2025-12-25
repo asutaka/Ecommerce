@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication;
 using Ecommerce.Infrastructure.Extensions;
 using Ecommerce.Web.Jobs;
 using Hangfire;
@@ -223,6 +224,31 @@ app.UseCookiePolicy(new CookiePolicyOptions
 });
 
 app.UseAuthentication(); // Add authentication middleware
+
+// Middleware to ensure AdminAuth is checked for SignalR Hub
+app.Use(async (context, next) =>
+{
+    var path = context.Request.Path;
+    if (path.StartsWithSegments("/chathub"))
+    {
+        // Try to authenticate with AdminAuth scheme
+        var result = await context.AuthenticateAsync("AdminAuth");
+        if (result.Succeeded && result.Principal != null)
+        {
+            if (context.User.Identity?.IsAuthenticated != true)
+            {
+                context.User = result.Principal;
+            }
+            else
+            {
+                // Merge identities if already authenticated (e.g. as Customer)
+                context.User.AddIdentities(result.Principal.Identities);
+            }
+        }
+    }
+    await next();
+});
+
 app.UseAuthorization();
 
 // Configure Hangfire Dashboard
