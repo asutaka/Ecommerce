@@ -163,6 +163,9 @@
                                             <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-info" title="Chỉnh sửa">
                                                 <i class="fas fa-edit"></i>
                                             </a>
+                                            <button type="button" class="btn btn-sm btn-primary btn-share" data-id="@item.Id" title="Đăng lên Mạng xã hội">
+                                                <i class="fas fa-share-alt"></i>
+                                            </button>
                                             <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline" 
                                                   onsubmit="return confirm('Bạn có chắc chắn muốn xóa sản phẩm @item.Name?');">
                                                 <button type="submit" class="btn btn-sm btn-danger" title="Xóa">
@@ -282,6 +285,51 @@
     </div>
 </div>
 
+<!-- Social Share Modal -->
+<div class="modal fade" id="socialShareModal" tabindex="-1" role="dialog" aria-labelledby="socialShareModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="socialShareModalLabel">
+                    <i class="fas fa-share-alt mr-2"></i> Đăng sản phẩm đa kênh
+                </h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-5 border-right">
+                        <h6 class="font-weight-bold">1. Chọn nền tảng</h6>
+                        <div id="socialPlatformsList" class="mt-3">
+                            <!-- Platforms loaded via AJAX -->
+                            <div class="text-center py-5"><i class="fas fa-spinner fa-spin"></i> Đang tải...</div>
+                        </div>
+                    </div>
+                    <div class="col-md-7">
+                        <h6 class="font-weight-bold">2. Nội dung bài đăng</h6>
+                        <div class="form-group mt-3">
+                            <label>Nội dung</label>
+                            <textarea id="socialMessage" class="form-control" rows="8" placeholder="Nhập nội dung bài đăng..."></textarea>
+                            <small class="text-muted">Hỗ trợ các thẻ: #Hashtag, Link...</small>
+                        </div>
+                        <div id="postResults" class="mt-3" style="display:none;">
+                            <h6>Kết quả:</h6>
+                            <div class="results-list"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary" id="btnConfirmShare">
+                    <i class="fas fa-paper-plane mr-1"></i> Đăng ngay
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
     <script>
         $(document).ready(function() {
@@ -328,6 +376,109 @@
                 
                 $('#imagePreviewModalLabel').text(productName + ' (' + images.length + ' ảnh)');
                 $('#imagePreviewModal').modal('show');
+            });
+
+            // --- Social Share Logic ---
+            var currentProductId = null;
+
+            $('.btn-share').on('click', function(e) {
+                e.preventDefault();
+                var btn = $(this);
+                currentProductId = btn.data('id');
+                
+                // Reset UI
+                $('#socialPlatformsList').html('<div class="text-center py-5"><i class="fas fa-spinner fa-spin"></i> Đang tải...</div>');
+                $('#socialMessage').val('');
+                $('#postResults').hide();
+                $('#btnConfirmShare').prop('disabled', false).html('<i class="fas fa-paper-plane mr-1"></i> Đăng ngay');
+
+                $('#socialShareModal').modal('show');
+
+                // Load product info & platforms
+                $.get('/Admin/Social/GetShareInfo/' + currentProductId, function(data) {
+                    $('#socialMessage').val(data.defaultMessage);
+                    
+                    var platformsHtml = '';
+                    if (data.platforms && data.platforms.length > 0) {
+                        data.platforms.forEach(function(p) {
+                            platformsHtml += `
+                                <div class="custom-control custom-checkbox mb-3 p-3 border rounded ${p.isConfigured ? '' : 'bg-light text-muted'}">
+                                    <input type="checkbox" class="custom-control-input social-platform-check" 
+                                           id="platform_${p.id}" value="${p.id}" ${p.isConfigured ? '' : 'disabled'}>
+                                    <label class="custom-control-label d-flex align-items-center w-100" for="platform_${p.id}">
+                                        <i class="${p.iconClass} fa-2x mr-3" style="color: ${p.colorClass}; width: 40px; text-align: center;"></i>
+                                        <span>
+                                            <strong class="d-block">${p.name}</strong>
+                                            <small>${p.isConfigured ? 'Sẵn sàng' : 'Chưa cấu hình'}</small>
+                                        </span>
+                                    </label>
+                                </div>
+                            `;
+                        });
+                    } else {
+                        platformsHtml = '<div class="alert alert-warning">Chưa có nền tảng nào được cấu hình.</div>';
+                    }
+                    $('#socialPlatformsList').html(platformsHtml);
+                }).fail(function(err) {
+                    console.error('Error loading share info:', err);
+                    var errMsg = err.responseText || "Không thể tải thông tin. Vui lòng thử lại.";
+                    $('#socialPlatformsList').html('<div class="alert alert-danger"><i class="fas fa-exclamation-triangle"></i> Lỗi: ' + errMsg + '</div>');
+                });
+            });
+
+            $('#btnConfirmShare').on('click', function() {
+                var selectedPlatforms = [];
+                $('.social-platform-check:checked').each(function() {
+                    selectedPlatforms.push($(this).val());
+                });
+
+                if (selectedPlatforms.length === 0) {
+                    alert('Vui lòng chọn ít nhất một nền tảng!');
+                    return;
+                }
+
+                var message = $('#socialMessage').val();
+                
+                // Show loading state
+                var btn = $(this);
+                btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Đang đăng...');
+                $('#postResults').hide();
+
+                $.ajax({
+                    url: '/Admin/Social/Publish',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        productId: currentProductId,
+                        platformIds: selectedPlatforms,
+                        message: message
+                    }),
+                    success: function(response) {
+                        var resultsHtml = '<ul class="list-group list-group-flush">';
+                        response.results.forEach(function(r) {
+                             var icon = r.success ? '<i class="fas fa-check-circle text-success"></i>' : '<i class="fas fa-times-circle text-danger"></i>';
+                             var link = r.postUrl ? `<a href="${r.postUrl}" target="_blank" class="ml-2 btn btn-xs btn-outline-primary"><i class="fas fa-external-link-alt"></i> Xem</a>` : '';
+                             
+                             resultsHtml += `
+                                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                    <span>${icon} <strong>${r.platformId}</strong>: ${r.message}</span>
+                                    ${link}
+                                </li>
+                             `;
+                        });
+                        resultsHtml += '</ul>';
+                        
+                        $('#postResults .results-list').html(resultsHtml);
+                        $('#postResults').slideDown();
+                        
+                        btn.prop('disabled', false).html('<i class="fas fa-paper-plane mr-1"></i> Đăng lại');
+                        // Don't close modal automatically so user can see results
+                    },
+                    error: function(err) {
+                        alert('Có lỗi xảy ra: ' + (err.responseText || err.statusText));
+                        btn.prop('disabled', false).html('<i class="fas fa-paper-plane mr-1"></i> Đăng ngay');
+                    }
+                });
             });
         });
     </script>

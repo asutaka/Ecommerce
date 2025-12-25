@@ -155,6 +155,16 @@ if (enableAI)
     builder.Services.AddScoped<Ecommerce.Web.Services.AI.IAIProvider, Ecommerce.Web.Services.AI.GroqProvider>();
 }
 
+// Register Social Media Services
+builder.Services.AddScoped<Ecommerce.Web.Services.Social.ISocialService, Ecommerce.Web.Services.Social.SocialService>();
+
+// Register Social Platforms (Mock for Phase 1)
+builder.Services.AddScoped<Ecommerce.Web.Services.Social.ISocialPlatform, Ecommerce.Web.Services.Social.FacebookPlatform>();
+builder.Services.AddScoped<Ecommerce.Web.Services.Social.ISocialPlatform, Ecommerce.Web.Services.Social.ShopeePlatform>();
+builder.Services.AddScoped<Ecommerce.Web.Services.Social.ISocialPlatform, Ecommerce.Web.Services.Social.ZaloPlatform>();
+builder.Services.AddScoped<Ecommerce.Web.Services.Social.ISocialPlatform, Ecommerce.Web.Services.Social.TikTokPlatform>();
+builder.Services.AddScoped<Ecommerce.Web.Services.Social.ISocialPlatform, Ecommerce.Web.Services.Social.YouTubePlatform>();
+
 builder.Services.AddMassTransit(x =>
 {
     // Register consumers
