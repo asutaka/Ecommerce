@@ -9,7 +9,7 @@ Add this to your `appsettings.json` or `appsettings.Development.json`:
     "AIProvider": "groq",
     "Groq": {
       "ApiKey": "YOUR_GROQ_API_KEY_HERE",
-      "Model": "llama3-8b-8192"
+      "Model": "llama-3.3-70b-versatile"
     },
     "SystemPrompt": "Bạn là trợ lý AI của cửa hàng thời trang Moderno.",
     "AutoReplyWhenOffline": true,
@@ -29,12 +29,19 @@ Add this to your `appsettings.json` or `appsettings.Development.json`:
 ## FREE Tier Limits:
 - 14,400 requests per day
 - Ultra-fast responses (500+ tokens/sec)
-- Llama 3 8B model
+- Llama 3 model
 - No credit card required
 
-## Model Options:
-- `llama3-8b-8192` - Fast, good for chat (Recommended)
-- `llama3-70b-8192` - More powerful, slower
-- `mixtral-8x7b-32768` - Longer context window
+## Model Options (Updated Dec 2025):
+- `llama-3.3-70b-versatile` - Newest, fast, very capable (Recommended)
+- `llama-3.1-8b-instant` - Very fast, good for simple chats
+- `mixtral-8x7b-32768` - Good reasoning capabilities
+- `gemma2-9b-it` - Google's Gemma model
+
+## Connection Issues?
+If you see errors, check:
+1. Your API Key is correct
+2. The model name hasn't been deprecated (Groq updates models frequently)
+3. Check https://console.groq.com/docs/models for latest model names
 
 Replace `YOUR_GROQ_API_KEY_HERE` with your actual API key from Groq Console.

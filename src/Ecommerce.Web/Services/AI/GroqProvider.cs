@@ -22,7 +22,7 @@ public class GroqProvider : IAIProvider
     {
         _httpClient = httpClientFactory.CreateClient("GroqAI");
         _apiKey = configuration["ChatSettings:Groq:ApiKey"] ?? "";
-        _model = configuration["ChatSettings:Groq:Model"] ?? "llama3-8b-8192";
+        _model = configuration["ChatSettings:Groq:Model"] ?? "llama-3.3-70b-versatile";
         _logger = logger;
 
         if (string.IsNullOrEmpty(_apiKey))
@@ -52,6 +52,7 @@ Nhiệm vụ của bạn:
 - Giải đáp thắc mắc về vận chuyển
 - Luôn lịch sự, chuyên nghiệp, nhiệt tình
 - Trả lời BẰNG TIẾNG VIỆT
+- KHÔNG BAO GIỜ bịa đặt thông tin nếu không biết.
 
 Nếu câu hỏi nằm ngoài khả năng, hãy lịch sự nói rằng bạn sẽ chuyển cho nhân viên hỗ trợ."
                 }
@@ -103,7 +104,8 @@ Nếu câu hỏi nằm ngoài khả năng, hãy lịch sự nói rằng bạn s�
             }
 
             var responseJson = await response.Content.ReadAsStringAsync();
-            var result = JsonSerializer.Deserialize<GroqResponse>(responseJson);
+            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            var result = JsonSerializer.Deserialize<GroqResponse>(responseJson, options);
 
             if (result?.Choices == null || result.Choices.Count == 0)
             {
@@ -119,7 +121,7 @@ Nếu câu hỏi nằm ngoài khả năng, hãy lịch sự nói rằng bạn s�
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error calling Groq API");
-            return "Xin lỗi, đã có lỗi xảy ra khi xử lý yêu cầu của bạn. Vui lòng thử lại sau.";
+            return $"[DEBUG] Lỗi ngoại lệ: {ex.Message}";
         }
     }
 
